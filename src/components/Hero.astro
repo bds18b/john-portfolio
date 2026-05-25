@@ -1,0 +1,219 @@
+---
+// Hero.astro
+// Fonts: Oswald (h1) · Inconsolata (all other text)
+// Styling: Tailwind CSS + minimal <style> for keyframes & mask
+---
+
+<section
+    class="bg-[#efefed]
+  min-h-svh
+  flex flex-col justify-center
+  pt-[clamp(80px,12vw,140px)]
+  pb-[clamp(48px,8vw,96px)]
+  overflow-hidden"
+>
+    <div
+        class="w-[min(760px,90vw)]
+    mx-auto
+    text-center
+    flex flex-col items-center
+    gap-[clamp(20px,3vw,32px)]"
+    >
+        <!-- Eyebrow -->
+        <p
+            class="font-inconsolata
+      text-[clamp(0.7rem,1.4vw,0.85rem)]
+      font-medium
+      tracking-[0.18em]
+      uppercase
+      text-[#6b6b65]
+      animate-fade-up"
+        >
+            Fractional Retention Portfolio · 2026
+        </p>
+
+        <!-- Name - UPDATED: Slower reveal and adjusted stagger delay -->
+        <h1
+            class="font-oswald
+      font-normal
+      uppercase
+      text-[clamp(4.5rem,14vw,10rem)]
+      leading-[0.92]
+      tracking-[-0.02em]
+      text-[#1a1a18]"
+        >
+            <span class="block overflow-hidden">
+                <span class="inline-block animate-revealing-line"> John </span>
+            </span>
+            <span class="block overflow-hidden">
+                <span
+                    class="inline-block animate-revealing-line [animation-delay:180ms]"
+                >
+                    Narducci
+                </span>
+            </span>
+        </h1>
+
+        <!-- Descriptor -->
+        <p
+            class="font-inconsolata
+      text-[clamp(0.9rem,1.8vw,1.1rem)]
+      font-normal
+      leading-[1.7]
+      text-[#6b6b65]
+      max-w-[520px]
+      animate-fade-up [animation-delay:400ms]"
+        >
+            Fractional Retention Specialist helping<br />
+            brands grow revenue through expert<br />
+            lifecycle &amp; retention strategy.
+        </p>
+
+        <!-- CTA -->
+        <a
+            href="#contact"
+            class="inline-flex items-center gap-[10px]
+        bg-accent
+        font-inconsolata
+        text-[clamp(0.75rem,1.4vw,0.88rem)]
+        font-bold
+        tracking-[0.12em]
+        uppercase
+        text-white
+        no-underline
+        px-7 py-3.5
+        rounded
+        transition-all duration-200 ease-in-out
+        hover:-translate-y-1
+        animate-fade-up [animation-delay:550ms]
+        group"
+        >
+            Contact me
+            <span
+                class="inline-block transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden="true"
+            >
+                →
+            </span>
+        </a>
+
+        <!-- Marquee -->
+        <div
+            aria-hidden="true"
+            class="mt-[clamp(8px,2vw,16px)]
+        py-[18px]
+        overflow-hidden
+        whitespace-nowrap
+        w-full
+        marquee-mask
+        animate-fade-up [animation-delay:700ms]"
+        >
+            <div
+                class="inline-flex gap-7
+        font-inconsolata
+        text-[clamp(0.7rem,1.2vw,0.82rem)]
+        font-medium
+        tracking-[0.1em]
+        uppercase
+        text-[#6b6b65]
+        animate-marquee"
+            >
+                <span>Email Marketing</span><span>·</span>
+                <span>SMS Strategy</span><span>·</span>
+                <span>Lifecycle Design</span><span>·</span>
+                <span>Klaviyo</span><span>·</span>
+                <span>Customer Retention</span><span>·</span>
+                <span>LTV Growth</span><span>·</span>
+                <!-- duplicate for seamless loop -->
+                <span>Email Marketing</span><span>·</span>
+                <span>SMS Strategy</span><span>·</span>
+                <span>Lifecycle Design</span><span>·</span>
+                <span>Klaviyo</span><span>·</span>
+                <span>Customer Retention</span><span>·</span>
+                <span>LTV Growth</span><span>·</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* ── Font shorthands (not in default Tailwind) ────────── */
+    .font-inconsolata {
+        font-family: "Inconsolata", "Courier New", monospace;
+    }
+    .font-oswald {
+        font-family: "Oswald", sans-serif;
+    }
+
+    /* ── Marquee side-fade mask ────────────────────────────── */
+    .marquee-mask {
+        -webkit-mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 15%,
+            black 85%,
+            transparent 100%
+        );
+        mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 15%,
+            black 85%,
+            transparent 100%
+        );
+    }
+
+    /* ── Keyframes ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(22px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes revealLine {
+        0% {
+            transform: translateY(100%);
+        }
+        100% {
+            transform: translateY(0%);
+        }
+    }
+
+    @keyframes marquee {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    .animate-fade-up {
+        animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    /* UPDATED: Changed from 0.75s to 1.1s for a smoother, slower glide */
+    .animate-revealing-line {
+        animation: revealLine 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .animate-marquee {
+        animation: marquee 28s linear infinite;
+    }
+
+    /* ── Reduced-motion ────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+        .animate-fade-up,
+        .animate-revealing-line {
+            animation: none;
+        }
+        .animate-marquee {
+            animation-play-state: paused;
+        }
+    }
+</style>
