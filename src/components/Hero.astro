@@ -1,7 +1,5 @@
 ---
 // Hero.astro
-// Fonts: Oswald (h1) · Inconsolata (all other text)
-// Styling: Tailwind CSS + minimal <style> for keyframes & mask
 ---
 
 <section
@@ -35,19 +33,19 @@
         <!-- Name - UPDATED: Slower reveal and adjusted stagger delay -->
         <h1
             class="font-oswald
-      font-normal
-      uppercase
-      text-[clamp(4.5rem,14vw,10rem)]
-      leading-[0.92]
-      tracking-[-0.02em]
-      text-[#1a1a18]"
+    font-normal
+    uppercase
+    text-[clamp(4.5rem,14vw,10rem)]
+    leading-[0.95]
+    tracking-[-0.02em]
+    text-[#1a1a18]"
         >
-            <span class="block overflow-hidden">
-                <span class="inline-block animate-revealing-line"> John </span>
+            <span class="block overflow-hidden pb-[0.05em]">
+                <span class="block animate-revealing-line"> John </span>
             </span>
-            <span class="block overflow-hidden">
+            <span class="block overflow-hidden pb-[0.05em]">
                 <span
-                    class="inline-block animate-revealing-line [animation-delay:180ms]"
+                    class="block animate-revealing-line [animation-delay:180ms]"
                 >
                     Narducci
                 </span>

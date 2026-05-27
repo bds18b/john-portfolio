@@ -1,0 +1,120 @@
+---
+// Footer.astro
+const currentYear = new Date().getFullYear();
+---
+
+<footer
+    class="bg-[#efefed] pb-[clamp(32px,6vw,64px)] px-[clamp(16px,4vw,48px)]"
+>
+    <!-- Main rounded container mirroring the card structure in image_3151c9.png -->
+    <div
+        class="max-w-[1340px] mx-auto bg-accent rounded-[24px] p-[clamp(32px,6vw,64px)]
+        grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-start"
+    >
+        <!-- Left Column: Branding / Name (Takes up 5 cols on desktop) -->
+        <div class="md:col-span-5 flex flex-col gap-4">
+            <h2
+                class="font-oswald text-[clamp(1.8rem,4vw,2.5rem)] font-normal uppercase tracking-wide text-white leading-none"
+            >
+                John Narducci
+            </h2>
+            <p
+                class="font-inconsolata text-[0.85rem] font-medium tracking-[0.05em] uppercase text-white/60"
+            >
+                Fractional Retention Portfolio
+            </p>
+        </div>
+
+        <!-- Right Column: Navigation Links Grid (Takes up 7 cols on desktop) -->
+        <div
+            class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 font-inconsolata"
+        >
+            <!-- Link Column 1: Directory -->
+            <div class="flex flex-col gap-4">
+                <span
+                    class="text-[0.75rem] font-bold tracking-[0.15em] uppercase text-white/50"
+                >
+                    Navigation
+                </span>
+                <nav class="flex flex-col gap-3">
+                    <a
+                        href="#"
+                        class="text-[0.88rem] font-medium uppercase tracking-[0.05em] text-white no-underline transition-colors duration-200 hover:text-white/70"
+                    >
+                        Home
+                    </a>
+                    <a
+                        href="#services"
+                        class="text-[0.88rem] font-medium uppercase tracking-[0.05em] text-white/80 no-underline transition-colors duration-200 hover:text-white"
+                    >
+                        Services
+                    </a>
+                    <a
+                        href="#case-studies"
+                        class="text-[0.88rem] font-medium uppercase tracking-[0.05em] text-white/80 no-underline transition-colors duration-200 hover:text-white"
+                    >
+                        Case Studies
+                    </a>
+                    <a
+                        href="#testimonials"
+                        class="text-[0.88rem] font-medium uppercase tracking-[0.05em] text-white/80 no-underline transition-colors duration-200 hover:text-white"
+                    >
+                        Testimonials
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Link Column 2: Legal / Meta -->
+            <div class="flex flex-col gap-4">
+                <span
+                    class="text-[0.75rem] font-bold tracking-[0.15em] uppercase text-white/50"
+                >
+                    Connect
+                </span>
+                <nav class="flex flex-col gap-3">
+                    <a
+                        href="#contact"
+                        class="text-[0.88rem] font-medium uppercase tracking-[0.05em] text-white/80 no-underline transition-colors duration-200 hover:text-white"
+                    >
+                        Let's Talk
+                    </a>
+                    <a
+                        href="https://linkedin.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-[0.88rem] font-medium uppercase tracking-[0.05em] text-white/80 no-underline transition-colors duration-200 hover:text-white"
+                    >
+                        LinkedIn
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Link Column 3: Copyright Utility Statement (Pushed right on larger monitors) -->
+            <div
+                class="flex flex-col gap-4 col-span-2 sm:col-span-1 sm:justify-self-end text-left sm:text-right pt-4 sm:pt-0 border-t border-white/10 sm:border-none"
+            >
+                <span
+                    class="text-[0.75rem] font-bold tracking-[0.15em] uppercase text-white/50"
+                >
+                    System
+                </span>
+                <p
+                    class="text-[0.82rem] font-medium uppercase tracking-[0.05em] text-white/60 m-0"
+                >
+                    &copy; {currentYear}
+                    <br class="hidden sm:inline" /> All Rights Reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    /* ── Typography Token Integrations ───────────────────── */
+    .font-inconsolata {
+        font-family: "Inconsolata", "Courier New", monospace;
+    }
+    .font-oswald {
+        font-family: "Oswald", sans-serif;
+    }
+</style>

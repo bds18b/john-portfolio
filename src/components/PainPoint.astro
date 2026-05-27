@@ -1,0 +1,192 @@
+---
+// PainPoint.astro
+---
+
+<section
+    id="problem"
+    class="bg-[#efefed] py-[clamp(80px,12vw,160px)] px-[clamp(16px,6vw,48px)] overflow-hidden"
+>
+    <div
+        class="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-0 items-start"
+    >
+        <!-- Left Side -->
+        <div
+            class="lg:col-span-6 flex flex-col gap-4 lg:gap-6 lg:sticky lg:top-[15vh]"
+        >
+            <p
+                class="font-inconsolata text-[clamp(0.75rem,1.4vw,0.85rem)] font-bold tracking-[0.18em] uppercase text-accent"
+            >
+                The Core Friction
+            </p>
+
+            <h2
+                class="font-oswald font-normal uppercase text-[clamp(2.5rem,5.8vw,5.5rem)] leading-[1.05] tracking-[-0.01em] text-[#1a1a18]"
+            >
+                Acquisition is costing more, but repeat revenue is entirely
+                flat.
+            </h2>
+        </div>
+
+        <!-- Right Side: lg:mt-11 pushes this down exactly 44px to align with the H2 -->
+        <div
+            class="lg:col-start-8 lg:col-span-5 flex flex-col gap-10 lg:gap-14 lg:mt-11"
+        >
+            <div class="flex flex-col gap-10 font-inconsolata">
+                <!-- Point 1 -->
+                <div class="flex items-start gap-5 group">
+                    <div class="flex-shrink-0 text-accent pt-1">
+                        <!-- Custom SVG: Leaking Pipeline/Funnel Triage -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                            ><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"
+                            ></path></svg
+                        >
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h3
+                            class="text-[1rem] font-bold uppercase tracking-wider text-[#1a1a18]"
+                        >
+                            Plugging Lifecycle Leaks
+                        </h3>
+                        <p
+                            class="text-[0.95rem] font-normal leading-[1.6] text-[#6b6b65]"
+                        >
+                            Most brands leak pipeline value immediately
+                            post-purchase. I audit and rebuild your complete
+                            flow matrix to capture missed capital.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Point 2 -->
+                <div class="flex items-start gap-5 group">
+                    <div class="flex-shrink-0 text-accent pt-1">
+                        <!-- Custom SVG: Matrix/Scalable Structure Grid -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                            ><rect x="3" y="3" width="7" height="7"></rect><rect
+                                x="14"
+                                y="3"
+                                width="7"
+                                height="7"></rect><rect
+                                x="14"
+                                y="14"
+                                width="7"
+                                height="7"></rect><rect
+                                x="3"
+                                y="14"
+                                width="7"
+                                height="7"></rect></svg
+                        >
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h3
+                            class="text-[1rem] font-bold uppercase tracking-wider text-[#1a1a18]"
+                        >
+                            Embedded Flow Optimization
+                        </h3>
+                        <p
+                            class="text-[0.95rem] font-normal leading-[1.6] text-[#6b6b65]"
+                        >
+                            Ditch static, outdated automations. I step in
+                            fractionally to establish high-scale personalization
+                            strings that systematically scale LTV.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Point 3 -->
+                <div class="flex items-start gap-5 group">
+                    <div class="flex-shrink-0 text-accent pt-1">
+                        <!-- Custom SVG: Zero Overhead Scale Graph -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                            ><path d="M23 6l-9.5 9.5-5-5L1 18"></path><path
+                                d="M17 6h6v6"></path></svg
+                        >
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <h3
+                            class="text-[1rem] font-bold uppercase tracking-wider text-[#1a1a18]"
+                        >
+                            Zero Overhead Scaling
+                        </h3>
+                        <p
+                            class="text-[0.95rem] font-normal leading-[1.6] text-[#6b6b65]"
+                        >
+                            Get tactical, executive retention execution without
+                            the compounding structural costs of heavy payroll or
+                            bloated agency retainers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="pt-4 lg:pt-2 w-full sm:w-auto">
+                <a
+                    href="#contact"
+                    class="inline-flex items-center justify-center gap-3 w-full sm:w-auto
+                    bg-accent
+                    font-inconsolata
+                    text-[clamp(0.75rem,1.4vw,0.88rem)]
+                    font-bold
+                    tracking-[0.12em]
+                    uppercase
+                    text-white
+                    no-underline
+                    px-8 py-4
+                    rounded
+                    transition-all duration-200 ease-in-out
+                    hover:-translate-y-1 hover:shadow-lg
+                    focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#efefed]
+                    group"
+                >
+                    Fix my retention framework
+                    <span
+                        class="inline-block transition-transform duration-200 group-hover:translate-x-1"
+                        aria-hidden="true"
+                    >
+                        →
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .font-inconsolata {
+        font-family: "Inconsolata", "Courier New", monospace;
+    }
+    .font-oswald {
+        font-family: "Oswald", sans-serif;
+    }
+</style>
