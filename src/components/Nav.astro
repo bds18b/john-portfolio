@@ -6,21 +6,20 @@
     class="fixed top-0 left-0 w-full z-50 pt-[24px] px-[clamp(16px,4vw,48px)] pointer-events-none"
 >
     <div
-        class="max-w-[1440px] mx-auto flex justify-between items-center w-full"
+        id="nav-pill"
+        class="max-w-[900px] bg-white backdrop-blur-md rounded-md mx-auto flex flex-col w-full pointer-events-auto overflow-hidden"
     >
-        <!-- Left Side: Mobile Menu Button (Explicit height matched to text button) -->
-        <div class="pointer-events-auto md:hidden flex items-center">
+        <!-- Main row -->
+        <div class="flex justify-between items-center w-full">
+            <!-- Mobile: Burger -->
             <button
                 id="menu-toggle"
-                class="flex flex-col justify-center items-center aspect-square h-[38px]
-    bg-[#f5f5f3]/90 backdrop-blur-md rounded-md relative
-    shadow-[0_2px_5px_rgba(0,0,0,0.03)] border-none cursor-pointer group z-50"
+                class="flex md:!hidden border-none bg-transparent cursor-pointer group z-50 nav-link-pad"
                 aria-label="Toggle Menu"
                 aria-expanded="false"
             >
-                <!-- Added rounded-full to the lines below -->
                 <div
-                    class="flex flex-col gap-[5px] w-[18px] items-start justify-center transition-transform duration-300"
+                    class="flex flex-col gap-[5px] w-[18px] items-start justify-center"
                 >
                     <span
                         class="w-full h-[2px] bg-[#1a1a18] rounded-full transition-all duration-300 origin-center burger-line-1"
@@ -30,162 +29,174 @@
                     ></span>
                 </div>
             </button>
+
+            <!-- Desktop: Nav links -->
+            <nav class="hidden md:flex items-center">
+                <a href="#services" class="nav-link">Services</a>
+                <span class="nav-sep" aria-hidden="true">|</span>
+                <a href="#case-studies" class="nav-link">Case Studies</a>
+                <span class="nav-sep" aria-hidden="true">|</span>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+            </nav>
+
+            <!-- Contact Me -->
+            <a href="#contact" class="nav-link">Contact Me</a>
         </div>
 
-        <!-- Center/Left: Desktop Navigation Links Pill (Hidden on mobile) -->
-        <nav
-            class="hidden md:flex pointer-events-auto
-            bg-white
-            backdrop-blur-md
-            rounded-md
-            px-6 py-2.5
-            items-center
-            gap-[16px]
-            shadow-[0_2px_5px_rgba(0,0,0,0.03)]"
-        >
-            <a
-                href="#services"
-                class="font-inconsolata text-[0.78rem] font-medium tracking-[0.08em] uppercase text-[#6b6b65] no-underline transition-colors duration-200 hover:text-[#1a1a18]"
-            >
-                Services
-            </a>
-            <span
-                class="text-[#e2e2de] font-inconsolata text-[0.8rem]"
-                aria-hidden="true">|</span
-            >
-            <a
-                href="#case-studies"
-                class="font-inconsolata text-[0.78rem] font-medium tracking-[0.08em] uppercase text-[#6b6b65] no-underline transition-colors duration-200 hover:text-[#1a1a18]"
-            >
-                Case Studies
-            </a>
-            <span
-                class="text-[#e2e2de] font-inconsolata text-[0.8rem]"
-                aria-hidden="true">|</span
-            >
-            <a
-                href="#testimonials"
-                class="font-inconsolata text-[0.78rem] font-medium tracking-[0.08em] uppercase text-[#6b6b65] no-underline transition-colors duration-200 hover:text-[#1a1a18]"
-            >
-                Testimonials
-            </a>
-        </nav>
-
-        <!-- Right Side: Contact Button Pill (Explicit height on mobile, dynamic on desktop) -->
-        <div class="pointer-events-auto flex items-center">
-            <a
-                href="#contact"
-                class="bg-white
-                backdrop-blur-md
-                rounded-md
-                px-5 md:px-6
-                flex items-center justify-center h-[38px] md:h-auto md:py-2.5
-                font-inconsolata
-                text-[0.78rem]
-                font-medium
-                tracking-[0.08em]
-                uppercase
-                text-[#6b6b65]
-                no-underline
-                shadow-[0_2px_5px_rgba(0,0,0,0.03)]
-                transition-all duration-200 ease-in-out
-                hover:bg-[#1a1a18] hover:text-white"
-            >
-                Contact Me
-            </a>
+        <!-- Mobile expanded menu -->
+        <div id="mobile-menu" class="md:hidden">
+            <div id="mobile-menu-inner">
+                <div class="mobile-divider"></div>
+                <nav class="mobile-nav">
+                    <a href="#services" class="mobile-link" data-index="0"
+                        >Services</a
+                    >
+                    <a href="#case-studies" class="mobile-link" data-index="1"
+                        >Case Studies</a
+                    >
+                    <a href="#testimonials" class="mobile-link" data-index="2"
+                        >Testimonials</a
+                    >
+                    <a href="#contact" class="mobile-link" data-index="3"
+                        >Contact Me</a
+                    >
+                </nav>
+            </div>
         </div>
-    </div>
-
-    <!-- Mobile Fullscreen Overlay Menu -->
-    <div
-        id="mobile-overlay"
-        class="fixed inset-0 bg-[#efefed] z-40 flex flex-col justify-center items-center opacity-0 pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] translate-y-[-10px]"
-    >
-        <nav class="flex flex-col items-center gap-8 text-center">
-            <a
-                href="#services"
-                class="mobile-link font-oswald text-4xl uppercase text-[#1a1a18] no-underline tracking-wide opacity-0 translate-y-4 transition-all duration-500"
-                >Services</a
-            >
-            <a
-                href="#case-studies"
-                class="mobile-link font-oswald text-4xl uppercase text-[#1a1a18] no-underline tracking-wide opacity-0 translate-y-4 transition-all duration-500 delay-75"
-                >Case Studies</a
-            >
-            <a
-                href="#testimonials"
-                class="mobile-link font-oswald text-4xl uppercase text-[#1a1a18] no-underline tracking-wide opacity-0 translate-y-4 transition-all duration-500 delay-150"
-                >Testimonials</a
-            >
-            <a
-                href="#contact"
-                class="mobile-link font-oswald text-4xl uppercase text-[#1a1a18] no-underline tracking-wide opacity-0 translate-y-4 transition-all duration-500 delay-225"
-                >Contact Me</a
-            >
-        </nav>
     </div>
 </header>
 
 <style>
-    .font-inconsolata {
-        font-family: "Inconsolata", "Courier New", monospace;
-    }
-    .font-oswald {
-        font-family: "Oswald", sans-serif;
+    .nav-link,
+    .nav-link-pad {
+        padding: 10px 20px;
+        display: inline-flex;
+        align-items: center;
     }
 
-    /* Clean Center-Morphing 'X' Animations */
+    .nav-link {
+        font-family: "Inconsolata", "Courier New", monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #1a1a18;
+        text-decoration: none;
+        transition: color 0.2s;
+        white-space: nowrap;
+    }
+    .nav-link:hover {
+        color: var(--color-accent, #6b6b65);
+    }
+
+    .nav-sep {
+        color: #e2e2de;
+        font-family: "Inconsolata", "Courier New", monospace;
+        font-size: 0.8rem;
+        padding: 0 2px;
+        user-select: none;
+    }
+
+    /* Burger → X */
     [aria-expanded="true"] .burger-line-1 {
         transform: translateY(3.5px) rotate(-45deg);
     }
-
     [aria-expanded="true"] .burger-line-2 {
         width: 100% !important;
         transform: translateY(-3.5px) rotate(45deg);
     }
 
-    /* Active Overlay States - Forces layer interactions explicitly when active */
-    #mobile-overlay.is-active {
-        opacity: 1;
-        pointer-events: auto !important;
-        transform: translateY(0);
+    /* ── Mobile expanded panel ── */
+    #mobile-menu {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #mobile-menu.is-open {
+        grid-template-rows: 1fr;
+    }
+    #mobile-menu-inner {
+        overflow: hidden;
     }
 
-    #mobile-overlay.is-active .mobile-link {
+    .mobile-divider {
+        margin: 0 20px;
+        height: 1px;
+        background: #e8e8e4;
+    }
+
+    .mobile-nav {
+        display: flex;
+        flex-direction: column;
+        padding: 8px 0;
+    }
+
+    .mobile-link {
+        font-family: "Inconsolata", "Courier New", monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #1a1a18;
+        text-decoration: none;
+        padding: 10px 20px;
+        display: block;
+        opacity: 0;
+        transform: translateY(-6px);
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+            color 0.2s ease;
+    }
+    .mobile-link:hover {
+        color: var(--color-accent, #6b6b65);
+    }
+
+    #mobile-menu.is-open .mobile-link {
         opacity: 1;
         transform: translateY(0);
+    }
+    #mobile-menu.is-open .mobile-link[data-index="0"] {
+        transition-delay: 0.1s;
+    }
+    #mobile-menu.is-open .mobile-link[data-index="1"] {
+        transition-delay: 0.15s;
+    }
+    #mobile-menu.is-open .mobile-link[data-index="2"] {
+        transition-delay: 0.2s;
+    }
+    #mobile-menu.is-open .mobile-link[data-index="3"] {
+        transition-delay: 0.25s;
     }
 </style>
 
 <script>
     const initMenu = () => {
         const menuToggle = document.getElementById("menu-toggle");
-        const mobileOverlay = document.getElementById("mobile-overlay");
+        const mobileMenu = document.getElementById("mobile-menu");
         const mobileLinks = document.querySelectorAll(".mobile-link");
 
-        if (!menuToggle || !mobileOverlay) return;
+        if (!menuToggle || !mobileMenu) return;
 
         function toggleMenu() {
-            const isExpanded =
-                menuToggle.getAttribute("aria-expanded") === "true";
-            menuToggle.setAttribute(
-                "aria-expanded",
-                !isExpanded ? "true" : "false",
-            );
-            mobileOverlay.classList.toggle("is-active");
-            document.body.style.overflow = !isExpanded ? "hidden" : "";
+            const isOpen = mobileMenu.classList.contains("is-open");
+            mobileMenu.classList.toggle("is-open", !isOpen);
+            menuToggle.setAttribute("aria-expanded", String(!isOpen));
+            document.body.style.overflow = !isOpen ? "hidden" : "";
+        }
+
+        function closeMenu() {
+            mobileMenu.classList.remove("is-open");
+            menuToggle.setAttribute("aria-expanded", "false");
+            document.body.style.overflow = "";
         }
 
         menuToggle.addEventListener("click", toggleMenu);
-
-        mobileLinks.forEach((link) => {
-            link.addEventListener("click", toggleMenu);
-        });
+        mobileLinks.forEach((link) =>
+            link.addEventListener("click", closeMenu),
+        );
     };
 
-    // Initialize logic on page script entry
     initMenu();
-
-    // Astro transition support
     document.addEventListener("astro:page-load", initMenu);
 </script>
