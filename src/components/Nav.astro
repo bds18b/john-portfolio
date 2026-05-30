@@ -3,47 +3,52 @@
 ---
 
 <header
-    class="fixed top-0 left-0 w-full z-50 pt-[24px] px-[clamp(16px,4vw,48px)] pointer-events-none"
+    class="fixed top-0 left-0 w-full z-50 pt-4 md:pt-6 px-3 md:px-8 pointer-events-none"
 >
     <div
         id="nav-pill"
-        class="max-w-[900px] bg-white backdrop-blur-md rounded-md mx-auto flex flex-col w-full pointer-events-auto overflow-hidden"
+        class="max-w-[1160px] mx-auto border border-[#1a1a18]/10 bg-[#efefed]/80 backdrop-blur-sm rounded-xl flex flex-col w-full pointer-events-auto overflow-hidden"
     >
-        <!-- Main row -->
-        <div class="flex justify-between items-center w-full">
-            <!-- Mobile: Burger -->
-            <button
-                id="menu-toggle"
-                class="flex md:!hidden border-none bg-transparent cursor-pointer group z-50 nav-link-pad"
-                aria-label="Toggle Menu"
-                aria-expanded="false"
-            >
-                <div
-                    class="flex flex-col gap-[5px] w-[18px] items-start justify-center"
+        <!-- Main Panel Header Layout Row -->
+        <div class="flex justify-between items-center w-full px-2 py-2">
+            <!-- Left Side Links (Left justified alignment framework) -->
+            <div class="flex items-center">
+                <!-- Mobile Burger Button (Only visible on mobile screens) -->
+                <button
+                    id="menu-toggle"
+                    class="flex md:hidden border-none bg-transparent cursor-pointer group p-3 relative z-50"
+                    aria-label="Toggle Menu"
+                    aria-expanded="false"
                 >
-                    <span
-                        class="w-full h-[2px] bg-[#1a1a18] rounded-full transition-all duration-300 origin-center burger-line-1"
-                    ></span>
-                    <span
-                        class="w-[70%] h-[2px] bg-[#1a1a18] rounded-full transition-all duration-300 origin-center burger-line-2 group-hover:w-full"
-                    ></span>
-                </div>
-            </button>
+                    <div
+                        class="flex flex-col gap-[5px] w-[18px] items-start justify-center h-4"
+                    >
+                        <span
+                            class="w-full h-[2px] bg-[#1a1a18] rounded-full transition-all duration-300 origin-center burger-line-1"
+                        ></span>
+                        <span
+                            class="w-[70%] h-[2px] bg-[#1a1a18] rounded-full transition-all duration-300 origin-center burger-line-2 group-hover:w-full"
+                        ></span>
+                    </div>
+                </button>
 
-            <!-- Desktop: Nav links -->
-            <nav class="hidden md:flex items-center">
-                <a href="#services" class="nav-link">Services</a>
-                <span class="nav-sep" aria-hidden="true">|</span>
-                <a href="#case-studies" class="nav-link">Case Studies</a>
-                <span class="nav-sep" aria-hidden="true">|</span>
-                <a href="#testimonials" class="nav-link">Testimonials</a>
-            </nav>
+                <!-- Desktop Nav Link Tree System -->
+                <nav class="hidden md:flex items-center pl-2">
+                    <a href="#services" class="nav-link">Services</a>
+                    <span class="nav-sep" aria-hidden="true">//</span>
+                    <a href="#case-studies" class="nav-link">Case Studies</a>
+                    <span class="nav-sep" aria-hidden="true">//</span>
+                    <a href="#testimonials" class="nav-link">Testimonials</a>
+                </nav>
+            </div>
 
-            <!-- Contact Me -->
-            <a href="#contact" class="nav-link">Contact Me</a>
+            <!-- Right Side Highlight Button Anchor -->
+            <div class="flex items-center pr-1">
+                <a href="#contact" class="nav-action-btn"> Contact Me </a>
+            </div>
         </div>
 
-        <!-- Mobile expanded menu -->
+        <!-- Mobile hidden drop layer menu grid -->
         <div id="mobile-menu" class="md:hidden">
             <div id="mobile-menu-inner">
                 <div class="mobile-divider"></div>
@@ -57,9 +62,6 @@
                     <a href="#testimonials" class="mobile-link" data-index="2"
                         >Testimonials</a
                     >
-                    <a href="#contact" class="mobile-link" data-index="3"
-                        >Contact Me</a
-                    >
                 </nav>
             </div>
         </div>
@@ -67,37 +69,56 @@
 </header>
 
 <style>
-    .nav-link,
-    .nav-link-pad {
-        padding: 10px 20px;
-        display: inline-flex;
-        align-items: center;
-    }
-
     .nav-link {
         font-family: "Inconsolata", "Courier New", monospace;
-        font-size: 0.78rem;
-        font-weight: 500;
-        letter-spacing: 0.08em;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
         color: #1a1a18;
         text-decoration: none;
-        transition: color 0.2s;
+        transition: color 0.2s ease-in-out;
         white-space: nowrap;
+        padding: 8px 14px;
     }
     .nav-link:hover {
         color: var(--color-accent, #6b6b65);
     }
 
     .nav-sep {
-        color: #e2e2de;
+        color: rgba(26, 26, 24, 0.15);
         font-family: "Inconsolata", "Courier New", monospace;
-        font-size: 0.8rem;
-        padding: 0 2px;
+        font-size: 0.75rem;
+        font-weight: bold;
         user-select: none;
     }
 
-    /* Burger → X */
+    .nav-action-btn {
+        font-family: "Inconsolata", "Courier New", monospace;
+        font-size: 0.75rem;
+        font-weight: bold;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #ffffff;
+        background-color: var(
+            --color-accent,
+            #1a1a18
+        ); /* Reverts gracefully if custom token lacks fallback context */
+    }
+    /* Fallback directly inside Tailwind architecture layer if global variables aren't initialized */
+
+    .nav-action-btn {
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.2s ease-in-out;
+    }
+    .nav-action-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-0.5px);
+    }
+
+    /* Minimalist Close X Animation Transforms */
     [aria-expanded="true"] .burger-line-1 {
         transform: translateY(3.5px) rotate(-45deg);
     }
@@ -106,11 +127,11 @@
         transform: translateY(-3.5px) rotate(45deg);
     }
 
-    /* ── Mobile expanded panel ── */
+    /* ── Mobile menu wrapper structural dynamic sheet engine ── */
     #mobile-menu {
         display: grid;
         grid-template-rows: 0fr;
-        transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
     #mobile-menu.is-open {
         grid-template-rows: 1fr;
@@ -120,32 +141,32 @@
     }
 
     .mobile-divider {
-        margin: 0 20px;
+        margin: 0 16px;
         height: 1px;
-        background: #e8e8e4;
+        background: rgba(26, 26, 24, 0.08);
     }
 
     .mobile-nav {
         display: flex;
         flex-direction: column;
-        padding: 8px 0;
+        padding: 6px 4px;
     }
 
     .mobile-link {
         font-family: "Inconsolata", "Courier New", monospace;
         font-size: 0.78rem;
-        font-weight: 500;
-        letter-spacing: 0.08em;
+        font-weight: 700;
+        letter-spacing: 0.1em;
         text-transform: uppercase;
         color: #1a1a18;
         text-decoration: none;
-        padding: 10px 20px;
+        padding: 12px 16px;
         display: block;
         opacity: 0;
-        transform: translateY(-6px);
+        transform: translateY(-4px);
         transition:
-            opacity 0.3s ease,
-            transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+            opacity 0.25s ease,
+            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
             color 0.2s ease;
     }
     .mobile-link:hover {
@@ -157,16 +178,13 @@
         transform: translateY(0);
     }
     #mobile-menu.is-open .mobile-link[data-index="0"] {
-        transition-delay: 0.1s;
+        transition-delay: 0.05s;
     }
     #mobile-menu.is-open .mobile-link[data-index="1"] {
-        transition-delay: 0.15s;
+        transition-delay: 0.1s;
     }
     #mobile-menu.is-open .mobile-link[data-index="2"] {
-        transition-delay: 0.2s;
-    }
-    #mobile-menu.is-open .mobile-link[data-index="3"] {
-        transition-delay: 0.25s;
+        transition-delay: 0.15s;
     }
 </style>
 
@@ -182,16 +200,18 @@
             const isOpen = mobileMenu.classList.contains("is-open");
             mobileMenu.classList.toggle("is-open", !isOpen);
             menuToggle.setAttribute("aria-expanded", String(!isOpen));
-            document.body.style.overflow = !isOpen ? "hidden" : "";
         }
 
         function closeMenu() {
             mobileMenu.classList.remove("is-open");
             menuToggle.setAttribute("aria-expanded", "false");
-            document.body.style.overflow = "";
         }
 
-        menuToggle.addEventListener("click", toggleMenu);
+        menuToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleMenu();
+        });
+
         mobileLinks.forEach((link) =>
             link.addEventListener("click", closeMenu),
         );
