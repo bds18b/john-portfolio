@@ -1,0 +1,98 @@
+---
+const testimonials = [
+  {
+    name: "Amit",
+    role: "Founder",
+    company: "8-Figure DTC Brand",
+    quote: "You aren't getting standard outsourced agency task-takers here. Having an executive-level advisor deeply embedded in our unit economics completely shifted how we approach retention and profitable scale.",
+    active: true
+  },
+  {
+    name: "Alexa",
+    role: "Head of Growth",
+    company: "E-commerce Ecosystem",
+    quote: "Unlike every traditional email agency we've hired, there was zero bait-and-switch. Direct strategy, flawless execution, and a custom roadmap engineered specifically around our biggest conversion bottlenecks.",
+    active: true // Set to false if dropping this testimonial
+  },
+  {
+    name: "Tiffany",
+    role: "Operations Director",
+    company: "Apparel Brand",
+    quote: "The deep understanding of financial and unit-level economics as it relates to marketing performance completely changed the math on our bottom-line retention metrics.",
+    active: true // Set to false if dropping this testimonial
+  },
+  {
+    name: "Connor",
+    role: "Co-Founder",
+    company: "DTC Brand",
+    quote: "Working with an actual partner who owns the strategy and growth programs end-to-end—rather than a junior account manager who doesn't know shit—is the best decision we made this year.",
+    active: true
+  }
+];
+
+// Filter out any names you decide not to use
+const visibleTestimonials = testimonials.filter(t => t.active);
+---
+
+<section 
+  id="testimonials" 
+  class="relative w-full  bg-[#efefed] px-4 py-16 sm:px-10 md:px-16 md:py-32 lg:px-24 overflow-hidden"
+>
+  <div class="mx-auto max-w-5xl relative z-10">
+    
+    <!-- Section Header -->
+    <div class="mb-12 md:mb-20 max-w-2xl mx-auto text-center">
+      <span class="mb-3 block font-mono text-xs uppercase tracking-[0.3em] text-accent">
+        <span class="text-[#6b6b65]">Proof of Concept</span>
+      </span>
+      <h2 class="mb-4 font-oswald text-[clamp(1.75rem,4vw,3rem)] font-normal uppercase leading-[1.1] tracking-tight text-[#1a1a18]">
+        Built For <span class="text-accent">8-Figure Scale</span>
+      </h2>
+      <p class="font-inconsolata text-sm leading-relaxed text-[#6b6b65] md:text-base mx-auto">
+        No generic retention playbooks. Direct feedback from founders and operators who replaced standard agency retainers with an embedded, profit-driven strategy framework.
+      </p>
+    </div>
+
+    <!-- Testimonials Grid Matrix -->
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+      {visibleTestimonials.map((item) => (
+        <div class="flex flex-col justify-between bg-white rounded-lg border border-[#1a1a18]/10 p-6 md:p-8 shadow-[0_4px_20px_rgba(26,26,24,0.01)] transition-all duration-200 hover:shadow-[0_8px_30px_rgba(26,26,24,0.03)] relative overflow-hidden group">
+          
+          <!-- Top Accent Tag for Layout Cohesion -->
+          <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+
+          <!-- Quote Block -->
+          <div class="relative">
+            <span class="font-mono text-xl text-accent/20 block mb-2 font-bold leading-none" aria-hidden="true">“</span>
+            <p class="font-inconsolata text-sm md:text-base text-[#1a1a18] leading-relaxed font-normal">
+              {item.quote}
+            </p>
+          </div>
+
+          <!-- Meta Author Footer Info -->
+          <div class="mt-8 pt-4 border-t border-[#1a1a18]/5 flex flex-col gap-0.5">
+            <h4 class="font-oswald text-base uppercase tracking-wide text-[#1a1a18]">
+              {item.name}
+            </h4>
+            <div class="flex items-center gap-1.5 font-mono text-[10px] text-[#6b6b65] uppercase tracking-wider">
+              <span>{item.role}</span>
+              <span class="text-[#1a1a18]/20" aria-hidden="true">//</span>
+              <span class="text-accent font-medium">{item.company}</span>
+            </div>
+          </div>
+
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .font-inconsolata {
+    font-family: "Inconsolata", "Courier New", monospace;
+  }
+  .font-oswald {
+    font-family: "Oswald", sans-serif;
+  }
+</style>

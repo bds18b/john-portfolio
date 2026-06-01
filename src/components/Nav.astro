@@ -3,17 +3,18 @@
 ---
 
 <header
-    class="fixed top-0 left-0 w-full z-50 pt-4 md:pt-6 px-3 md:px-8 pointer-events-none"
+    class="fixed top-0 left-0 w-full z-50 pointer-events-none md:pointer-events-auto pt-4 px-3 md:pt-0 md:px-0"
 >
     <div
         id="nav-pill"
-        class="max-w-[1160px] mx-auto border border-[#1a1a18]/10 bg-[#efefed]/80 backdrop-blur-sm rounded-xl flex flex-col w-full pointer-events-auto overflow-hidden"
+        class="w-full mx-auto border border-[#1a1a18]/10 bg-[#efefed]/80 backdrop-blur-sm pointer-events-auto overflow-hidden
+               rounded-xl max-w-[1160px]
+               md:rounded-none md:max-w-none md:border-t-0 md:border-x-0 md:border-b md:bg-[#efefed]/90"
     >
-        <!-- Main Panel Header Layout Row -->
-        <div class="flex justify-between items-center w-full px-2 py-2">
-            <!-- Left Side Links (Left justified alignment framework) -->
+        <div
+            class="flex justify-between items-center w-full px-2 py-2 md:px-8 md:py-4 max-w-[1280px] mx-auto"
+        >
             <div class="flex items-center">
-                <!-- Mobile Burger Button (Only visible on mobile screens) -->
                 <button
                     id="menu-toggle"
                     class="flex md:hidden border-none bg-transparent cursor-pointer group p-3 relative z-50"
@@ -32,8 +33,7 @@
                     </div>
                 </button>
 
-                <!-- Desktop Nav Link Tree System -->
-                <nav class="hidden md:flex items-center pl-2">
+                <nav class="hidden md:flex items-center gap-1">
                     <a href="#services" class="nav-link">Services</a>
                     <span class="nav-sep" aria-hidden="true">//</span>
                     <a href="#case-studies" class="nav-link">Case Studies</a>
@@ -42,13 +42,11 @@
                 </nav>
             </div>
 
-            <!-- Right Side Highlight Button Anchor -->
-            <div class="flex items-center pr-1">
+            <div class="flex items-center pr-1 md:pr-0">
                 <a href="#contact" class="nav-action-btn"> Contact Me </a>
             </div>
         </div>
 
-        <!-- Mobile hidden drop layer menu grid -->
         <div id="mobile-menu" class="md:hidden">
             <div id="mobile-menu-inner">
                 <div class="mobile-divider"></div>
@@ -100,21 +98,14 @@
         letter-spacing: 0.12em;
         text-transform: uppercase;
         color: #ffffff;
-        background-color: var(
-            --color-accent,
-            #1a1a18
-        ); /* Reverts gracefully if custom token lacks fallback context */
-    }
-    /* Fallback directly inside Tailwind architecture layer if global variables aren't initialized */
-
-    .nav-action-btn {
+        background-color: var(--color-accent, #1a1a18);
         text-decoration: none;
         padding: 8px 16px;
         border-radius: 8px;
         transition: all 0.2s ease-in-out;
     }
     .nav-action-btn:hover {
-        opacity: 0.9;
+        background-color: black;
         transform: translateY(-0.5px);
     }
 
@@ -127,7 +118,7 @@
         transform: translateY(-3.5px) rotate(45deg);
     }
 
-    /* ── Mobile menu wrapper structural dynamic sheet engine ── */
+    /* Mobile menu wrapper structural dynamic sheet engine */
     #mobile-menu {
         display: grid;
         grid-template-rows: 0fr;

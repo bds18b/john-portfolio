@@ -1,265 +1,138 @@
 ---
 import { Image } from "astro:assets";
+
 import fealsLogo from "../assets/Feals-logo.svg";
 import highlandLogo from "../assets/Highland-logo.svg";
 import survivalFrogLogo from "../assets/SurvivalFrog-logo.webp";
 ---
 
 <section
-    class="bg-[#e9e9e6] min-h-svh flex items-center justify-center p-3 pt-20 sm:p-6 sm:pt-20 md:p-8 relative overflow-hidden"
+    class="hero-section bg-[#efefed] pt-40 pb-20 flex flex-col items-center justify-center relative overflow-x-hidden w-full"
 >
-    <!-- Subtle architectural background styling -->
-    <div
-        class="absolute inset-0 bg-[linear-gradient(to_right,#1a1a1805_1px,transparent_1px),linear-gradient(to_bottom,#1a1a1805_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none"
-    >
-    </div>
+    <!-- Subtle grain texture overlay -->
+    <div class="grain-overlay" aria-hidden="true"></div>
 
     <div
-        class="w-full max-w-[1160px] mx-auto flex flex-col gap-3 relative z-10"
+        class="w-full max-w-[900px] mx-auto px-6 flex flex-col items-center justify-center text-center gap-8 animate-fade-up"
     >
-        <!-- Top Panel: Sub-branding & Context -->
+        <!-- Eyebrow badge -->
         <div
-            class="border border-[#1a1a18]/10 bg-[#efefed]/80 backdrop-blur-sm rounded-xl p-4 hidden md:flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 animate-fade-up"
+            class="flex items-center gap-2 bg-white/60 border border-[#1a1a18]/10 rounded-full px-4 py-1.5"
         >
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-accent"></span>
-                <span
-                    class="font-inconsolata text-xs font-bold tracking-[0.15em] uppercase text-[#1a1a18]"
-                    >Growth & Retention Advisory</span
-                >
-            </div>
+            <span class="live-dot" aria-hidden="true"></span>
             <span
-                class="font-inconsolata text-[11px] text-[#6b6b65] bg-[#1a1a18]/5 px-3 py-1 rounded"
+                class="font-inconsolata text-[11px] font-bold tracking-[0.18em] uppercase text-[#6b6b65]"
             >
-                DTC // LTV Optimization // Scale
+                Available for new engagements
             </span>
         </div>
 
-        <!-- Main Workspace Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
-            <!-- Left Panel: Core Editorial Headline (7 Columns) -->
-            <div
-                class="lg:col-span-7 border border-[#1a1a18]/10 bg-[#efefed] rounded-2xl p-6 sm:p-10 flex flex-col justify-between gap-12 animate-fade-up [animation-delay:100ms]"
+        <!-- Headline -->
+        <div class="w-full">
+            <h1
+                class="font-oswald font-normal uppercase text-[clamp(2.4rem,5vw,4rem)] leading-[1.0] tracking-[-0.01em] text-[#1a1a18]"
             >
-                <h1
-                    class="font-oswald font-normal uppercase text-[clamp(2.4rem,4.8vw,4.2rem)] leading-[1.05] tracking-[-0.01em] text-[#1a1a18]"
+                Build the
+                <span
+                    class="pill-accent px-3 py-0.5 bg-[#1a1a18] text-white inline-block rounded"
                 >
-                    Build the <span
-                        class="px-3 py-0.5 bg-[#1a1a18] text-white inline-block rounded"
-                        >retention</span
-                    >
-                    <span class="block mt-1">program behind</span>
-                    <span class="text-accent block mt-1 tracking-tight"
-                        >profitable growth.</span
-                    >
-                </h1>
+                    retention
+                </span>
+                <span class="block mt-1">program behind</span>
+                <span class="text-accent block mt-1 tracking-tight"
+                    >profitable growth.</span
+                >
+            </h1>
+        </div>
 
-                <div class="hidden md:flex flex-wrap gap-2">
-                    <span
-                        class="font-inconsolata text-xs border border-[#1a1a18]/10 bg-white/50 px-3 py-1.5 rounded text-[#6b6b65] font-medium"
-                        >LTV:CAC Expansion</span
-                    >
-                    <span
-                        class="font-inconsolata text-xs border border-[#1a1a18]/10 bg-white/50 px-3 py-1.5 rounded text-[#6b6b65] font-medium"
-                        >Customer Journey Mapping</span
-                    >
-                    <span
-                        class="font-inconsolata text-xs border border-[#1a1a18]/10 bg-white/50 px-3 py-1.5 rounded text-[#6b6b65] font-medium"
-                        >Compounding Margin</span
-                    >
-                </div>
-            </div>
+        <!-- Subheadline — tighter, more punchy -->
+        <p
+            class="font-oswald text-[clamp(1rem,1.4vw,1.15rem)] uppercase tracking-wide text-[#1a1a18] leading-snug max-w-[580px]"
+        >
+            Retention isn't just email and SMS. It's the entire customer
+            journey, from the first ad to the post-purchase experience.
+        </p>
 
-            <!-- Right Panel: Narrative, Action & Embedded Carousel (5 Columns) -->
-            <div
-                class="lg:col-span-5 border border-[#1a1a18]/10 bg-[#efefed] rounded-2xl p-6 sm:p-10 flex flex-col justify-between gap-8 md:gap-10 animate-fade-up [animation-delay:200ms]"
+        <!-- Body copy — kept tight -->
+        <p
+            class="font-inconsolata text-[clamp(0.875rem,1.15vw,0.925rem)] font-normal leading-[1.65] text-[#6b6b65] max-w-[560px]"
+        >
+            I embed completely as your go-to customer lifecycle operator,
+            building the retention engine end-to-end, turning every funnel stage
+            into compounding contribution margin that supports profitable scale.
+        </p>
+
+        <!-- CTA Button Only -->
+        <div class="w-full max-w-[420px]">
+            <a
+                href="#contact"
+                class="cta-btn inline-flex items-center justify-between w-full bg-accent border-2 border-accent font-inconsolata text-[0.875rem] font-bold tracking-[0.15em] uppercase text-white no-underline px-6 py-4 rounded-xl transition-all duration-200 ease-in-out hover:bg-[#1a1a18] hover:border-[#1a1a18] group"
             >
-                <div class="flex flex-col gap-4">
-                    <p
-                        class="font-oswald text-[clamp(1.1rem,1.6vw,1.35rem)] uppercase tracking-wide text-[#1a1a18] leading-snug"
-                    >
-                        Retention isn't just email and SMS. It's the entire
-                        customer journey from the first ad a customer sees all
-                        the way to their post-purchase experience.
-                    </p>
-                    <div
-                        class="h-[1px] bg-gradient-to-r from-[#1a1a18]/10 to-transparent w-full"
-                    >
-                    </div>
-                    <p
-                        class="font-inconsolata text-[clamp(0.9rem,1.3vw,1rem)] font-normal leading-[1.6] text-[#6b6b65]"
-                    >
-                        I embed completely as your go-to customer lifecycle and
-                        retention operator to build the retention engine
-                        end-to-end, turning every single stage of the funnel
-                        into compounding contribution margin to support
-                        profitable scale.
-                    </p>
-                </div>
+                <span>Work with me</span>
+                <span
+                    class="transform transition-transform duration-200 group-hover:translate-x-1"
+                    aria-hidden="true">→</span
+                >
+            </a>
+        </div>
+    </div>
 
-                <!-- Conversion & Mini Moving Carousel -->
-                <div class="flex flex-col gap-5">
-                    <div>
-                        <a
-                            href="#contact"
-                            class="inline-flex items-center justify-between w-full bg-accent border-2 border-accent font-inconsolata text-[0.88rem] font-bold tracking-[0.15em] uppercase text-white no-underline px-6 py-4 rounded-xl transition-all duration-200 ease-in-out hover:bg-[#1a1a18] hover:border-[#1a1a18] group"
-                        >
-                            <span>Work with me</span>
-                            <span
-                                class="transform transition-transform duration-200 group-hover:translate-x-1"
-                                aria-hidden="true"
-                            >
-                                →
-                            </span>
-                        </a>
-                    </div>
+    <!-- Full Width Trusted By & Marquee Container -->
+    <div class="relative left-1/2 -translate-x-1/2 w-[100vw] mt-16 overflow-hidden">
+        
+        <!-- Trusted by Row -->
+        <div class="w-full max-w-[720px] mx-auto px-6 flex items-center justify-center gap-4 mb-6">
+            <div class="flex-grow border-t border-[#1a1a18]/10"></div>
+            <span class="font-inconsolata text-[11px] font-bold tracking-[0.2em] uppercase text-[#9c9c96] whitespace-nowrap">
+                Trusted By
+            </span>
+            <div class="flex-grow border-t border-[#1a1a18]/10"></div>
+        </div>
 
-                    <!-- Tight moving carousel container -->
-                    <div
-                        class="border border-[#1a1a18]/5 bg-white/30 rounded-xl p-3 flex items-center gap-4 overflow-hidden"
-                    >
-                        <div
-                            class="flex-shrink-0 border-r border-[#1a1a18]/10 pr-3"
-                        >
-                            <span
-                                class="font-inconsolata text-[9px] font-bold tracking-[0.15em] uppercase text-[#9c9c96] block whitespace-nowrap"
-                            >
-                                TRUSTED BY
-                            </span>
-                        </div>
-
-                        <!-- Smooth short-track frame -->
-                        <div
-                            aria-hidden="true"
-                            class="overflow-hidden whitespace-nowrap w-full marquee-mask relative flex items-center h-10"
-                        >
-                            <!-- Clean track with tightened fixed structural box widths -->
-                            <div
-                                class="inline-flex items-center animate-marquee whitespace-nowrap"
-                            >
-                                <!-- Core Set 1 -->
-                                <div
-                                    class="w-[100px] flex items-center justify-center flex-shrink-0"
-                                >
-                                    <Image
-                                        src={fealsLogo}
-                                        alt="Feals"
-                                        loading="eager"
-                                        class="h-4 w-auto object-contain grayscale opacity-60"
-                                    />
-                                </div>
-                                <div
-                                    class="w-[145px] flex items-center justify-center gap-2 flex-shrink-0"
-                                >
-                                    <Image
-                                        src={highlandLogo}
-                                        alt=""
-                                        loading="eager"
-                                        class="h-5.5 w-auto object-contain grayscale opacity-60"
-                                    />
-                                    <span
-                                        class="font-oswald text-[12px] font-normal tracking-[0.05em] uppercase text-[#6b6b65] relative top-[0.5px]"
-                                        >HIGHLAND</span
-                                    >
-                                </div>
-                                <div
-                                    class="w-[185px] flex items-center justify-center gap-1 flex-shrink-0"
-                                >
-                                    <Image
-                                        src={survivalFrogLogo}
-                                        alt=""
-                                        loading="eager"
-                                        class="h-6.5 w-auto object-contain grayscale opacity-60"
-                                    />
-                                    <span
-                                        class="font-oswald text-[12px] font-normal tracking-[0.05em] uppercase text-[#6b6b65] -ml-1"
-                                        >SURVIVAL FROG</span
-                                    >
-                                </div>
-
-                                <!-- Core Set 2 -->
-                                <div
-                                    class="w-[100px] flex items-center justify-center flex-shrink-0"
-                                >
-                                    <Image
-                                        src={fealsLogo}
-                                        alt="Feals"
-                                        loading="eager"
-                                        class="h-4 w-auto object-contain grayscale opacity-60"
-                                    />
-                                </div>
-                                <div
-                                    class="w-[145px] flex items-center justify-center gap-2 flex-shrink-0"
-                                >
-                                    <Image
-                                        src={highlandLogo}
-                                        alt=""
-                                        loading="eager"
-                                        class="h-5.5 w-auto object-contain grayscale opacity-60"
-                                    />
-                                    <span
-                                        class="font-oswald text-[12px] font-normal tracking-[0.05em] uppercase text-[#6b6b65] relative top-[0.5px]"
-                                        >HIGHLAND</span
-                                    >
-                                </div>
-                                <div
-                                    class="w-[185px] flex items-center justify-center gap-1 flex-shrink-0"
-                                >
-                                    <Image
-                                        src={survivalFrogLogo}
-                                        alt=""
-                                        loading="eager"
-                                        class="h-6.5 w-auto object-contain grayscale opacity-60"
-                                    />
-                                    <span
-                                        class="font-oswald text-[12px] font-normal tracking-[0.05em] uppercase text-[#6b6b65] -ml-1"
-                                        >SURVIVAL FROG</span
-                                    >
-                                </div>
-
-                                <!-- Core Set 3 -->
-                                <div
-                                    class="w-[100px] flex items-center justify-center flex-shrink-0"
-                                >
-                                    <Image
-                                        src={fealsLogo}
-                                        alt="Feals"
-                                        loading="eager"
-                                        class="h-4 w-auto object-contain grayscale opacity-60"
-                                    />
-                                </div>
-                                <div
-                                    class="w-[145px] flex items-center justify-center gap-2 flex-shrink-0"
-                                >
-                                    <Image
-                                        src={highlandLogo}
-                                        alt=""
-                                        loading="eager"
-                                        class="h-5.5 w-auto object-contain grayscale opacity-60"
-                                    />
-                                    <span
-                                        class="font-oswald text-[12px] font-normal tracking-[0.05em] uppercase text-[#6b6b65] relative top-[0.5px]"
-                                        >HIGHLAND</span
-                                    >
-                                </div>
-                                <div
-                                    class="w-[185px] flex items-center justify-center gap-1 flex-shrink-0"
-                                >
-                                    <Image
-                                        src={survivalFrogLogo}
-                                        alt=""
-                                        loading="eager"
-                                        class="h-6.5 w-auto object-contain grayscale opacity-60"
-                                    />
-                                    <span
-                                        class="font-oswald text-[12px] font-normal tracking-[0.05em] uppercase text-[#6b6b65] -ml-1"
-                                        >SURVIVAL FROG</span
-                                    >
-                                </div>
+        <!-- Edge-to-edge Marquee Container -->
+        <div aria-hidden="true" class="w-full relative flex items-center h-20">
+            <div class="inline-flex items-center animate-marquee whitespace-nowrap">
+                {
+                    [0, 1, 2, 3, 4, 5].map(() => (
+                        <>
+                            <!-- Feals: Shifted left by 5px using transform -->
+                            <div class="w-[110px] md:w-[140px] flex items-center justify-center flex-shrink-0 mx-1 transform -translate-x-[5px]">
+                                <Image
+                                    src={fealsLogo}
+                                    alt="Feals"
+                                    loading="eager"
+                                    class="h-5 md:h-6.5 w-auto object-contain grayscale opacity-50"
+                                />
                             </div>
-                        </div>
-                    </div>
-                </div>
+                            
+                            <!-- Highland: Unchanged baseline anchor -->
+                            <div class="w-[115px] md:w-[145px] flex items-center justify-center gap-1.5 flex-shrink-0 mx-1">
+                                <Image
+                                    src={highlandLogo}
+                                    alt=""
+                                    loading="eager"
+                                    class="h-6 md:h-8 w-auto object-contain grayscale opacity-50"
+                                />
+                                <span class="font-oswald text-[14px] md:text-[17px] font-normal tracking-[0.05em] uppercase text-[#1a1a18]/50 leading-none">
+                                    HIGHLAND
+                                </span>
+                            </div>
+                            
+                            <!-- Survival Frog: Shifted left by an additional 5px using transform -->
+                            <div class="w-[195px] md:w-[235px] flex items-center justify-center gap-0.5 flex-shrink-0 mx-1 transform -translate-x-[5px]">
+                                <Image
+                                    src={survivalFrogLogo}
+                                    alt=""
+                                    loading="eager"
+                                    class="h-7.5 md:h-9 w-auto object-contain grayscale opacity-50"
+                                />
+                                <span class="font-oswald text-[14px] md:text-[17px] font-normal tracking-[0.05em] uppercase text-[#1a1a18]/50 -ml-4 leading-none">
+                                    SURVIVAL FROG
+                                </span>
+                            </div>
+                        </>
+                    ))
+                }
             </div>
         </div>
     </div>
@@ -272,28 +145,33 @@ import survivalFrogLogo from "../assets/SurvivalFrog-logo.webp";
     .font-oswald {
         font-family: "Oswald", sans-serif;
     }
-    .marquee-mask {
-        -webkit-mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 15%,
-            black 85%,
-            transparent 100%
-        );
-        mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 15%,
-            black 85%,
-            transparent 100%
-        );
+
+   
+    .live-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--color-accent, #3b52f6);
+        box-shadow: 0 0 0 0 rgba(59, 82, 246, 0.4);
+        animation: pulse-dot 2s ease-in-out infinite;
     }
 
-    /* ── Seamless Motion ──────────────────────────── */
+    @keyframes pulse-dot {
+        0%,
+        100% {
+            box-shadow: 0 0 0 0 rgba(59, 82, 246, 0.4);
+        }
+        50% {
+            box-shadow: 0 0 0 5px rgba(59, 82, 246, 0);
+        }
+    }
+
+    /* Animations */
     @keyframes fadeUp {
         from {
             opacity: 0;
-            transform: translateY(14px);
+            transform: translateY(16px);
         }
         to {
             opacity: 1;
@@ -306,16 +184,16 @@ import survivalFrogLogo from "../assets/SurvivalFrog-logo.webp";
             transform: translate3d(0, 0, 0);
         }
         100% {
-            transform: translate3d(-33.3333%, 0, 0);
+            transform: translate3d(-16.6666%, 0, 0);
         }
     }
 
     .animate-fade-up {
-        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation: fadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
-
+    
     .animate-marquee {
-        animation: marquee 10s linear infinite;
+        animation: marquee 15s linear infinite;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -324,6 +202,9 @@ import survivalFrogLogo from "../assets/SurvivalFrog-logo.webp";
         }
         .animate-marquee {
             animation-play-state: paused;
+        }
+        .live-dot {
+            animation: none;
         }
     }
 </style>

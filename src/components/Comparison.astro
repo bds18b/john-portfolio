@@ -1,0 +1,121 @@
+---
+const comparisonRows = [
+  {
+    feature: "Strategic Approach",
+    them: "Cookie cutter generic approach to retention, lack of understanding of your brand.",
+    me: "Brand specific retention strategy, understand where your business is at and what levers to pull to move the needle. Not some generic playbook."
+  },
+  {
+    feature: "Financial Literacy",
+    them: "Don’t understand financial & unit level economics that actually impact retention.",
+    me: "Deeper understanding of financial & unit level economics as it relates to marketing."
+  },
+  {
+    feature: "Team & Execution",
+    them: "Bait & switch - strategy from “head of retention” to pull you in and then you get some junior level account manager who doesnt know shit.",
+    me: "Work directly with me as an extension of your team, scaled & owned retention AND growth programs end to end for multiple 8 fig brands."
+  }
+];
+---
+
+<section 
+  id="comparison" 
+  class="relative w-full bg-[#efefed] px-4 py-16 sm:px-10 md:px-16 md:py-32 lg:px-24 overflow-hidden"
+>
+  <div class="mx-auto max-w-5xl relative z-10">
+    
+    <!-- Section Header -->
+    <div class="mb-8 md:mb-12 max-w-2xl mx-auto text-center">
+      <span class="mb-3 block font-mono text-xs uppercase tracking-[0.3em] text-accent">
+        <span class="text-[#6b6b65]">The Distinction</span>
+      </span>
+      <h2 class="mb-4 font-oswald text-[clamp(1.75rem,4vw,3rem)] font-normal uppercase leading-[1.1] tracking-tight text-[#1a1a18]">
+        I Am Not An <span class="text-accent">Email & SMS Agency</span>
+      </h2>
+      <p class="font-inconsolata text-sm leading-relaxed text-[#6b6b65] md:text-base mx-auto">
+        Most agencies operate on volume—churning out templated flows and chasing vanity metrics to justify a retainer. I embed deep inside your operations to align customer retention directly with profitable growth.
+      </p>
+    </div>
+
+    <!-- Layout Base Container -->
+    <div class="max-w-4xl mx-auto space-y-6 md:space-y-0 md:bg-white md:rounded-lg md:border md:border-[#1a1a18]/10 md:shadow-[0_4px_30px_rgba(26,26,24,0.02)] md:overflow-hidden">
+      
+      <!-- Table Header Block (Desktop Only) -->
+      <div class="hidden md:grid grid-cols-12 border-b border-[#1a1a18]/10 bg-[#1a1a18]/[0.02] text-left">
+        <div class="col-span-3 p-6">
+          <span class="font-mono text-[10px] uppercase tracking-wider text-[#6b6b65]">Focus Area</span>
+        </div>
+        <div class="col-span-4 p-6 border-l border-[#1a1a18]/5 flex items-center gap-2">
+          <span class="font-mono text-xs text-[#6b6b65]/40 font-bold" aria-hidden="true">✕</span>
+          <span class="font-mono text-[10px] uppercase tracking-widest text-[#6b6b65]/60 line-through">Email & SMS Agencies</span>
+        </div>
+        <div class="col-span-5 p-6 border-l border-[#1a1a18]/5 bg-accent/[0.02] flex items-center gap-2">
+          <span class="font-mono text-xs text-accent font-bold" aria-hidden="true">&gt;</span>
+          <span class="font-mono text-[10px] uppercase tracking-widest text-accent font-bold">What You Get From Me</span>
+        </div>
+      </div>
+
+      <!-- Matrix Rows -->
+      {comparisonRows.map((row) => (
+        <div class="grid grid-cols-1 md:grid-cols-12 text-left bg-white rounded-lg border border-[#1a1a18]/10 md:border-none md:rounded-none md:border-b md:border-[#1a1a18]/10 md:last:border-b-0 shadow-[0_4px_20px_rgba(26,26,24,0.01)] md:shadow-none overflow-hidden transition-colors duration-200 hover:bg-[#1a1a18]/[0.01]">
+          
+          <!-- 1. Feature Title Column -->
+          <div class="p-5 md:p-6 bg-[#1a1a18]/[0.03] md:bg-transparent md:col-span-3 flex flex-col justify-center border-b md:border-b-0 border-[#1a1a18]/5">
+            <span class="md:hidden font-mono text-[9px] uppercase tracking-wider text-[#6b6b65]/60 mb-0.5">Focus Area</span>
+            <h4 class="font-oswald text-sm md:text-base uppercase tracking-wide text-[#1a1a18]">
+              {row.feature}
+            </h4>
+          </div>
+
+          <!-- 2. The Agency Status Quo (Them) -->
+          <div class="p-5 md:p-6 md:col-span-4 md:border-l border-[#1a1a18]/5 flex flex-col justify-start gap-1">
+            <div class="flex items-center gap-1.5 md:hidden mb-1">
+              <span class="font-mono text-xs text-[#1a1a18]/30 font-bold" aria-hidden="true">✕</span>
+              <span class="font-mono text-[9px] uppercase tracking-widest text-[#6b6b65]/60 line-through">Email & SMS Agencies</span>
+            </div>
+            <p class="font-inconsolata text-xs md:text-sm leading-relaxed text-[#6b6b65]">
+              {row.them}
+            </p>
+          </div>
+
+          <!-- 3. Embedded Value Framework (Me) -->
+          <div class="p-5 md:p-6 md:col-span-5 md:border-l border-[#1a1a18]/5 bg-accent/[0.01] md:bg-transparent relative flex flex-col justify-start gap-1 border-t md:border-t-0 border-accent/10">
+            <!-- Mobile left priority accent strip -->
+            <div class="md:hidden absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
+            
+            <div class="flex items-center gap-1.5 md:hidden mb-1">
+              <span class="font-mono text-xs text-accent font-bold" aria-hidden="true">&gt;</span>
+              <span class="font-mono text-[9px] uppercase tracking-widest text-accent font-bold">What You Get From Me</span>
+            </div>
+            <p class="font-inconsolata text-sm leading-relaxed text-[#1a1a18] font-medium">
+              {row.me}
+            </p>
+          </div>
+
+        </div>
+      ))}
+    </div>
+
+    <!-- Bottom Structural Callout -->
+    <div class="mt-6 md:mt-12 border border-[#1a1a18]/10 bg-white p-5 md:p-8 rounded-lg max-w-4xl mx-auto flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-8 shadow-[0_4px_20px_rgba(26,26,24,0.01)]">
+      <div class="shrink-0">
+        <span class="inline-block px-2 py-1 rounded bg-[#1a1a18] text-white font-mono text-[10px] uppercase tracking-wider">
+          The Bottom Line
+        </span>
+      </div>
+      <p class="font-inconsolata text-sm md:text-base text-[#1a1a18] leading-relaxed text-left">
+        You aren't buying outsourced labor or task-takers. You are getting an executive-level strategic advisor who owns the strategy, the execution ecosystems, and the financial outcomes.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .font-inconsolata {
+    font-family: "Inconsolata", "Courier New", monospace;
+  }
+  .font-oswald {
+    font-family: "Oswald", sans-serif;
+  }
+</style>

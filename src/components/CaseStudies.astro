@@ -10,27 +10,13 @@ const caseStudies = [
     title: "Plugging Lifecycle Leaks",
     logoPath: "/src/assets/Feals-logo.svg",
     imagePath: "/src/assets/Feals-lifestyle-photo.jpg",
-    description: "How do you drive big results for a $200M brand? You go deeper than anyone else to gain insights and maximize efficiency. We delivered significant revenue growth and increased loyalty.",
+    description: "How do you drive big results for a major brand? We delivered a 222% surge in MRR YoY, spiked Email RPR by 323% while safely increasing total recipients by 40%, and scaled returning customer contribution margin by 222%.",
     metrics: [
-      { value: "12%", label: "AVG LTV" },
-      { value: "23%", label: "Repurchase" },
-      { value: "10%", label: "Days Dec" },
+      { value: "+222%", label: "MRR YoY" },
+      { value: "+323%", label: "Email RPR" },
+      { value: "+222%", label: "Contrib Margin" },
     ],
     isWide: true,
-  },
-  {
-    id: "highland",
-    brand: "Highland",
-    title: "Highland Peak Performance",
-    logoPath: "/src/assets/Highland-logo.svg",
-    imagePath: "/src/assets/Hyland-lifestyle-photo.jpg",
-    description: "Highland needed a robust framework to handle their scaling acquisition costs. We systematically compounded LTV over a 6-month period without increasing overhead.",
-    metrics: [
-      { value: "18%", label: "Revenue" },
-      { value: "34%", label: "Retention" },
-      { value: "5.2x", label: "ROI" },
-    ],
-    isWide: false,
   },
   {
     id: "survival-frog",
@@ -38,50 +24,35 @@ const caseStudies = [
     title: "Zero Overhead Scaling",
     logoPath: "/src/assets/SurvivalFrog-logo.webp",
     imagePath: "/src/assets/survival-frog-lifestyle-image.webp",
-    description: "Survival Frog's repeat revenue was flat. We rebuilt their flow matrix to capture the capital they were leaving behind without bloated agency retainers.",
+    description: "Survival Frog's repeat revenue needed a performance overhaul. We systematically drove a 42% increase in Customer Lifetime Value (LTV) YoY, and successfully launched and scaled their SMS program to capture a 240% jump in attributed SMS revenue.",
     metrics: [
-      { value: "15%", label: "AOV Inc" },
-      { value: "28%", label: "Flow Rev" },
-      { value: "14d", label: "Purchase" },
+      { value: "+42%", label: "LTV YoY" },
+      { value: "+240%", label: "SMS Rev YoY" },
     ],
-    isWide: false,
+    isWide: true,
     isFrog: true,
   },
 ];
 ---
 
-<section id="case-studies" class="bg-[#efefed] py-[clamp(60px,10vw,120px)] overflow-hidden">
+<section id="case-studies" class="bg-[#efefed] py-10 overflow-hidden">
   <div class="max-w-[900px] mx-auto relative px-[clamp(16px,6vw,48px)] md:px-0">
-    
-    <!-- Header -->
-    <div class="mb-10 md:mb-12">
-      <p class="font-inconsolata text-[0.75rem] font-bold tracking-[0.18em] uppercase text-accent mb-4">
-        Proven Outcomes
-      </p>
-      <h2 class="font-oswald font-normal uppercase text-[clamp(2.2rem,5vw,4rem)] leading-[1.05] tracking-[-0.01em] text-[#1a1a18]">
-        Selected <span class="text-accent">Success Stories</span>
-      </h2>
-    </div>
 
     <!-- Pure CSS Layout Container -->
     <div 
       id="studies-main-container"
-      class="flex flex-row md:grid md:grid-cols-2 overflow-x-auto md:overflow-visible snap-x snap-mandatory no-scrollbar gap-4 md:gap-6 -mx-4 px-4 md:mx-0 md:px-0 w-screen sm:w-auto"
+      class="flex flex-col overflow-visible gap-4 md:gap-6 w-full"
     >
       {caseStudies.map((study) => (
         <div 
           class:list={[
-            "study-card group snap-center flex-shrink-0 w-[74vw] md:w-full bg-white md:bg-[#e3e3e1]/50 border border-transparent rounded-[20px] overflow-hidden transition-all duration-500 flex flex-col",
-            study.isWide ? "md:h-[600px] md:col-span-2" : "md:h-[680px] md:col-span-1"
+            "study-card group snap-center flex-shrink-0 w-full bg-white md:bg-[#e3e3e1]/50 border border-transparent rounded-[20px] overflow-hidden transition-all duration-500 flex flex-col md:h-[600px] md:col-span-2"
           ]}
           data-id={study.id}
         >
           <!-- Image Area -->
           <div class:list={[
-            "image-trigger relative w-full overflow-hidden flex-shrink-0 transition-all duration-500 ease-in-out h-[280px]",
-            study.isWide 
-              ? "md:h-[600px] md:group-[.active]:h-[330px]" // Perfect 330px/270px visual split on hover
-              : "md:h-[680px] md:group-[.active]:h-[340px]"
+            "image-trigger relative w-full overflow-hidden flex-shrink-0 transition-all duration-500 ease-in-out h-[280px] md:h-[600px] md:group-[.active]:h-[330px]"
           ]}>
             <Image 
               src={images[study.imagePath]()} 
@@ -105,10 +76,7 @@ const caseStudies = [
 
           <!-- Content Drawer -->
           <div class:list={[
-            "card-drawer bg-white overflow-hidden transition-all duration-500 ease-in-out flex-grow opacity-100 max-h-none",
-            study.isWide
-              ? "md:max-h-0 md:opacity-0 md:group-[.active]:max-h-[270px] md:group-[.active]:opacity-100" // Restored space to 270px
-              : "md:max-h-0 md:opacity-0 md:group-[.active]:max-h-[340px] md:group-[.active]:opacity-100"
+            "card-drawer bg-white overflow-hidden transition-all duration-500 ease-in-out flex-grow opacity-100 max-h-none md:max-h-0 md:opacity-0 md:group-[.active]:max-h-[270px] md:group-[.active]:opacity-100"
           ]}>
             <div class="p-6 md:p-8 border-t border-[#e0dedd] h-full flex flex-col justify-between">
               <div>
@@ -118,16 +86,24 @@ const caseStudies = [
                 </p>
               </div>
               
-              <div class="grid grid-cols-3 gap-2 border-t border-[#e0dedd] pt-4 mt-4 md:pt-6 md:mt-6">
-                {study.metrics.map(metric => (
-                  <div>
-                    <div class="font-oswald text-[1.4rem] md:text-[2.2rem] text-[#1a1a18] leading-none mb-1">{metric.value}</div>
-                    <div class="font-inconsolata text-[0.6rem] md:text-[0.68rem] uppercase tracking-wider text-[#6b6b65] leading-tight">
-                      {metric.label}
+              <!-- FIX: Top border row now spans 100% width fully across the white card layout -->
+              <div class="w-full border-t border-[#e0dedd] pt-4 mt-4 md:pt-6 md:mt-6">
+                <!-- Inner grid system houses the metrics cleanly -->
+                <div class:list={[
+                  "grid gap-2",
+                  study.metrics.length === 2 ? "grid-cols-2 max-w-[400px]" : "grid-cols-3"
+                ]}>
+                  {study.metrics.map(metric => (
+                    <div>
+                      <div class="font-oswald text-[1.4rem] md:text-[2.2rem] text-[#1a1a18] leading-none mb-1">{metric.value}</div>
+                      <div class="font-inconsolata text-[0.6rem] md:text-[0.68rem] uppercase tracking-wider text-[#6b6b65] leading-tight">
+                        {metric.label}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+              
             </div>
           </div>
         </div>
@@ -165,12 +141,5 @@ const caseStudies = [
   }
   .font-oswald {
     font-family: "Oswald", sans-serif;
-  }
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
   }
 </style>
