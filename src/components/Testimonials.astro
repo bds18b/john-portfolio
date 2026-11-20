@@ -1,4 +1,9 @@
 ---
+// Testimonials, shown one at a time in large type with previous / next
+// buttons, and a swipe on touch screens (no auto-advance: the quotes are
+// long, and a timer would cut readers off). Without JavaScript all of them
+// are listed. The buttons come after the quote: under it on phones, and
+// placed under the heading on wide screens.
 const testimonials = [
   {
     name: "Amit",
@@ -25,74 +30,370 @@ const testimonials = [
     name: "Connor",
     role: "Co-Founder",
     company: "DTC Brand",
-    quote: "Working with an actual partner who owns the strategy and growth programs end-to-end—rather than a junior account manager who doesn't know shit—is the best decision we made this year.",
+    quote: "Working with an actual partner who owns the strategy and growth programs end-to-end—rather than a junior account manager—is the best decision we made this year.",
     active: true
   }
 ];
 
 // Filter out any names you decide not to use
 const visibleTestimonials = testimonials.filter(t => t.active);
+const total = String(visibleTestimonials.length).padStart(2, "0");
 ---
 
-<section 
-  id="testimonials" 
-  class="relative w-full  bg-[#efefed] px-4 py-16 sm:px-10 md:px-16 md:py-32 lg:px-24 overflow-hidden"
->
-  <div class="mx-auto max-w-5xl relative z-10">
-    
-    <!-- Section Header -->
-    <div class="mb-12 md:mb-20 max-w-2xl mx-auto text-center">
-      <span class="mb-3 block font-mono text-xs uppercase tracking-[0.3em] text-accent">
-        <span class="text-[#6b6b65]">Proof of Concept</span>
-      </span>
-      <h2 class="mb-4 font-oswald text-[clamp(1.75rem,4vw,3rem)] font-normal uppercase leading-[1.1] tracking-tight text-[#1a1a18]">
-        Built For <span class="text-accent">8-Figure Scale</span>
+<section id="testimonials" class="testimonials">
+  <div class="t-inner" data-testimonials>
+    <div class="t-head">
+      <h2 class="t-title">
+        Built for <span class="t-highlight"><span class="nowrap">8-figure</span> scale</span>
       </h2>
-      <p class="font-inconsolata text-sm leading-relaxed text-[#6b6b65] md:text-base mx-auto">
-        No generic retention playbooks. Direct feedback from founders and operators who replaced standard agency retainers with an embedded, profit-driven strategy framework.
+      <p class="t-intro">
+        From founders and operators I've worked with.
       </p>
     </div>
 
-    <!-- Testimonials Grid Matrix -->
-    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+    <div class="t-stage" data-stage aria-live="polite">
       {visibleTestimonials.map((item) => (
-        <div class="flex flex-col justify-between bg-white rounded-lg border border-[#1a1a18]/10 p-6 md:p-8 shadow-[0_4px_20px_rgba(26,26,24,0.01)] transition-all duration-200 hover:shadow-[0_8px_30px_rgba(26,26,24,0.03)] relative overflow-hidden group">
-          
-          <!-- Top Accent Tag for Layout Cohesion -->
-          <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-
-          <!-- Quote Block -->
-          <div class="relative">
-            <span class="font-mono text-xl text-accent/20 block mb-2 font-bold leading-none" aria-hidden="true">“</span>
-            <p class="font-inconsolata text-sm md:text-base text-[#1a1a18] leading-relaxed font-normal">
-              {item.quote}
-            </p>
-          </div>
-
-          <!-- Meta Author Footer Info -->
-          <div class="mt-8 pt-4 border-t border-[#1a1a18]/5 flex flex-col gap-0.5">
-            <h4 class="font-oswald text-base uppercase tracking-wide text-[#1a1a18]">
-              {item.name}
-            </h4>
-            <div class="flex items-center gap-1.5 font-mono text-[10px] text-[#6b6b65] uppercase tracking-wider">
-              <span>{item.role}</span>
-              <span class="text-[#1a1a18]/20" aria-hidden="true">//</span>
-              <span class="text-accent font-medium">{item.company}</span>
-            </div>
-          </div>
-
-        </div>
+        <figure class="t-quote" data-quote>
+          <span class="t-mark" aria-hidden="true">“</span>
+          <blockquote class="t-text">
+            <p>{item.quote}</p>
+          </blockquote>
+          <figcaption class="t-author">
+            <span class="t-name">{item.name}</span>
+            <span class="t-role">{item.role}, {item.company}</span>
+          </figcaption>
+        </figure>
       ))}
     </div>
 
+    <div class="t-controls" data-controls hidden>
+      <button type="button" class="t-btn" data-prev aria-label="Previous testimonial">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+      </button>
+      <span class="t-count" aria-hidden="true"><span data-current>01</span> / {total}</span>
+      <button type="button" class="t-btn" data-next aria-label="Next testimonial">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+      </button>
+    </div>
   </div>
 </section>
 
-<style>
-  .font-inconsolata {
-    font-family: "Inconsolata", "Courier New", monospace;
+<script>
+  // Turns the list of quotes into a one-at-a-time view with previous / next
+  // buttons and swiping. The hidden quotes are made inert so they can't be
+  // focused or read out until they are shown. Quotes slide sideways in the
+  // direction of travel: going forward, the new one comes in from the right
+  // as the old one leaves to the left (data-dir sets which way).
+  function setupTestimonials() {
+    const root = document.querySelector<HTMLElement>("[data-testimonials]");
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = "true";
+
+    const stage = root.querySelector<HTMLElement>("[data-stage]");
+    const quotes = [...root.querySelectorAll<HTMLElement>("[data-quote]")];
+    const controls = root.querySelector<HTMLElement>("[data-controls]");
+    const current = root.querySelector<HTMLElement>("[data-current]");
+    if (!stage || !controls || quotes.length < 2) return;
+
+    let index = -1;
+    const show = (next: number, dir: "next" | "prev" = "next") => {
+      const previous = index;
+      index = (next + quotes.length) % quotes.length;
+      stage.dataset.dir = dir;
+      quotes.forEach((q, k) => {
+        const on = k === index;
+        q.classList.toggle("is-active", on);
+        q.classList.toggle("is-leaving", k === previous && !on);
+        q.inert = !on;
+      });
+      if (current) current.textContent = String(index + 1).padStart(2, "0");
+    };
+    const step = (by: 1 | -1) => show(index + by, by > 0 ? "next" : "prev");
+
+    stage.classList.add("is-enhanced");
+    controls.hidden = false;
+    root.querySelector("[data-prev]")?.addEventListener("click", () => step(-1));
+    root.querySelector("[data-next]")?.addEventListener("click", () => step(1));
+
+    // Swipe: left for the next quote, right for the previous. Only a clearly
+    // sideways swipe counts, so scrolling the page up or down never changes
+    // the quote. Passive listeners: the page's scrolling is never held up.
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+    stage.addEventListener(
+      "touchstart",
+      (e) => {
+        tracking = e.touches.length === 1;
+        if (!tracking) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      },
+      { passive: true },
+    );
+    stage.addEventListener(
+      "touchend",
+      (e) => {
+        if (!tracking) return;
+        tracking = false;
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+        step(dx < 0 ? 1 : -1);
+      },
+      { passive: true },
+    );
+
+    show(0);
   }
-  .font-oswald {
-    font-family: "Oswald", sans-serif;
+
+  setupTestimonials();
+  document.addEventListener("astro:after-swap", setupTestimonials);
+</script>
+
+<style>
+  .testimonials {
+    /* No space below: the dark closing block joins straight on (Footer.astro). */
+    padding: var(--section-space) 20px 0;
+    background: #efefed;
+  }
+  /* A blue block, the same width as the case study cards above and the dark
+     closing block below (1440px including the page padding), echoing the
+     comparison's blue near the top of the page. Text is white; the dark
+     accents (the heading's highlight, the quote mark) pick up the black of
+     the closing block. */
+  /* Rounded only at the top: the dark closing block joins straight on below
+     (square where they meet, rounded at its bottom). */
+  .t-inner {
+    max-width: 1344px;
+    margin-inline: auto;
+    padding: clamp(40px, 6vw, 88px) clamp(24px, 5vw, 80px);
+    border-radius: 20px 20px 0 0;
+    background: var(--color-accent);
+    color: #fff;
+    display: grid;
+    gap: 40px;
+  }
+  .t-highlight {
+    color: #151515;
+  }
+
+  /* Heading, intro and the buttons */
+  .t-title {
+    margin: 0;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.5rem, 3.6vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    color: #fff;
+  }
+  .t-intro {
+    margin: 14px 0 0;
+    max-width: 30rem;
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.85);
+  }
+  /* Phones: under the quote (the block's 40px gap above). */
+  .t-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .t-controls[hidden] {
+    display: none;
+  }
+  .t-btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgb(255 255 255 / 0.45);
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  }
+  .t-btn:hover {
+    background: #fff;
+    border-color: #fff;
+    color: var(--color-accent);
+  }
+  .t-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+  .t-btn path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /* A fixed width (wider than any "0X / 0X"), so the next button doesn't
+     move as the digits change width. */
+  .t-count {
+    flex: none;
+    width: 6em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-family: "Unbounded", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  /* Quotes: listed one under another until the script takes over */
+  .t-stage {
+    display: grid;
+    gap: 48px;
+  }
+  /* Keeps "8-figure" from breaking after the hyphen. */
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  /* --q is the quote's text size. The quote mark is 2.7 times that. In
+     Unbounded the mark's ink starts at the capital height (0.25em below the
+     top of its content area) and is 0.41em tall. */
+  .t-quote {
+    --q: clamp(1.15rem, 2vw, 1.65rem);
+    --m: calc(var(--q) * 2.7);
+    position: relative;
+    margin: 0;
+  }
+  /* Narrow screens: the mark sits above the quote, its box cut to just
+     below the ink so the space under it is a real gap. */
+  .t-mark {
+    display: block;
+    height: calc(var(--m) * 0.55);
+    margin: calc(var(--m) * -0.125) 0 14px;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 900;
+    font-size: var(--m);
+    line-height: 1;
+    color: #151515;
+  }
+  /* Wide screens: the mark hangs in the gutter to the left, its top level
+     with the top of the first line's capitals, so the quote text starts
+     level with the heading beside it. (The first line's capitals start
+     0.325 of the text size down its 1.4 line; the mark's ink starts 0.125
+     of its own size down its line.) */
+  @media (min-width: 900px) {
+    .t-mark {
+      position: absolute;
+      top: calc(var(--q) * 0.325 - var(--m) * 0.125);
+      right: 100%;
+      height: auto;
+      margin: 0 calc(var(--q) * 0.6) 0 0;
+    }
+  }
+  .t-text {
+    margin: 0;
+  }
+  .t-text p {
+    margin: 0;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 600;
+    font-size: var(--q);
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    color: #fff;
+    text-wrap: pretty;
+  }
+  .t-author {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .t-name {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .t-role {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    color: rgb(255 255 255 / 0.78);
+  }
+
+  /* One at a time: every quote sits in the same grid cell, so the box is as
+     tall as the longest quote and nothing jumps when they change. */
+  .t-stage.is-enhanced {
+    gap: 0;
+  }
+  /* Hidden quotes wait off to one side (--dir: 1 to the right when going
+     forward, -1 to the left going back), so the new one slides in from that
+     side while the old one (.is-leaving) slides out the other. */
+  .t-stage.is-enhanced {
+    --dir: 1;
+  }
+  .t-stage.is-enhanced[data-dir="prev"] {
+    --dir: -1;
+  }
+  .t-stage.is-enhanced .t-quote {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(calc(var(--dir) * 32px));
+    transition:
+      opacity 0.4s ease,
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 0.4s;
+  }
+  .t-stage.is-enhanced .t-quote.is-leaving {
+    transform: translateX(calc(var(--dir) * -32px));
+  }
+  .t-stage.is-enhanced .t-quote.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0.08s, 0.08s, 0s;
+  }
+
+  /* Wide screens: two equal halves, like the comparison and About: heading
+     and buttons on the left, the quote on the right. The buttons come last
+     in the page, so they're placed: the second row on the left, which takes
+     whatever height the quote needs beyond the heading (1fr), so they sit
+     right under the heading. */
+  @media (min-width: 900px) {
+    .testimonials {
+      padding-inline: 48px;
+    }
+    .t-inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      gap: 0 clamp(48px, 6vw, 96px);
+      align-items: start;
+      border-radius: 24px 24px 0 0;
+    }
+    .t-head {
+      grid-area: 1 / 1;
+    }
+    .t-stage {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+    .t-controls {
+      grid-area: 2 / 1;
+      margin-top: 28px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .t-stage.is-enhanced .t-quote {
+      transition: none;
+    }
   }
 </style>

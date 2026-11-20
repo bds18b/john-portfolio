@@ -10,13 +10,31 @@ const caseStudies = [
     title: "Plugging Lifecycle Leaks",
     logoPath: "/src/assets/Feals-logo.svg",
     imagePath: "/src/assets/Feals-lifestyle-photo.jpg",
-    description: "How do you drive big results for a major brand? We delivered a 222% surge in MRR YoY, spiked Email RPR by 323% while safely increasing total recipients by 40%, and scaled returning customer contribution margin by 222%.",
+    description: "How do you drive big results for a major brand? I grew MRR 222% YoY, lifted Email RPR 323% while growing total recipients 40%, and scaled returning-customer contribution margin by 222%.",
     metrics: [
       { value: "+222%", label: "MRR YoY" },
       { value: "+323%", label: "Email RPR" },
       { value: "+222%", label: "Contrib Margin" },
     ],
-    isWide: true,
+    logoClass: "max-w-[120px] md:max-w-[145px]",
+  },
+  {
+    // DRAFT: the +58% repeat orders comes from the hero mockup, and the rest
+    // of the description is written around it, not from real results.
+    // Replace both with John's real Highland results (and add metrics)
+    // before this goes live.
+    id: "highland",
+    brand: "Highland",
+    title: "More Second Orders",
+    logoPath: "/src/assets/Highland-logo.svg",
+    imagePath: "/src/assets/Highland-lifestyle-photo.jpg",
+    // Tall photo with the bottles low in the frame: crop from lower down.
+    imagePosition: "50% 78%",
+    description: "Highland's growth depended on first-time buyers coming back for a second order, and too few of them did. I made the reorder the focus of the program and drove a 58% increase in repeat orders.",
+    metrics: [
+      { value: "+58%", label: "Repeat Orders" },
+    ],
+    logoClass: "max-w-[80px] md:max-w-[96px]",
   },
   {
     id: "survival-frog",
@@ -24,19 +42,24 @@ const caseStudies = [
     title: "Zero Overhead Scaling",
     logoPath: "/src/assets/SurvivalFrog-logo.webp",
     imagePath: "/src/assets/survival-frog-lifestyle-image.webp",
-    description: "Survival Frog's repeat revenue needed a performance overhaul. We systematically drove a 42% increase in Customer Lifetime Value (LTV) YoY, and successfully launched and scaled their SMS program to capture a 240% jump in attributed SMS revenue.",
+    description: "Survival Frog's repeat revenue needed an overhaul. I drove a 42% increase in Customer Lifetime Value (LTV) YoY, and launched their SMS program, scaling it to a 240% jump in attributed SMS revenue.",
     metrics: [
       { value: "+42%", label: "LTV YoY" },
       { value: "+240%", label: "SMS Rev YoY" },
     ],
-    isWide: true,
-    isFrog: true,
+    // The frog image has empty space around the frog, so it is set wider.
+    logoClass: "max-w-[180px] md:max-w-[215px]",
   },
 ];
 ---
 
-<section id="case-studies" class="bg-[#efefed] py-10 overflow-hidden">
-  <div class="max-w-[900px] mx-auto relative px-[clamp(16px,6vw,48px)] md:px-0">
+<section id="case-studies" class="bg-[#efefed] py-(--section-space) overflow-hidden">
+  <!-- Same page width and side padding as the hero, comparison and approach. -->
+  <div class="max-w-[1440px] mx-auto relative px-5 md:px-6 lg:px-12">
+
+    <h2 class="mb-8 md:mb-12 text-center font-display text-[clamp(1.5rem,3.6vw,2.75rem)] font-extrabold uppercase leading-[1.1] tracking-[-0.01em] text-[#151515] text-balance">
+      Brands I’ve <span class="text-accent">Elevated</span>
+    </h2>
 
     <!-- Pure CSS Layout Container -->
     <div 
@@ -49,15 +72,21 @@ const caseStudies = [
             "study-card group snap-center flex-shrink-0 w-full bg-white md:bg-[#e3e3e1]/50 border border-transparent rounded-[20px] overflow-hidden transition-all duration-500 flex flex-col md:h-[600px] md:col-span-2"
           ]}
           data-id={study.id}
+          id={`case-${study.id}`}
         >
           <!-- Image Area -->
           <div class:list={[
-            "image-trigger relative w-full overflow-hidden flex-shrink-0 transition-all duration-500 ease-in-out h-[280px] md:h-[600px] md:group-[.active]:h-[330px]"
+            "image-trigger relative w-full overflow-hidden flex-shrink-0 transition-all duration-500 ease-in-out motion-reduce:transition-none h-[280px] md:h-[600px] md:group-[.active]:h-[330px]"
           ]}>
-            <Image 
-              src={images[study.imagePath]()} 
+            <!-- On desktop the photo stays the full card height (600px) and the
+                 shrinking box crops it from the middle, so every photo slides up
+                 the same way when the card opens. Sized to the box instead, a wide
+                 photo would visibly shrink while a tall one would not. -->
+            <Image
+              src={images[study.imagePath]()}
               alt={study.brand}
-              class="absolute inset-0 w-full h-full object-cover grayscale-[20%] md:group-hover:grayscale-0 transition-all duration-500 md:group-hover:scale-105"
+              class="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full h-full md:h-[600px] object-cover grayscale-[20%] md:group-hover:grayscale-0 transition-all duration-500 motion-reduce:transition-none md:group-hover:scale-105"
+              style={study.imagePosition ? `object-position: ${study.imagePosition}` : undefined}
             />
             <div class="absolute inset-0 bg-black/40 md:bg-black/35 group-hover:bg-black/20 transition-colors duration-500"></div>
             
@@ -68,7 +97,7 @@ const caseStudies = [
                 alt={`${study.brand} logo`}
                 class:list={[
                   "w-full h-auto object-contain brightness-0 invert opacity-90",
-                  study.isFrog ? "max-w-[180px] md:max-w-[215px]" : "max-w-[120px] md:max-w-[145px]" 
+                  study.logoClass
                 ]}
               />
             </div>
@@ -76,27 +105,28 @@ const caseStudies = [
 
           <!-- Content Drawer -->
           <div class:list={[
-            "card-drawer bg-white overflow-hidden transition-all duration-500 ease-in-out flex-grow opacity-100 max-h-none md:max-h-0 md:opacity-0 md:group-[.active]:max-h-[270px] md:group-[.active]:opacity-100"
+            "card-drawer bg-white overflow-hidden transition-all duration-500 ease-in-out motion-reduce:transition-none flex-grow opacity-100 max-h-none md:max-h-0 md:opacity-0 md:group-[.active]:max-h-[270px] md:group-[.active]:opacity-100"
           ]}>
-            <div class="p-6 md:p-8 border-t border-[#e0dedd] h-full flex flex-col justify-between">
-              <div>
-                <h3 class="font-oswald text-[1.25rem] md:text-[1.5rem] uppercase mb-2 text-[#1a1a18] tracking-wide">{study.brand}</h3>
-                <p class="font-inconsolata text-[0.88rem] md:text-[0.92rem] leading-relaxed text-[#6b6b65]">
+            <!-- Narrower screens: the story, then the numbers under a rule. Wide
+                 screens: the story on the left (kept to a readable line length)
+                 and the numbers on the right, behind a vertical rule. -->
+            <div class="p-6 md:p-8 lg:px-12 border-t border-[#e0dedd] h-full flex flex-col justify-between lg:flex-row lg:items-center lg:gap-16">
+              <div class="lg:max-w-[40rem]">
+                <h3 class="font-display font-extrabold text-[1.05rem] md:text-[1.25rem] uppercase mb-2 text-[#151515] tracking-[0.01em]">{study.brand}</h3>
+                <p class="font-sans text-[0.88rem] md:text-[0.95rem] leading-relaxed text-[#444]">
                   {study.description}
                 </p>
               </div>
-              
-              <!-- FIX: Top border row now spans 100% width fully across the white card layout -->
-              <div class="w-full border-t border-[#e0dedd] pt-4 mt-4 md:pt-6 md:mt-6">
-                <!-- Inner grid system houses the metrics cleanly -->
+
+              <div class="w-full border-t border-[#e0dedd] pt-4 mt-4 md:pt-6 md:mt-6 lg:w-auto lg:shrink-0 lg:border-t-0 lg:border-l lg:pt-0 lg:mt-0 lg:pl-16 lg:py-2">
                 <div class:list={[
-                  "grid gap-2",
+                  "grid gap-2 lg:flex lg:max-w-none lg:gap-14",
                   study.metrics.length === 2 ? "grid-cols-2 max-w-[400px]" : "grid-cols-3"
                 ]}>
                   {study.metrics.map(metric => (
                     <div>
-                      <div class="font-oswald text-[1.4rem] md:text-[2.2rem] text-[#1a1a18] leading-none mb-1">{metric.value}</div>
-                      <div class="font-inconsolata text-[0.6rem] md:text-[0.68rem] uppercase tracking-wider text-[#6b6b65] leading-tight">
+                      <div class="font-display font-black text-[1.25rem] md:text-[1.9rem] tracking-[-0.02em] text-[#151515] leading-none mb-2">{metric.value}</div>
+                      <div class="font-sans font-bold text-[11px] md:text-[12px] uppercase tracking-[0.12em] text-[#6b6b65] leading-tight">
                         {metric.label}
                       </div>
                     </div>
@@ -113,33 +143,60 @@ const caseStudies = [
 </section>
 
 <script>
+  // On desktop each card opens to show the results. Scrolling opens it once
+  // its top passes 40% of the way down the screen (hovering the photo opens it
+  // sooner), and it then stays open so the numbers never disappear while
+  // someone is reading. Only a scroll can open a card, never the page load:
+  // checking at load would catch layouts that are not final yet and open the
+  // first card before the visitor has moved. The `active` class only has an
+  // effect from the md breakpoint up; phones always show the results.
   function setupCaseStudies() {
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (isMobile) return;
+    const cards = [...document.querySelectorAll<HTMLElement>('.study-card')];
+    const open = (card: Element) => card.classList.add('active');
 
-    const cards = document.querySelectorAll('.study-card');
+    // Reduced motion: show every card open from the start, with no slide.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      cards.forEach(open);
+      return;
+    }
 
-    cards.forEach(card => {
-      const trigger = card.querySelector('.image-trigger');
-      trigger?.addEventListener('mouseenter', () => {
-        cards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
+    let ticking = false;
+    const check = () => {
+      ticking = false;
+      const line = window.innerHeight * 0.4;
+      cards.forEach((card) => {
+        if (card.getBoundingClientRect().top < line) open(card);
       });
-      card.addEventListener('mouseleave', () => {
-        card.classList.remove('active');
-      });
+      if (cards.every((card) => card.classList.contains('active'))) {
+        window.removeEventListener('scroll', onScroll);
+      }
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(check);
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    cards.forEach((card) => {
+      card.querySelector('.image-trigger')?.addEventListener('mouseenter', () => open(card));
     });
   }
 
   setupCaseStudies();
   document.addEventListener('astro:after-swap', setupCaseStudies);
+
+  // The hero's result cards link to #case-<brand>: open that card when one
+  // is clicked (the browser then scrolls to it), and on arriving at the page
+  // with such a link.
+  const openFromHash = (hash: string) => {
+    if (hash.startsWith('#case-')) document.getElementById(hash.slice(1))?.classList.add('active');
+  };
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element).closest?.('a[href^="#case-"]');
+    if (link) openFromHash(link.getAttribute('href') ?? '');
+  });
+  openFromHash(location.hash);
 </script>
 
-<style>
-  .font-inconsolata {
-    font-family: "Inconsolata", "Courier New", monospace;
-  }
-  .font-oswald {
-    font-family: "Oswald", sans-serif;
-  }
-</style>

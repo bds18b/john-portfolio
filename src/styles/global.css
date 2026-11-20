@@ -3,4 +3,68 @@
 @theme {
     --color-accent: #4651f9;
     --color-old: #3942c7;
+    /* The hero's two typefaces. font-sans is also the page default. */
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Vertical space at the top and bottom of every section, so the gaps
+   between sections are the same all the way down the page. */
+:root {
+    --section-space: clamp(52px, 7vw, 112px);
+}
+
+/* The main call-to-action button: a pill that fills with a slanted panel
+   on hover. The panel sweeps in from the left and, when the pointer leaves,
+   carries on out to the right: it scales from its left edge on the way in
+   and towards its right edge on the way out. The panel is wider than the
+   button so its slanted ends sit outside the rounded edges once it covers
+   the button. Colours can be changed per use with the variables. */
+.btn-cta {
+    --btn-bg: var(--color-accent);
+    --btn-fill: #151515;
+    --btn-text: #fff;
+    --btn-text-hover: #fff;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    height: 54px;
+    padding: 0 30px;
+    border-radius: 999px;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    font: 600 1rem/1 "Inter", sans-serif;
+    text-decoration: none;
+    transition: color 0.45s ease;
+}
+.btn-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0 -22%;
+    z-index: -1;
+    background: var(--btn-fill);
+    transform: skewX(-20deg) scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn-cta:hover,
+.btn-cta:focus-visible {
+    color: var(--btn-text-hover);
+}
+.btn-cta:hover::before,
+.btn-cta:focus-visible::before {
+    transform: skewX(-20deg) scaleX(1);
+    transform-origin: left center;
+}
+.btn-cta:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+    .btn-cta,
+    .btn-cta::before {
+        transition-duration: 0.01s;
+    }
 }

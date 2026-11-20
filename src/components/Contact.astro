@@ -1,0 +1,980 @@
+---
+// Contact.astro: the "Work with me" questionnaire.
+//
+// Opens in a modal from every link to #contact (the nav button, the hero
+// button, "Let's talk" in the footer), and on page load when the address ends
+// in #contact. Four short steps: what they need, when, how big the brand is,
+// then where to reply. Easy one-click answers come first and contact details
+// last, because people who have answered a few easy questions tend to finish.
+// Answers survive closing the modal and a page refresh (sessionStorage) until
+// they are sent.
+
+// Where the answers are sent. GitHub Pages cannot receive a form, so a form
+// service (Formspree, Web3Forms, ...) forwards them by email. Paste its
+// endpoint here, e.g. 'https://formspree.io/f/abcd1234'. While this is empty
+// the form says it is not connected instead of pretending to send.
+const FORM_ENDPOINT = "";
+
+const helpOptions = [
+    "Full retention strategy",
+    "Email and SMS",
+    "Subscriptions and repeat purchase",
+    "Post-purchase experience",
+    "An audit of what's working",
+    "Not sure yet",
+];
+
+const timingOptions = [
+    "As soon as possible",
+    "In the next 1–3 months",
+    "Just exploring for now",
+];
+
+const sizeOptions = ["Under $2M", "$2M–$10M", "$10M–$50M", "$50M+"];
+
+const STEP_COUNT = 4;
+---
+
+<dialog id="contact-modal" class="contact-modal" aria-labelledby="contact-title">
+    <div class="panel">
+        <header class="top">
+            <h2 id="contact-title" class="sr-only">Work with me</h2>
+            <p class="step-count" data-step-count>Step 1 of {STEP_COUNT}</p>
+            <button type="button" class="close" data-close aria-label="Close">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+            </button>
+        </header>
+
+        <!-- One segment per step, filled up to the current one. -->
+        <div class="progress" data-progress aria-hidden="true">
+            {Array.from({ length: STEP_COUNT }, () => <span class="progress-seg"></span>)}
+        </div>
+
+        <form class="form" data-form data-endpoint={FORM_ENDPOINT} novalidate>
+            <div class="scroll">
+                <fieldset class="step" data-step>
+                    <legend class="question" tabindex="-1">What can I help with?</legend>
+                    <p class="hint">Pick any that apply. It takes about a minute.</p>
+                    <div class="options options-2">
+                        {helpOptions.map((option) => (
+                            <label class="option">
+                                <input type="checkbox" name="help" value={option} />
+                                <span class="mark mark-box" aria-hidden="true"></span>
+                                <span>{option}</span>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
+
+                <fieldset class="step" data-step data-off>
+                    <legend class="question" tabindex="-1">When do you want to start?</legend>
+                    <div class="options">
+                        {timingOptions.map((option) => (
+                            <label class="option">
+                                <input type="radio" name="timing" value={option} />
+                                <span class="mark mark-dot" aria-hidden="true"></span>
+                                <span>{option}</span>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
+
+                <fieldset class="step" data-step data-off>
+                    <legend class="question" tabindex="-1">How big is the brand?</legend>
+                    <p class="hint">Annual revenue, roughly.</p>
+                    <div class="options options-2">
+                        {sizeOptions.map((option) => (
+                            <label class="option">
+                                <input type="radio" name="size" value={option} />
+                                <span class="mark mark-dot" aria-hidden="true"></span>
+                                <span>{option}</span>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
+
+                <fieldset class="step" data-step data-off>
+                    <legend class="question" tabindex="-1">Where should I reply?</legend>
+                    <div class="fields">
+                        <div class="field">
+                            <div class="field-head">
+                                <label for="cf-name">Name</label>
+                                <p class="field-error" id="cf-name-error"></p>
+                            </div>
+                            <input id="cf-name" name="name" type="text" autocomplete="name" aria-describedby="cf-name-error" />
+                        </div>
+                        <div class="field">
+                            <div class="field-head">
+                                <label for="cf-email">Email</label>
+                                <p class="field-error" id="cf-email-error"></p>
+                            </div>
+                            <input id="cf-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@brand.com" aria-describedby="cf-email-error" />
+                        </div>
+                        <div class="field field-wide">
+                            <div class="field-head">
+                                <label for="cf-brand">Brand or website</label>
+                                <p class="field-error" id="cf-brand-error"></p>
+                            </div>
+                            <input id="cf-brand" name="brand" type="text" autocomplete="organization" placeholder="brand.com" aria-describedby="cf-brand-error" />
+                        </div>
+                        <div class="field field-wide">
+                            <div class="field-head">
+                                <label for="cf-note">Anything else I should know? <span class="optional">(optional)</span></label>
+                            </div>
+                            <textarea id="cf-note" name="note" rows="2" placeholder="The biggest challenge right now, links, context"></textarea>
+                        </div>
+                    </div>
+                    <!-- Spam trap: hidden from people, filled in by bots. -->
+                    <div class="trap" aria-hidden="true">
+                        <label>Leave this empty <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+                    </div>
+                </fieldset>
+
+                <div class="success" data-success data-off tabindex="-1">
+                    <span class="success-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                    </span>
+                    <h3 class="question" data-success-title>Thanks.</h3>
+                    <p class="hint">Your answers are in. I'll reply by email.</p>
+                </div>
+            </div>
+
+            <footer class="actions">
+                <button type="button" class="btn-back" data-back hidden>Back</button>
+                <p class="form-error" data-form-error role="alert"></p>
+                <button type="button" class="btn-cta btn-next" data-next>Next</button>
+                <button type="submit" class="btn-cta btn-next" data-submit hidden>Send my answers</button>
+                <button type="button" class="btn-cta btn-next" data-close data-done hidden>Close</button>
+            </footer>
+        </form>
+    </div>
+</dialog>
+
+<script>
+    const STORE = "contact-answers";
+    const SUBMIT_LABEL = "Send my answers";
+
+    function initContact(dialog: HTMLDialogElement) {
+        const $ = <T extends Element>(sel: string) => dialog.querySelector<T>(sel)!;
+        const form = $<HTMLFormElement>("[data-form]");
+        const steps = [...form.querySelectorAll<HTMLFieldSetElement>("[data-step]")];
+        const total = steps.length;
+        const stepCount = $<HTMLElement>("[data-step-count]");
+        const segments = [...$<HTMLElement>("[data-progress]").children];
+        const fillProgress = (count: number) =>
+            segments.forEach((segment, i) => segment.classList.toggle("is-done", i < count));
+        const back = $<HTMLButtonElement>("[data-back]");
+        const next = $<HTMLButtonElement>("[data-next]");
+        const submit = $<HTMLButtonElement>("[data-submit]");
+        const done = $<HTMLButtonElement>("[data-done]");
+        const success = $<HTMLElement>("[data-success]");
+        const successTitle = $<HTMLElement>("[data-success-title]");
+        const formError = $<HTMLElement>("[data-form-error]");
+        const field = (name: string) =>
+            form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+
+        let current = 0;
+        let sent = false;
+
+        const checked = (name: string) =>
+            [...form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`)].map(
+                (input) => input.value,
+            );
+
+        const setError = (message: string) => {
+            formError.textContent = message;
+        };
+
+        // Slides a step (or the thank-you screen) in. Only for moving between
+        // steps: the dialog is display:none while closed, so an animation set
+        // in CSS alone would replay on every open, on top of the panel's own
+        // rise, and the text would drift up inside the moving panel.
+        const slideIn = (el: HTMLElement) => {
+            el.classList.remove("is-entering");
+            void el.offsetWidth; // restart the animation if it was mid-way
+            el.classList.add("is-entering");
+        };
+        form.addEventListener("animationend", (event) =>
+            (event.target as HTMLElement).classList.remove("is-entering"),
+        );
+
+        const show = (index: number, focus = true, animate = true) => {
+            current = index;
+            steps.forEach((step, i) => step.toggleAttribute("data-off", i !== index));
+            if (animate) slideIn(steps[index]);
+            stepCount.textContent = `Step ${index + 1} of ${total}`;
+            fillProgress(index + 1);
+            back.hidden = index === 0;
+            next.hidden = index === total - 1;
+            submit.hidden = index !== total - 1;
+            done.hidden = true;
+            setError("");
+            if (focus) steps[index].querySelector<HTMLElement>("legend")?.focus();
+        };
+
+        // Contact step: one message per field, and focus the first problem.
+        const fieldError = (name: string, message: string) => {
+            const input = field(name);
+            input.setAttribute("aria-invalid", String(Boolean(message)));
+            const out = dialog.querySelector(`#cf-${name}-error`);
+            if (out) out.textContent = message;
+            return message;
+        };
+        const rules: Record<string, () => string> = {
+            name: () => (field("name").value.trim() ? "" : "Add your name."),
+            email: () =>
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field("email").value.trim())
+                    ? ""
+                    : "Enter a valid email.",
+            brand: () => (field("brand").value.trim() ? "" : "Add your brand or site."),
+        };
+        const contactErrors = () => {
+            const failing = Object.keys(rules).filter((name) => fieldError(name, rules[name]()));
+            if (failing.length) field(failing[0]).focus();
+            return failing.length > 0;
+        };
+
+        // Returns true when the current step can't be left yet.
+        const blocked = () => {
+            const pick = (name: string, message: string) => {
+                if (checked(name).length) return false;
+                setError(message);
+                return true;
+            };
+            if (current === 0) return pick("help", "Pick at least one to continue.");
+            if (current === 1) return pick("timing", "Pick one to continue.");
+            if (current === 2) return pick("size", "Pick one to continue.");
+            return contactErrors();
+        };
+
+        // Keep answers through a close or a refresh until they are sent.
+        const save = () => {
+            try {
+                const data = [...new FormData(form)].filter(([key]) => key !== "_gotcha");
+                sessionStorage.setItem(STORE, JSON.stringify(data));
+            } catch {}
+        };
+        const restore = () => {
+            try {
+                const data: [string, string][] = JSON.parse(sessionStorage.getItem(STORE) || "[]");
+                for (const [key, value] of data) {
+                    const choice = form.querySelector<HTMLInputElement>(
+                        `input[name="${key}"][value="${CSS.escape(value)}"]`,
+                    );
+                    if (choice) choice.checked = true;
+                    else if (field(key)) field(key).value = value;
+                }
+            } catch {}
+        };
+
+        const reset = () => {
+            form.reset();
+            try {
+                sessionStorage.removeItem(STORE);
+            } catch {}
+            ["name", "email", "brand"].forEach((name) => fieldError(name, ""));
+            sent = false;
+            success.toggleAttribute("data-off", true);
+            show(0, false, false);
+        };
+
+        const finish = () => {
+            sent = true;
+            try {
+                sessionStorage.removeItem(STORE);
+            } catch {}
+            steps.forEach((step) => step.toggleAttribute("data-off", true));
+            back.hidden = next.hidden = submit.hidden = true;
+            done.hidden = false;
+            setError("");
+            stepCount.textContent = "Sent";
+            fillProgress(total);
+            const firstName = field("name").value.trim().split(/\s+/)[0];
+            successTitle.textContent = firstName ? `Thanks, ${firstName}.` : "Thanks.";
+            success.toggleAttribute("data-off", false);
+            slideIn(success);
+            success.focus();
+        };
+
+        const root = document.documentElement;
+        const open = () => {
+            if (dialog.open) return;
+            root.style.setProperty("--scrollbar-gap", `${window.innerWidth - root.clientWidth}px`);
+            root.classList.add("modal-open");
+            dialog.showModal();
+            if (!sent) show(current, true, false);
+        };
+
+        next.addEventListener("click", () => {
+            if (!blocked()) show(current + 1);
+        });
+        back.addEventListener("click", () => show(current - 1));
+
+        // A click or tap on a single-choice answer moves on by itself. Keyboard
+        // users move through radio buttons with the arrow keys, so for them it
+        // waits for Next.
+        let viaPointer = false;
+        form.addEventListener("pointerdown", () => (viaPointer = true));
+        form.addEventListener("keydown", () => (viaPointer = false));
+        form.addEventListener("change", (event) => {
+            save();
+            const input = event.target as HTMLInputElement;
+            if (input.type !== "checkbox" && input.type !== "radio") return;
+            setError("");
+            if (input.type === "radio" && viaPointer && current < total - 1) {
+                const step = current;
+                // Long enough to see the answer get selected before moving on.
+                setTimeout(() => {
+                    if (current === step) show(step + 1);
+                }, 500);
+            }
+        });
+        // Once a field has shown an error, re-check just that field as it is
+        // fixed, without moving the cursor.
+        form.addEventListener("input", (event) => {
+            save();
+            const input = event.target as HTMLInputElement;
+            if (input.getAttribute("aria-invalid") === "true" && rules[input.name]) {
+                fieldError(input.name, rules[input.name]());
+            }
+        });
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            if (current < total - 1) {
+                if (!blocked()) show(current + 1);
+                return;
+            }
+            if (blocked()) return;
+
+            // Bots fill the hidden field; let them think it worked.
+            if (field("_gotcha").value) return finish();
+
+            const endpoint = form.dataset.endpoint;
+            if (!endpoint) {
+                setError("This form isn't connected to an inbox yet, so nothing was sent.");
+                return;
+            }
+
+            const body = new FormData();
+            body.set("help", checked("help").join(", "));
+            body.set("timing", checked("timing")[0] ?? "");
+            body.set("size", checked("size")[0] ?? "");
+            ["name", "email", "brand", "note"].forEach((name) =>
+                body.set(name, field(name).value.trim()),
+            );
+
+            submit.disabled = true;
+            submit.textContent = "Sending…";
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    body,
+                    headers: { Accept: "application/json" },
+                });
+                if (!response.ok) throw new Error(String(response.status));
+                finish();
+            } catch {
+                setError("That didn't send. Check your connection and try again.");
+            } finally {
+                submit.disabled = false;
+                submit.textContent = SUBMIT_LABEL;
+            }
+        });
+
+        // Close: the X, the Close button after sending, Esc (built in), or a
+        // click on the dimmed backdrop. A drag that starts inside the panel and
+        // ends outside it does not count.
+        dialog.querySelectorAll("[data-close]").forEach((button) =>
+            button.addEventListener("click", () => dialog.close()),
+        );
+        let downOnBackdrop = false;
+        dialog.addEventListener("pointerdown", (event) => (downOnBackdrop = event.target === dialog));
+        dialog.addEventListener("click", (event) => {
+            if (event.target === dialog && downOnBackdrop) dialog.close();
+        });
+        // After the closing fade (0.2s), bring the scrollbar back and clear a
+        // sent form. Doing either straight away would show mid-fade: the
+        // returning scrollbar narrows the page and re-centres the panel a few
+        // pixels to the left, and the thank-you screen would flip to step 1.
+        dialog.addEventListener("close", () => {
+            const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            setTimeout(
+                () => {
+                    if (dialog.open) return; // reopened during the fade
+                    root.classList.remove("modal-open");
+                    if (sent) reset();
+                },
+                reduced ? 0 : 220,
+            );
+        });
+
+        document.addEventListener("click", (event) => {
+            const link = (event.target as Element).closest?.('a[href="#contact"]');
+            if (!link) return;
+            event.preventDefault();
+            open();
+        });
+
+        restore();
+        show(0, false, false);
+        if (location.hash === "#contact") open();
+    }
+
+    const dialog = document.getElementById("contact-modal") as HTMLDialogElement | null;
+    if (dialog) initContact(dialog);
+</script>
+
+<style is:global>
+    /* While the modal is open the page behind it can't scroll. Hiding the
+       scrollbar would widen the page, so the page (and the fixed nav) give
+       back exactly the scrollbar's width, measured on open as
+       --scrollbar-gap. Reserving the gutter instead leaves a light strip
+       the dimmed backdrop does not cover. */
+    html.modal-open {
+        overflow: hidden;
+    }
+    html.modal-open body {
+        padding-right: var(--scrollbar-gap, 0px);
+    }
+    /* The fixed nav (Nav.astro's <header>, a direct child of <body>). */
+    html.modal-open body > header {
+        width: calc(100% - var(--scrollbar-gap, 0px));
+    }
+</style>
+
+<style>
+    /* Set like the rest of the site: the page grey, Unbounded for the
+       questions and labels, white answer cards that turn the accent blue
+       when picked (like the comparison's blue block), and the site's pill
+       button with the angled fill (.btn-cta in global.css). */
+    .contact-modal {
+        --ink: #151515;
+        --muted: #444;
+        --soft: #6b6b65;
+        --line: rgb(21 21 21 / 0.1);
+        --accent: var(--color-accent, #4651f9);
+        --error: #b42318;
+        --pad: 28px;
+
+        width: min(560px, calc(100vw - 32px));
+        max-width: none;
+        max-height: min(780px, calc(100dvh - 32px));
+        /* Tailwind's reset zeroes every margin, which drops the browser's
+           built-in centring for dialogs. */
+        margin: auto;
+        padding: 0;
+        border: 0;
+        border-radius: 24px;
+        background: #efefed;
+        color: var(--ink);
+        overflow: hidden;
+        box-shadow: 0 30px 90px rgb(21 21 21 / 0.28);
+        font-family: "Inter", sans-serif;
+    }
+    /* Open and close are both animated with transitions. `display` and
+       `overlay` transition "discretely", which keeps the dialog on screen
+       until the closing fade has finished; @starting-style is where the
+       opening animation starts from. The transition on the closed state runs
+       on close (quick, easing in); the one on [open] runs on open. Browsers
+       without support just open and close instantly. */
+    .contact-modal {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+        transition:
+            opacity 0.2s ease-in,
+            transform 0.2s ease-in,
+            overlay 0.2s ease-in allow-discrete,
+            display 0.2s ease-in allow-discrete;
+    }
+    .contact-modal[open] {
+        opacity: 1;
+        transform: none;
+        transition-duration: 0.35s;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @starting-style {
+        .contact-modal[open] {
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+        }
+    }
+
+    .contact-modal::backdrop {
+        background: rgb(21 21 21 / 0);
+        backdrop-filter: blur(0);
+        transition:
+            background-color 0.2s ease-in,
+            backdrop-filter 0.2s ease-in,
+            overlay 0.2s ease-in allow-discrete,
+            display 0.2s ease-in allow-discrete;
+    }
+    .contact-modal[open]::backdrop {
+        background: rgb(21 21 21 / 0.55);
+        backdrop-filter: blur(4px);
+        transition-duration: 0.3s;
+        transition-timing-function: ease-out;
+    }
+    @starting-style {
+        .contact-modal[open]::backdrop {
+            background: rgb(21 21 21 / 0);
+            backdrop-filter: blur(0);
+        }
+    }
+
+    .panel {
+        display: flex;
+        flex-direction: column;
+        max-height: inherit;
+    }
+
+    /* Step label and close button */
+    .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 14px 0 var(--pad);
+        flex-shrink: 0;
+    }
+    .step-count {
+        margin: 0;
+        font-family: "Unbounded", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent);
+    }
+    /* Round, outlined, filling dark on hover: like the testimonial arrows. */
+    .close {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgb(21 21 21 / 0.18);
+        border-radius: 50%;
+        background: transparent;
+        color: var(--ink);
+        cursor: pointer;
+        transition:
+            background-color 0.25s ease,
+            border-color 0.25s ease,
+            color 0.25s ease;
+    }
+    .close:hover {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: #fff;
+    }
+
+    /* Progress: one segment per step; each fills from the left. */
+    .progress {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        gap: 6px;
+        margin: 12px var(--pad) 0;
+        flex-shrink: 0;
+    }
+    .progress-seg {
+        position: relative;
+        height: 4px;
+        border-radius: 999px;
+        background: rgb(21 21 21 / 0.1);
+        overflow: hidden;
+    }
+    .progress-seg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--accent);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .progress-seg.is-done::after {
+        transform: scaleX(1);
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        margin: 0;
+    }
+    .scroll {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 22px var(--pad) 24px;
+        display: grid;
+        align-content: start;
+    }
+    /* Every step and the thank-you screen share one grid cell, so the dialog
+       is as tall as the tallest step and keeps that height from step to step.
+       The ones not showing (data-off) stay in the layout but invisible, which
+       also keeps them away from the keyboard and screen readers. (They can't
+       use the hidden attribute: Tailwind's base styles force anything hidden
+       to display: none, which would take them out of the layout.) */
+    .step,
+    .success {
+        grid-area: 1 / 1;
+    }
+    .step[data-off],
+    .success[data-off] {
+        visibility: hidden;
+    }
+
+    .step {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        min-inline-size: 0;
+    }
+    .step.is-entering,
+    .success.is-entering {
+        animation: step-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .question {
+        display: block;
+        padding: 0;
+        margin: 0;
+        font-family: "Unbounded", sans-serif;
+        font-weight: 800;
+        font-size: clamp(1.3rem, 4.4vw, 1.65rem);
+        line-height: 1.12;
+        letter-spacing: -0.015em;
+        text-transform: uppercase;
+        text-wrap: balance;
+        color: var(--ink);
+    }
+    .question:focus {
+        outline: none;
+    }
+    .hint {
+        margin: 10px 0 0;
+        font-size: 1rem;
+        line-height: 1.55;
+        color: var(--muted);
+    }
+
+    /* Answers: white cards on the grey; a picked answer turns accent blue. */
+    .options {
+        display: grid;
+        gap: 8px;
+        margin-top: 20px;
+    }
+    .option {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 52px;
+        padding: 12px 16px;
+        border: 1px solid transparent;
+        border-radius: 14px;
+        background: #fff;
+        font-family: "Unbounded", sans-serif;
+        font-weight: 600;
+        font-size: 0.875rem;
+        line-height: 1.35;
+        color: var(--ink);
+        cursor: pointer;
+        transition:
+            border-color 0.2s ease,
+            background-color 0.25s ease,
+            color 0.25s ease;
+    }
+    .option:hover {
+        border-color: rgb(21 21 21 / 0.35);
+    }
+    .option input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+    .option:has(input:checked) {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+    }
+    .option:has(input:focus-visible) {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+    }
+    .mark {
+        display: grid;
+        place-items: center;
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        border: 1.5px solid rgb(21 21 21 / 0.25);
+        background: transparent;
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease;
+    }
+    .mark-box {
+        border-radius: 6px;
+    }
+    .mark-dot {
+        border-radius: 50%;
+    }
+    .mark::after {
+        content: "";
+        opacity: 0;
+    }
+    .mark-box::after {
+        width: 10px;
+        height: 5px;
+        border-left: 2px solid var(--accent);
+        border-bottom: 2px solid var(--accent);
+        transform: translateY(-1px) rotate(-45deg);
+    }
+    .mark-dot::after {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+    }
+    .option:has(input:checked) .mark {
+        border-color: #fff;
+        background: #fff;
+    }
+    .option:has(input:checked) .mark::after {
+        opacity: 1;
+    }
+
+    /* Contact details. Each error sits beside its label, so showing one
+       doesn't make the form taller. */
+    .fields {
+        display: grid;
+        gap: 14px 12px;
+        margin-top: 20px;
+    }
+    .field-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 2px 12px;
+        margin-bottom: 6px;
+    }
+    .field label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+    .optional {
+        font-weight: 400;
+        letter-spacing: 0.02em;
+        text-transform: none;
+        color: var(--soft);
+    }
+    .field input,
+    .field textarea {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 16px;
+        border: 1px solid transparent;
+        border-radius: 14px;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-size: 1rem;
+        transition: border-color 0.2s ease;
+    }
+    .field textarea {
+        min-height: 76px;
+        resize: vertical;
+    }
+    .field input:hover,
+    .field textarea:hover {
+        border-color: rgb(21 21 21 / 0.2);
+    }
+    .field input::placeholder,
+    .field textarea::placeholder {
+        color: #8a8a84;
+    }
+    /* Focus: a solid 2px blue border. The outline sits over the 1px border
+       and 1px beyond it, so nothing shifts. */
+    .field input:focus,
+    .field textarea:focus {
+        border-color: var(--accent);
+        outline: 2px solid var(--accent);
+        outline-offset: -1px;
+    }
+    .field [aria-invalid="true"] {
+        border-color: var(--error);
+    }
+    .field-error {
+        margin: 0;
+        font-size: 13px;
+        color: var(--error);
+    }
+    /* "Pick one to continue" and send problems: in the button bar, next to
+       the button that was pressed. */
+    .form-error {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.35;
+        text-align: right;
+        text-wrap: balance;
+        color: var(--error);
+    }
+    .field-error:empty {
+        display: none;
+    }
+    /* Stays rendered while empty so screen readers announce new messages. */
+    .form-error:empty {
+        margin: 0;
+    }
+
+    .trap {
+        position: absolute;
+        left: -10000px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+    }
+
+    .success:focus {
+        outline: none;
+    }
+    .success-icon {
+        display: grid;
+        place-items: center;
+        width: 52px;
+        height: 52px;
+        margin-bottom: 22px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+    }
+
+    /* Buttons: Back is a plain underlined link (like "Case studies" in the
+       hero); Next / Send / Close are the site's pill button. */
+    .actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px var(--pad) max(16px, env(safe-area-inset-bottom));
+        border-top: 1px solid var(--line);
+        flex-shrink: 0;
+    }
+    button.btn-cta {
+        height: 48px;
+        padding-inline: 26px;
+        border: 0;
+        cursor: pointer;
+    }
+    button.btn-cta:disabled {
+        opacity: 0.6;
+        cursor: progress;
+    }
+    .btn-next {
+        margin-left: auto;
+    }
+    .btn-back {
+        min-height: 48px;
+        margin-left: -12px;
+        padding: 0 12px;
+        border: 0;
+        background: transparent;
+        font: 500 1rem/1.5 "Inter", sans-serif;
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+    .btn-back:hover {
+        color: var(--accent);
+    }
+    .btn-back:focus-visible,
+    .close:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
+    [hidden] {
+        display: none !important;
+    }
+
+    /* Dialog widths (not the phone sheet): name and email side by side, and
+       the longer answer lists in two columns, so every step fits without
+       scrolling. */
+    @media (min-width: 640px) {
+        .options-2,
+        .fields {
+            grid-template-columns: 1fr 1fr;
+        }
+        .field-wide {
+            grid-column: 1 / -1;
+        }
+    }
+
+    /* Phones: a sheet that slides up from the bottom edge. */
+    @media (max-width: 639px) {
+        .contact-modal {
+            --pad: 20px;
+            width: 100%;
+            max-height: 92dvh;
+            margin: auto 0 0;
+            border-radius: 24px 24px 0 0;
+            opacity: 1;
+            transform: translateY(100%);
+        }
+        .contact-modal[open] {
+            transform: none;
+        }
+        @starting-style {
+            .contact-modal[open] {
+                opacity: 1;
+                transform: translateY(100%);
+            }
+        }
+        .top {
+            padding-right: 12px;
+        }
+        /* Too narrow for a message beside the buttons: it goes above them. */
+        .actions {
+            flex-wrap: wrap;
+        }
+        .form-error:not(:empty) {
+            order: -1;
+            flex-basis: 100%;
+            text-align: left;
+        }
+    }
+
+    @keyframes step-in {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .contact-modal,
+        .contact-modal[open],
+        .contact-modal::backdrop,
+        .contact-modal[open]::backdrop,
+        .progress-seg::after {
+            transition: none;
+        }
+        .step.is-entering,
+        .success.is-entering {
+            animation: none;
+        }
+    }
+</style>

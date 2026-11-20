@@ -3,16 +3,16 @@
 ---
 
 <header
-    class="fixed top-0 left-0 w-full z-50 pointer-events-none md:pointer-events-auto pt-4 px-3 md:pt-0 md:px-0"
+    class="site-nav fixed top-0 left-0 w-full z-50 pointer-events-none md:pointer-events-auto pt-4 px-3 md:pt-0 md:px-0"
 >
     <div
         id="nav-pill"
-        class="w-full mx-auto border border-[#1a1a18]/10 bg-[#efefed]/80 backdrop-blur-sm pointer-events-auto overflow-hidden
+        class="w-full mx-auto border border-[#151515]/10 bg-[#efefed]/85 backdrop-blur-sm pointer-events-auto overflow-hidden
                rounded-xl max-w-[1160px]
                md:rounded-none md:max-w-none md:border-t-0 md:border-x-0 md:border-b md:bg-[#efefed]/90"
     >
         <div
-            class="flex justify-between items-center w-full px-2 py-2 md:px-8 md:py-4 max-w-[1280px] mx-auto"
+            class="flex justify-between items-center w-full px-2 py-2 md:px-12 md:py-0 md:h-20 max-w-[1440px] mx-auto"
         >
             <div class="flex items-center">
                 <button
@@ -33,11 +33,9 @@
                     </div>
                 </button>
 
-                <nav class="hidden md:flex items-center gap-1">
+                <nav class="hidden md:flex items-center gap-[34px]">
                     <a href="#services" class="nav-link">Services</a>
-                    <span class="nav-sep" aria-hidden="true">//</span>
                     <a href="#case-studies" class="nav-link">Case Studies</a>
-                    <span class="nav-sep" aria-hidden="true">//</span>
                     <a href="#testimonials" class="nav-link">Testimonials</a>
                 </nav>
             </div>
@@ -67,46 +65,58 @@
 </header>
 
 <style>
+    /* On desktop the bar has no visible edge over the hero; a hairline
+       appears once the page has scrolled and content passes underneath. */
+    @media (min-width: 768px) {
+        #nav-pill {
+            border-bottom-color: transparent;
+            transition: border-color 0.2s ease;
+        }
+        .site-nav[data-scrolled] #nav-pill {
+            border-bottom-color: rgb(21 21 21 / 0.08);
+        }
+    }
+
     .nav-link {
-        font-family: "Inconsolata", "Courier New", monospace;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
+        font-family: "Unbounded", sans-serif;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
-        color: #1a1a18;
+        color: #151515;
         text-decoration: none;
         transition: color 0.2s ease-in-out;
         white-space: nowrap;
-        padding: 8px 14px;
+        padding: 8px 0;
     }
     .nav-link:hover {
-        color: var(--color-accent, #6b6b65);
-    }
-
-    .nav-sep {
-        color: rgba(26, 26, 24, 0.15);
-        font-family: "Inconsolata", "Courier New", monospace;
-        font-size: 0.75rem;
-        font-weight: bold;
-        user-select: none;
+        color: var(--color-accent, #4651f9);
     }
 
     .nav-action-btn {
-        font-family: "Inconsolata", "Courier New", monospace;
-        font-size: 0.75rem;
-        font-weight: bold;
-        letter-spacing: 0.12em;
+        display: inline-flex;
+        align-items: center;
+        height: 38px;
+        padding: 0 22px;
+        border-radius: 999px;
+        font-family: "Unbounded", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
+        white-space: nowrap;
         color: #ffffff;
-        background-color: var(--color-accent, #1a1a18);
+        background-color: #151515;
         text-decoration: none;
-        padding: 8px 16px;
-        border-radius: 8px;
-        transition: all 0.2s ease-in-out;
+        transition: background-color 0.2s ease-in-out;
     }
     .nav-action-btn:hover {
-        background-color: black;
-        transform: translateY(-0.5px);
+        background-color: var(--color-accent, #4651f9);
+    }
+    .nav-link:focus-visible,
+    .nav-action-btn:focus-visible {
+        outline: 2px solid var(--color-accent, #4651f9);
+        outline-offset: 3px;
     }
 
     /* Minimalist Close X Animation Transforms */
@@ -144,12 +154,12 @@
     }
 
     .mobile-link {
-        font-family: "Inconsolata", "Courier New", monospace;
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
+        font-family: "Unbounded", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
-        color: #1a1a18;
+        color: #151515;
         text-decoration: none;
         padding: 12px 16px;
         display: block;
@@ -210,4 +220,11 @@
 
     initMenu();
     document.addEventListener("astro:page-load", initMenu);
+
+    // Marks the header once the page has scrolled (shows the desktop hairline).
+    const siteNav = document.querySelector<HTMLElement>(".site-nav");
+    const markScrolled = () =>
+        siteNav?.toggleAttribute("data-scrolled", window.scrollY > 8);
+    markScrolled();
+    window.addEventListener("scroll", markScrolled, { passive: true });
 </script>

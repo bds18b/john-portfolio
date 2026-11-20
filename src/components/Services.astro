@@ -1,344 +1,497 @@
 ---
+// The approach as a repeating cycle: a ring of four arrows that slowly
+// turns, with the heading inside it. On wide screens the section spans the
+// full page width with one phase in each corner around the ring; on
+// tablets they are listed under it in two columns. Phones get a separate
+// list under the ring (.cycle-acc): an accordion with the first phase open,
+// one open at a time. Only one of the two lists is ever displayed.
 const steps = [
     {
-        phase: "Phase One",
         title: "Diagnose",
         description:
-            "Deep dive into high level business data, customer behavior, and lifecycle channels to identify key areas of opportunity.",
-        badges: ["Business Data", "Customer Behavior", "Lifecycle Channels"],
+            "Dig into business data, customer behavior and lifecycle channels to find the biggest opportunities.",
     },
     {
-        phase: "Phase Two",
         title: "Align + Build",
         description:
-            "Build the end-to-end retention strategy across the entire customer lifecycle prioritized by contribution margin impact and aligned to your growth goals.",
-        badges: ["Retention Strategy", "Contribution Margin", "Growth Goals"],
+            "Build the end-to-end retention strategy, prioritized by contribution margin impact.",
     },
     {
-        phase: "Phase Three",
         title: "Deploy",
         description:
-            "Embed as your go to retention and customer lifecycle strategic advisor. Lead execution on highest priority initiatives across your team. Owning the strategy, the systems, and the outcomes.",
-        badges: ["Systems Ownership", "Execution", "Strategic Advisor"],
+            "Embed with your team and lead execution on the highest-priority initiatives.",
     },
     {
-        phase: "Phase Four",
         title: "Analyze + Scale",
         description:
-            "Every lever gets measured against the outcomes that matter most. Contribution margin, LTV, time to reorder, and MRR. The result: a compounding retention engine that fuels acquisition and supports profitable growth.",
-        badges: ["LTV", "MRR", "Time to Reorder", "Profitable Growth"],
+            "Measure every lever against contribution margin, LTV, time to reorder and MRR.",
     },
 ];
+
+const number = (i: number) => String(i + 1).padStart(2, "0");
+
+// The four arrows, drawn in a 400 x 400 space around the centre (200, 200).
+// Angles are in degrees clockwise from 12 o'clock. Each arrow is a curved
+// band 34 wide, 60 degrees long, then an arrowhead 58 wide and 11 degrees
+// long; 19-degree gaps separate them (60 + 11 + 19 = 90).
+const C = 200;
+const R = 170;
+const BAND = 34;
+const HEAD = 58;
+const BODY_DEG = 60;
+const TIP_DEG = 11;
+const pt = (r: number, deg: number) => {
+    const a = (deg * Math.PI) / 180;
+    return `${(C + r * Math.sin(a)).toFixed(2)} ${(C - r * Math.cos(a)).toFixed(2)}`;
+};
+const outer = R + BAND / 2;
+const inner = R - BAND / 2;
+const arrows = [0, 1, 2, 3].map((k) => {
+    // Centred on 12, 3, 6 and 9 o'clock, so the gaps fall on the diagonals.
+    const start = k * 90 - (BODY_DEG + TIP_DEG) / 2;
+    const end = start + BODY_DEG;
+    return [
+        `M${pt(outer, start)}`,
+        `A${outer} ${outer} 0 0 1 ${pt(outer, end)}`,
+        `L${pt(R + HEAD / 2, end)}`,
+        `L${pt(R, end + TIP_DEG)}`,
+        `L${pt(R - HEAD / 2, end)}`,
+        `L${pt(inner, end)}`,
+        `A${inner} ${inner} 0 0 0 ${pt(inner, start)}`,
+        "Z",
+    ].join(" ");
+});
 ---
 
-<section
-    id="services"
-    class="relative w-full bg-[#efefed] px-5 py-24 sm:px-10 md:px-16 md:py-32 lg:px-24 overflow-hidden"
->
-    <div class="mx-auto max-w-3xl relative">
-        <!-- Giant Ambient Background Counter -->
-        <div
-            id="timeline-counter"
-            class="hidden md:block absolute right-0 top-0 font-oswald text-[12rem] font-bold text-[#1a1a18]/5 select-none pointer-events-none transition-all duration-500 ease-out translate-y-[-20px]"
-            aria-hidden="true"
-        >
-            01
+<section id="services" class="services">
+    <div class="cycle">
+        <div class="cycle-ring">
+            <svg viewBox="0 0 400 400" class="ring-svg" aria-hidden="true">
+                {arrows.map((d) => <path d={d} />)}
+            </svg>
+            <div class="cycle-center">
+                <h2 class="cycle-title">
+                    The full funnel approach <span class="text-accent">to retention</span>
+                </h2>
+                <p class="cycle-intro">
+                    I don't chase vanity metrics. I find the levers that move
+                    the bottom line.
+                </p>
+            </div>
         </div>
 
-        <!-- Section header -->
-        <div class="mb-12 md:mb-20 relative z-10">
-            <span
-                class="mb-4 block font-mono text-xs uppercase tracking-[0.3em] text-accent"
-            >
-                <span class="text-[#6b6b65]">Approach</span>
-            </span>
-            <h2
-                class="mb-4 font-oswald text-[clamp(1.75rem,4vw,3rem)] font-normal uppercase leading-[1.1] tracking-tight text-[#1a1a18]"
-            >
-                The Full Funnel Approach <span class="text-accent"
-                    >to Retention</span
-                >
-            </h2>
-            <p
-                class="max-w-xl font-inconsolata text-sm leading-relaxed text-[#6b6b65] md:text-base"
-            >
-                I don't chase vanity metrics. I root my decision making process
-                in the data and customer behavior insights specific to your
-                business to identify levers that impact the bottom line.
-                Operating as an extension of your team, focused on the outcomes
-                that support long term growth.
-            </p>
-        </div>
+        <ol class="cycle-steps" role="list">
+            {
+                steps.map((step, i) => (
+                    <li class={`cycle-step cycle-step-${i}`}>
+                        <span class="step-num" aria-hidden="true">
+                            {number(i)}
+                        </span>
+                        <h3 class="step-title">{step.title}</h3>
+                        <p class="step-text">{step.description}</p>
+                    </li>
+                ))
+            }
+        </ol>
 
-        <!-- Steps Timeline Track Wrap -->
-        <div class="relative z-10">
-            <!-- Background timeline track - Exact center math alignment -->
-            <div
-                class="absolute left-[1.0625rem] top-0 h-full w-px bg-[#1a1a18]/10"
-                aria-hidden="true"
-            >
-            </div>
-
-            <!-- Accent fill timeline — GPU-accelerated scaleY perfectly straight and centered -->
-            <div
-                id="timeline-fill"
-                class="absolute left-[1.0625rem] top-0 h-full w-px origin-top bg-accent will-change-transform"
-                aria-hidden="true"
-                style="transform: scaleY(0)"
-            >
-            </div>
-
-            <div class="flex flex-col gap-12 md:gap-16">
-                {
-                    steps.map((step, i) => (
-                        <div
-                            class="services-step group relative flex gap-5 md:gap-10"
-                            data-step-index={i}
-                        >
-                            {/* Step number bubble */}
-                            <div
-                                class="services-bubble relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full border border-[#1a1a18]/10 bg-[#efefed] font-mono text-xs text-[#6b6b65]"
-                                data-step-bubble
+        <!-- Phones: the phases as an accordion, the first open. -->
+        <ol class="cycle-acc" role="list" data-cycle-acc>
+            {
+                steps.map((step, i) => (
+                    <li class:list={["acc-item", { "is-open": i === 0 }]}>
+                        <h3 class="acc-head">
+                            <button
+                                type="button"
+                                class="acc-btn"
+                                id={`acc-btn-${i}`}
+                                aria-expanded={i === 0 ? "true" : "false"}
+                                aria-controls={`acc-panel-${i}`}
                             >
-                                {String(i + 1).padStart(2, "0")}
-                            </div>
-
-                            {/* Step content */}
-                            <div class="services-content min-w-0 flex-grow pb-2">
-                                <span class="block font-mono text-[10px] font-bold uppercase tracking-wider text-accent/80 mb-1">
-                                    {step.phase}
+                                <span class="acc-num" aria-hidden="true">
+                                    {number(i)}
                                 </span>
-                                <h3 class="services-title mb-3 font-oswald text-base font-normal uppercase tracking-wide text-[#1a1a18] md:text-lg lg:text-xl">
-                                    {step.title}
-                                </h3>
-                                <p class="font-inconsolata text-sm leading-relaxed text-[#6b6b65] md:text-base mb-4">
-                                    {step.description}
-                                </p>
-
-                                {/* Technical Data Badges */}
-                                <div class="flex flex-wrap gap-1.5 opacity-60 group-transparent transition-opacity duration-300 services-badge-wrap">
-                                    {step.badges.map((badge) => (
-                                        <span class="inline-block px-2 py-0.5 rounded border border-[#1a1a18]/10 bg-[#1a1a18]/5 font-mono text-[10px] tracking-wide text-[#1a1a18]/80 uppercase">
-                                            {badge}
-                                        </span>
-                                    ))}
-                                </div>
+                                <span class="acc-title">{step.title}</span>
+                                <span class="acc-chevron" aria-hidden="true" />
+                            </button>
+                        </h3>
+                        <div
+                            class="acc-panel"
+                            id={`acc-panel-${i}`}
+                            role="region"
+                            aria-labelledby={`acc-btn-${i}`}
+                            inert={i !== 0}
+                        >
+                            <div class="acc-panel-inner">
+                                <p class="acc-card">{step.description}</p>
                             </div>
                         </div>
-                    ))
-                }
-            </div>
-        </div>
+                    </li>
+                ))
+            }
+        </ol>
     </div>
-
-    <script>
-        const initServicesTimeline = () => {
-            const timelineFill = document.getElementById("timeline-fill");
-            const timelineCounter = document.getElementById("timeline-counter");
-            const stepsContainer = document.querySelector(
-                "#services .relative",
-            ) as HTMLElement;
-            const stepEls = document.querySelectorAll(".services-step");
-            const bubbles = document.querySelectorAll("[data-step-bubble]");
-
-            if (!timelineFill || !stepsContainer || stepEls.length === 0)
-                return;
-
-            // Scroll-triggered initial layout fade-up animation setup
-            const revealObserver = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add("services-step-visible");
-                            revealObserver.unobserve(entry.target);
-                        }
-                    });
-                },
-                { threshold: 0.15 },
-            );
-
-            stepEls.forEach((step) => {
-                revealObserver.observe(step);
-            });
-
-            let ticking = false;
-
-            const updateTimelineProgress = () => {
-                const containerRect = stepsContainer.getBoundingClientRect();
-                const containerTop = containerRect.top;
-                const containerHeight = containerRect.height;
-
-                // Sets progress line to compute trigger around center viewport area
-                const triggerPoint = window.innerHeight * 0.45;
-                const progress = Math.min(
-                    Math.max(
-                        (triggerPoint - containerTop) / containerHeight,
-                        0,
-                    ),
-                    1,
-                );
-
-                timelineFill.style.transform = `scaleY(${progress})`;
-
-                let dynamicActiveIndex = 0;
-
-                stepEls.forEach((step, i) => {
-                    const stepRect = step.getBoundingClientRect();
-                    const bubble = bubbles[i] as HTMLElement;
-                    if (!bubble) return;
-
-                    // Calculates middle position of current step bubble node container
-                    const bubbleCenter = stepRect.top + 18 - containerRect.top;
-                    const fillHeight = progress * containerHeight;
-
-                    if (fillHeight >= bubbleCenter) {
-                        dynamicActiveIndex = i;
-                        if (!bubble.classList.contains("bubble-active")) {
-                            bubble.classList.add("bubble-active");
-                            step.classList.add("step-active");
-                        }
-                    } else {
-                        if (bubble.classList.contains("bubble-active")) {
-                            bubble.classList.remove("bubble-active");
-                            step.classList.remove("step-active");
-                        }
-                    }
-                });
-
-                // Dynamically update background giant counter based on scroll focus
-                if (timelineCounter) {
-                    const nextNum = String(dynamicActiveIndex + 1).padStart(
-                        2,
-                        "0",
-                    );
-                    if (timelineCounter.textContent !== nextNum) {
-                        timelineCounter.textContent = nextNum;
-                    }
-                }
-
-                ticking = false;
-            };
-
-            const onTimelineScroll = () => {
-                if (!ticking) {
-                    requestAnimationFrame(updateTimelineProgress);
-                    ticking = true;
-                }
-            };
-
-            window.addEventListener("scroll", onTimelineScroll, {
-                passive: true,
-            });
-            window.addEventListener("resize", onTimelineScroll, {
-                passive: true,
-            });
-            updateTimelineProgress();
-        };
-
-        initServicesTimeline();
-        document.addEventListener("astro:after-swap", initServicesTimeline);
-    </script>
-
-    <style>
-        .font-inconsolata {
-            font-family: "Inconsolata", "Courier New", monospace;
-        }
-        .font-oswald {
-            font-family: "Oswald", sans-serif;
-        }
-
-        /* Initial reveal animation */
-        .services-step {
-            opacity: 0;
-            transform: translateY(20px);
-            transition:
-                opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .services-step-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .services-step:nth-child(1) {
-            transition-delay: 0s;
-        }
-        .services-step:nth-child(2) {
-            transition-delay: 0.1s;
-        }
-        .services-step:nth-child(3) {
-            transition-delay: 0.2s;
-        }
-        .services-step:nth-child(4) {
-            transition-delay: 0.3s;
-        }
-
-        /* Step content focusing effects */
-        .services-content {
-            opacity: 0.35;
-            transform: translateX(0);
-            transition:
-                opacity 0.5s ease,
-                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .services-title {
-            transition: color 0.4s ease;
-        }
-
-        /* Active focus state triggered by scrolling timeline path */
-        .step-active .services-content {
-            opacity: 1;
-            transform: translateX(10px);
-        }
-
-        .step-active .services-title {
-            color: var(--color-accent, #3b52f6);
-        }
-
-        .step-active .services-badge-wrap {
-            opacity: 1;
-        }
-
-        /* Bubble base structures & micro-pulse rings */
-        .services-bubble {
-            position: relative;
-            transition:
-                border-color 0.3s ease-out,
-                color 0.3s ease-out,
-                background-color 0.3s ease-out,
-                box-shadow 0.3s ease-out;
-        }
-
-        /* Fills circle backdrop blue, overrides default border and turns inner layout string text white */
-        .bubble-active {
-            border-color: var(--color-accent, #3b52f6) !important;
-            color: #ffffff !important;
-            background-color: var(--color-accent, #3b52f6) !important;
-            box-shadow: 0 4px 12px rgba(59, 82, 246, 0.25);
-        }
-
-        /* Radar ripple effect around active bullet */
-        .bubble-active::before {
-            content: "";
-            position: absolute;
-            inset: -1px;
-            border: 1px solid var(--color-accent, #3b52f6);
-            border-radius: 50%;
-            animation: bubble-pulse 2s infinite ease-out;
-            pointer-events: none;
-        }
-
-        @keyframes bubble-pulse {
-            0% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(1.5);
-                opacity: 0;
-            }
-        }
-    </style>
 </section>
+
+<script>
+    // Phones' accordion: tapping a phase opens it and closes the others;
+    // tapping the open one closes it. A closed panel is inert, so screen
+    // readers and the keyboard skip its hidden text.
+    document.querySelectorAll<HTMLElement>("[data-cycle-acc]").forEach((list) => {
+        const items = [...list.querySelectorAll<HTMLElement>(".acc-item")];
+        const setOpen = (item: HTMLElement, open: boolean) => {
+            item.classList.toggle("is-open", open);
+            item.querySelector(".acc-btn")?.setAttribute("aria-expanded", String(open));
+            item.querySelector(".acc-panel")?.toggleAttribute("inert", !open);
+        };
+        items.forEach((item) => {
+            item.querySelector(".acc-btn")?.addEventListener("click", () => {
+                const open = !item.classList.contains("is-open");
+                items.forEach((other) => setOpen(other, other === item ? open : false));
+            });
+        });
+    });
+</script>
+
+<style>
+    .services {
+        padding: var(--section-space) 20px;
+        background: #efefed;
+    }
+    .cycle {
+        --ink: #151515;
+        --line: rgb(21 21 21 / 0.14);
+        max-width: 560px;
+        margin-inline: auto;
+    }
+
+    /* The ring. Its own width is the unit (cqi) for the text inside it, so
+       the heading and intro always fit within the circle. */
+    /* Clipped to its own box: the spinning SVG is a square, and its corners
+       swing out past the box as it turns (by about 30px on a phone, enough
+       to make the whole page scroll sideways). The arrows only ever fill the
+       circle inside the box, so nothing visible is cut. */
+    .cycle-ring {
+        position: relative;
+        width: min(100%, 340px);
+        aspect-ratio: 1;
+        margin: 0 auto 56px;
+        container-type: inline-size;
+        overflow: clip;
+        overflow-clip-margin: 4px;
+    }
+    .ring-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        animation: ring-spin 48s linear infinite;
+        will-change: transform;
+    }
+    /* A thin stroke in the same colour softens the arrows' corners. */
+    .ring-svg path {
+        fill: var(--color-accent);
+        stroke: var(--color-accent);
+        stroke-width: 2;
+        stroke-linejoin: round;
+    }
+    @keyframes ring-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Centre content: kept inside the arrows' inner edge (71% of the ring
+       across), with room to spare at the corners. */
+    .cycle-center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3.2cqi;
+        text-align: center;
+    }
+    .cycle-title {
+        margin: 0;
+        max-width: 56cqi;
+        font-family: "Unbounded", sans-serif;
+        font-weight: 800;
+        font-size: 5cqi;
+        line-height: 1.12;
+        letter-spacing: -0.01em;
+        text-transform: uppercase;
+        text-wrap: balance;
+        color: var(--ink);
+    }
+    .cycle-intro {
+        margin: 0;
+        max-width: 48cqi;
+        font-family: "Inter", sans-serif;
+        font-size: clamp(13px, 3.3cqi, 15.5px);
+        line-height: 1.5;
+        color: #444;
+        text-wrap: balance;
+    }
+
+    /* Phases on tablets and wide screens (phones use the accordion) */
+    .cycle-steps {
+        display: none;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .step-num {
+        display: block;
+        margin-bottom: 8px;
+        font-family: "Unbounded", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--color-accent);
+    }
+    .step-title {
+        margin: 0 0 8px;
+        font-family: "Unbounded", sans-serif;
+        font-weight: 800;
+        font-size: 1.1rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+        color: var(--ink);
+    }
+    .step-text {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.55;
+        color: #444;
+    }
+
+    /* ---- Phones: the phases as an accordion ----------------------------
+       Every phase is a full-width white card, set like the case study cards
+       on phones (white, no border, 20px corners): number badge, title,
+       chevron. Opening one only grows its card downward to show the text
+       (lined up under the title) and fills its badge blue; nothing else
+       changes shape, so it opens and closes in one smooth movement. */
+    .cycle-ring {
+        margin-bottom: 40px;
+    }
+    .cycle-acc {
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 8px;
+    }
+    .acc-item {
+        border-radius: 20px;
+        background: #fff;
+    }
+    .acc-head {
+        margin: 0;
+    }
+    .acc-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 10px 20px 10px 10px;
+        border: 0;
+        border-radius: 20px;
+        background: transparent;
+        color: var(--ink);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .acc-btn:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+    /* The badge: the page grey inside the white card, blue when open. */
+    .acc-num {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #efefed;
+        font-family: "Unbounded", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--color-accent);
+        transition:
+            background-color 0.35s ease,
+            color 0.35s ease;
+    }
+    .acc-title {
+        flex: 1;
+        font-family: "Unbounded", sans-serif;
+        font-weight: 800;
+        font-size: 1rem;
+        line-height: 1.2;
+        text-transform: uppercase;
+    }
+    /* A chevron drawn from two borders: points down when closed, up when
+       open. */
+    .acc-chevron {
+        flex: none;
+        width: 9px;
+        height: 9px;
+        margin-top: -4px;
+        border-right: 2px solid rgb(21 21 21 / 0.45);
+        border-bottom: 2px solid rgb(21 21 21 / 0.45);
+        transform: rotate(45deg);
+        transition:
+            transform 0.5s var(--ease),
+            margin 0.5s var(--ease),
+            border-color 0.25s ease;
+    }
+    @media (hover: hover) {
+        .acc-btn:hover .acc-chevron {
+            border-color: rgb(21 21 21 / 0.85);
+        }
+    }
+    .acc-item.is-open .acc-num {
+        background: var(--color-accent);
+        color: #fff;
+    }
+    .acc-item.is-open .acc-chevron {
+        margin-top: 4px;
+        transform: rotate(-135deg);
+    }
+    /* The panel opens to its content's height: its one grid row goes from
+       0fr to 1fr, and the inner wrapper clips while it does. */
+    .acc-panel {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.5s var(--ease);
+    }
+    .acc-item.is-open .acc-panel {
+        grid-template-rows: 1fr;
+    }
+    .acc-panel-inner {
+        min-height: 0;
+        overflow: hidden;
+    }
+    /* The text. The left padding lines it up with the title (row padding
+       10 + badge 44 + gap 16); it fades in as the card opens. */
+    .acc-card {
+        margin: 0;
+        padding: 0 22px 22px 70px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.97rem;
+        line-height: 1.6;
+        color: rgb(68 68 68 / 0);
+        transition: color 0.3s ease;
+    }
+    .acc-item.is-open .acc-card {
+        color: #444;
+        transition-delay: 0.1s;
+    }
+    /* The narrowest phones: full-width text, so the lines aren't cramped. */
+    @media (max-width: 359px) {
+        .acc-card {
+            padding-left: 20px;
+        }
+    }
+
+    /* Tablets: the phases in two columns under the ring, each under a thin
+       rule like the comparison's rows. */
+    @media (min-width: 640px) {
+        .cycle {
+            max-width: 760px;
+        }
+        .cycle-ring {
+            width: min(100%, 400px);
+            margin-bottom: 56px;
+        }
+        .cycle-acc {
+            display: none;
+        }
+        .cycle-steps {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px 48px;
+        }
+        .cycle-step {
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
+        }
+    }
+
+    /* Wide screens: the full page width, like the hero and the comparison.
+       The ring sits in the middle with one phase in each corner, read
+       clockwise from the top left; the top two line up with the top of the
+       ring and the bottom two with its bottom. */
+    @media (min-width: 1024px) {
+        .services {
+            padding-inline: 48px;
+        }
+        .cycle {
+            --ring: clamp(380px, 34vw, 500px);
+            max-width: 1344px;
+            display: grid;
+            grid-template-columns: 1fr var(--ring) 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-template-areas:
+                "s0 ring s1"
+                "s3 ring s2";
+            column-gap: clamp(40px, 5vw, 96px);
+        }
+        /* The list's items join the grid directly */
+        .cycle-steps {
+            display: contents;
+        }
+        .cycle-ring {
+            grid-area: ring;
+            width: 100%;
+            margin: 0;
+        }
+        .cycle-step {
+            width: 100%;
+            max-width: 330px;
+        }
+        .step-text {
+            font-size: 0.9375rem;
+        }
+        .cycle-step-0 {
+            grid-area: s0;
+            justify-self: start;
+            align-self: start;
+        }
+        .cycle-step-1 {
+            grid-area: s1;
+            justify-self: end;
+            align-self: start;
+        }
+        .cycle-step-2 {
+            grid-area: s2;
+            justify-self: end;
+            align-self: end;
+        }
+        .cycle-step-3 {
+            grid-area: s3;
+            justify-self: start;
+            align-self: end;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .ring-svg {
+            animation: none;
+        }
+        .acc-btn,
+        .acc-num,
+        .acc-chevron,
+        .acc-panel,
+        .acc-card {
+            transition: none;
+        }
+    }
+</style>

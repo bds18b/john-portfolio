@@ -4,206 +4,628 @@ import { Image } from "astro:assets";
 import fealsLogo from "../assets/Feals-logo.svg";
 import highlandLogo from "../assets/Highland-logo.svg";
 import survivalFrogLogo from "../assets/SurvivalFrog-logo.webp";
+import fealsPhoto from "../assets/Feals-lifestyle-photo.jpg";
+import highlandPhoto from "../assets/Highland-lifestyle-photo.jpg";
+import frogPhoto from "../assets/survival-frog-lifestyle-image.webp";
+
+// One headline result per client; each card links to (and opens) that
+// client's case study further down. Highland's photo is tall with the
+// bottles low in the frame, so it is cropped from lower down.
+const results = [
+    {
+        id: "feals",
+        brand: "Feals",
+        value: "+222%",
+        label: "MRR growth",
+        photo: fealsPhoto,
+        logo: fealsLogo,
+        logoClass: "logo-feals",
+    },
+    {
+        id: "highland",
+        brand: "Highland",
+        value: "+58%",
+        label: "Repeat orders",
+        photo: highlandPhoto,
+        photoPosition: "50% 75%",
+        logo: highlandLogo,
+        logoClass: "logo-highland",
+    },
+    {
+        id: "survival-frog",
+        brand: "Survival Frog",
+        value: "+42%",
+        label: "LTV growth",
+        photo: frogPhoto,
+        logo: survivalFrogLogo,
+        logoClass: "logo-frog",
+    },
+];
+
+// The big word, split into letters for the entrance (screen readers get the
+// whole word from the hidden copy).
+const bigWord = "Retention";
+
+// Entrance timing (ms): when the cards start, one after another. The script
+// starts each card's count-up to match.
+const CARDS_START = 750;
+const CARD_STAGGER = 120;
 ---
 
-<section
-    class="hero-section bg-[#efefed] pt-40 pb-20 flex flex-col items-center justify-center relative overflow-x-hidden w-full"
->
-    <!-- Subtle grain texture overlay -->
-    <div class="grain-overlay" aria-hidden="true"></div>
-
-    <div
-        class="w-full max-w-[900px] mx-auto px-6 flex flex-col items-center justify-center text-center gap-8 animate-fade-up"
-    >
-        <!-- Eyebrow badge -->
-        <div
-            class="flex items-center gap-2 bg-white/60 border border-[#1a1a18]/10 rounded-full px-4 py-1.5"
-        >
-            <span class="live-dot" aria-hidden="true"></span>
-            <span
-                class="font-inconsolata text-[11px] font-bold tracking-[0.18em] uppercase text-[#6b6b65]"
+<section class="hero" data-hero>
+    <!-- Hold the entrance until the fonts are in (or 0.8s at most, see the
+         script below), so the letters don't rise in a fallback font and then
+         change. Runs before the hero is drawn. The timeout releases it
+         anyway if the page script never runs. -->
+    <script is:inline>
+        document.documentElement.classList.add("hero-wait");
+        setTimeout(function () { document.documentElement.classList.remove("hero-wait"); }, 1500);
+    </script>
+    <div class="hero-inner">
+        <h1 class="hero-title">
+            <span class="title-small title-lead hero-rise" style="--d: 0ms">Build the</span>
+            <span class="title-big"><span class="sr-only">{bigWord}</span><span class="big-letters" aria-hidden="true" data-big-word>{[...bigWord].map((ch, i) => <span class="ch" style={`--i: ${i}`}>{ch}</span>)}</span></span>
+            <span class="title-small title-tail hero-rise" style="--d: 450ms"
+                >Program behind <span class="text-accent sweep">profitable growth.</span></span
             >
-                Available for new engagements
-            </span>
-        </div>
+        </h1>
 
-        <!-- Headline -->
-        <div class="w-full">
-            <h1
-                class="font-oswald font-normal uppercase text-[clamp(2.4rem,5vw,4rem)] leading-[1.0] tracking-[-0.01em] text-[#1a1a18]"
-            >
-                Build the
-                <span
-                    class="pill-accent px-3 py-0.5 bg-[#1a1a18] text-white inline-block rounded"
-                >
-                    retention
-                </span>
-                <span class="block mt-1">program behind</span>
-                <span class="text-accent block mt-1 tracking-tight"
-                    >profitable growth.</span
-                >
-            </h1>
-        </div>
-
-        <!-- Subheadline — tighter, more punchy -->
-        <p
-            class="font-oswald text-[clamp(1rem,1.4vw,1.15rem)] uppercase tracking-wide text-[#1a1a18] leading-snug max-w-[580px]"
-        >
-            Retention isn't just email and SMS. It's the entire customer
-            journey, from the first ad to the post-purchase experience.
+        <p class="hero-lede hero-rise" style="--d: 600ms">
+            Not just email and SMS. The entire customer journey, from the first
+            ad to the post-purchase experience.
         </p>
 
-        <!-- Body copy — kept tight -->
-        <p
-            class="font-inconsolata text-[clamp(0.875rem,1.15vw,0.925rem)] font-normal leading-[1.65] text-[#6b6b65] max-w-[560px]"
+        <div class="hero-actions hero-rise" style="--d: 700ms">
+            <a href="#contact" class="btn-cta">Work with me</a>
+            <a href="#case-studies" class="btn-link">Case studies</a>
+        </div>
+
+        <ul
+            class="hero-results"
+            role="list"
+            style={`--cards-start: ${CARDS_START}ms; --card-stagger: ${CARD_STAGGER}ms`}
         >
-            I embed completely as your go-to customer lifecycle operator,
-            building the retention engine end-to-end, turning every funnel stage
-            into compounding contribution margin that supports profitable scale.
-        </p>
-
-        <!-- CTA Button Only -->
-        <div class="w-full max-w-[420px]">
-            <a
-                href="#contact"
-                class="cta-btn inline-flex items-center justify-between w-full bg-accent border-2 border-accent font-inconsolata text-[0.875rem] font-bold tracking-[0.15em] uppercase text-white no-underline px-6 py-4 rounded-xl transition-all duration-200 ease-in-out hover:bg-[#1a1a18] hover:border-[#1a1a18] group"
-            >
-                <span>Work with me</span>
-                <span
-                    class="transform transition-transform duration-200 group-hover:translate-x-1"
-                    aria-hidden="true">→</span
-                >
-            </a>
-        </div>
-    </div>
-
-    <!-- Full Width Trusted By & Marquee Container -->
-    <div class="relative left-1/2 -translate-x-1/2 w-[100vw] mt-16 overflow-hidden">
-        
-        <!-- Trusted by Row -->
-        <div class="w-full max-w-[720px] mx-auto px-6 flex items-center justify-center gap-4 mb-6">
-            <div class="flex-grow border-t border-[#1a1a18]/10"></div>
-            <span class="font-inconsolata text-[11px] font-bold tracking-[0.2em] uppercase text-[#9c9c96] whitespace-nowrap">
-                Trusted By
-            </span>
-            <div class="flex-grow border-t border-[#1a1a18]/10"></div>
-        </div>
-
-        <!-- Edge-to-edge Marquee Container -->
-        <div aria-hidden="true" class="w-full relative flex items-center h-20">
-            <div class="inline-flex items-center animate-marquee whitespace-nowrap">
-                {
-                    [0, 1, 2, 3, 4, 5].map(() => (
-                        <>
-                            <!-- Feals: Shifted left by 5px using transform -->
-                            <div class="w-[110px] md:w-[140px] flex items-center justify-center flex-shrink-0 mx-1 transform -translate-x-[5px]">
-                                <Image
-                                    src={fealsLogo}
-                                    alt="Feals"
-                                    loading="eager"
-                                    class="h-5 md:h-6.5 w-auto object-contain grayscale opacity-50"
-                                />
-                            </div>
-                            
-                            <!-- Highland: Unchanged baseline anchor -->
-                            <div class="w-[115px] md:w-[145px] flex items-center justify-center gap-1.5 flex-shrink-0 mx-1">
-                                <Image
-                                    src={highlandLogo}
-                                    alt=""
-                                    loading="eager"
-                                    class="h-6 md:h-8 w-auto object-contain grayscale opacity-50"
-                                />
-                                <span class="font-oswald text-[14px] md:text-[17px] font-normal tracking-[0.05em] uppercase text-[#1a1a18]/50 leading-none">
-                                    HIGHLAND
-                                </span>
-                            </div>
-                            
-                            <!-- Survival Frog: Shifted left by an additional 5px using transform -->
-                            <div class="w-[195px] md:w-[235px] flex items-center justify-center gap-0.5 flex-shrink-0 mx-1 transform -translate-x-[5px]">
-                                <Image
-                                    src={survivalFrogLogo}
-                                    alt=""
-                                    loading="eager"
-                                    class="h-7.5 md:h-9 w-auto object-contain grayscale opacity-50"
-                                />
-                                <span class="font-oswald text-[14px] md:text-[17px] font-normal tracking-[0.05em] uppercase text-[#1a1a18]/50 -ml-4 leading-none">
-                                    SURVIVAL FROG
-                                </span>
-                            </div>
-                        </>
-                    ))
-                }
-            </div>
-        </div>
+            {
+                results.map((r, i) => (
+                    <li style={`--k: ${i}`}>
+                      <a class="hero-card" href={`#case-${r.id}`}>
+                        <Image
+                            src={r.photo}
+                            alt=""
+                            widths={[440, 660, 880, 1100]}
+                            sizes="(min-width: 1440px) 435px, (min-width: 640px) 31vw, 100vw"
+                            loading="eager"
+                            class="card-photo"
+                            style={r.photoPosition ? `object-position: ${r.photoPosition}` : undefined}
+                        />
+                        <div class="card-shade" aria-hidden="true" />
+                        {r.logo && (
+                            <Image
+                                src={r.logo}
+                                alt=""
+                                width={240}
+                                loading="eager"
+                                class:list={["card-logo", r.logoClass]}
+                            />
+                        )}
+                        <p class="card-stat">
+                            <span class="sr-only">{r.brand} case study: {r.value} {r.label}</span>
+                            <span
+                                class="card-number"
+                                aria-hidden="true"
+                                data-count
+                                data-delay={CARDS_START + i * CARD_STAGGER + 300}
+                            >{r.value}</span>
+                            <span class="card-label" aria-hidden="true">{r.label}</span>
+                        </p>
+                      </a>
+                    </li>
+                ))
+            }
+        </ul>
     </div>
 </section>
 
+<script>
+    // Starts the entrance once the fonts are in (0.8s at most), counts the
+    // result numbers up in step with their cards, and after the entrance
+    // lets "RETENTION" roll over on hover. With reduced motion none of this
+    // runs and everything simply shows.
+    const root = document.documentElement;
+    const hero = document.querySelector<HTMLElement>("[data-hero]");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // "+222%" counts from "+0%", easing out over 1.5s after `delay` ms.
+    const countUp = (el: HTMLElement, delay: number) => {
+        const match = (el.textContent ?? "").trim().match(/^(\D*)(\d+)(\D*)$/);
+        if (!match) return;
+        const [, before, digits, after] = match;
+        const target = Number(digits);
+        const start = performance.now() + delay;
+        const duration = 1500;
+        el.textContent = `${before}0${after}`;
+        const tick = (now: number) => {
+            const t = Math.min(1, Math.max(0, (now - start) / duration));
+            const eased = 1 - Math.pow(1 - t, 4);
+            el.textContent = `${before}${Math.round(target * eased)}${after}`;
+            if (t < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+    };
+
+    // Phones (cards stacked): a card still below the screen when the hero
+    // starts waits (.is-waiting holds its animations at the start), then
+    // plays its entrance and count-up as it scrolls into view. Cards on
+    // screen play with the rest of the hero, on the load timing.
+    const ENTER_DELAY = 80; // ms after a waiting card comes into view
+    const startCards = () => {
+        const cards = [...(hero?.querySelectorAll<HTMLElement>(".hero-results > li") ?? [])];
+        const stacked = window.matchMedia("(max-width: 639px)").matches;
+        const observer =
+            stacked && "IntersectionObserver" in window
+                ? new IntersectionObserver(
+                      (entries, obs) => {
+                          entries.forEach((entry) => {
+                              if (!entry.isIntersecting) return;
+                              const card = entry.target as HTMLElement;
+                              obs.unobserve(card);
+                              card.classList.remove("is-waiting");
+                              const number = card.querySelector<HTMLElement>("[data-count]");
+                              if (number) countUp(number, ENTER_DELAY + 300);
+                          });
+                      },
+                      { threshold: 0.3 },
+                  )
+                : null;
+        cards.forEach((card) => {
+            const number = card.querySelector<HTMLElement>("[data-count]");
+            if (observer && card.getBoundingClientRect().top > window.innerHeight) {
+                card.style.setProperty("--at", `${ENTER_DELAY}ms`);
+                card.classList.add("is-waiting");
+                observer.observe(card);
+            } else if (number) {
+                countUp(number, Number(number.dataset.delay ?? 0));
+            }
+        });
+    };
+
+    const begin = () => {
+        if (!root.classList.contains("hero-wait")) return;
+        if (!reduce) startCards();
+        root.classList.remove("hero-wait");
+    };
+    Promise.race([
+        document.fonts ? document.fonts.ready : Promise.resolve(),
+        new Promise((resolve) => setTimeout(resolve, 800)),
+    ]).then(begin);
+
+    // Hover roll on the big word, once the entrance has finished. A roll
+    // always plays to the end, even if the pointer leaves part way.
+    const word = hero?.querySelector<HTMLElement>("[data-big-word]");
+    const lastLetter = word?.lastElementChild;
+    if (word && lastLetter && !reduce) {
+        lastLetter.addEventListener("animationend", (event) => {
+            const name = (event as AnimationEvent).animationName;
+            if (name.startsWith("letter-rise")) word.classList.add("is-settled");
+            if (name.startsWith("letter-loop")) word.classList.remove("is-looping");
+        });
+        word.addEventListener("mouseenter", () => {
+            if (word.classList.contains("is-settled")) word.classList.add("is-looping");
+        });
+    }
+</script>
+
 <style>
-    .font-inconsolata {
-        font-family: "Inconsolata", "Courier New", monospace;
+    /* Sizes and gaps are taken from the 1440px-wide design and scale down
+       with the screen; small text stops shrinking at a readable size. */
+    /* At least one screen tall, with the content centred, so on big monitors
+       the next section doesn't peek in under the cards. (100vh first for
+       browsers without svh, the height with the mobile toolbars showing.) */
+    .hero {
+        background: #efefed;
+        padding-block: clamp(104px, 8.6vw, 124px) clamp(40px, 4.2vw, 60px);
+        min-height: 100vh;
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
-    .font-oswald {
-        font-family: "Oswald", sans-serif;
+    .hero-inner {
+        width: 100%;
     }
 
-   
-    .live-dot {
-        display: inline-block;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--color-accent, #3b52f6);
-        box-shadow: 0 0 0 0 rgba(59, 82, 246, 0.4);
-        animation: pulse-dot 2s ease-in-out infinite;
+    /* Film grain behind the content: a tile of tiny dark specks (0-20%
+       opacity, one pixel each). It fades in from the top, like the reference,
+       and is still at full strength at the bottom: the next section carries
+       it on and fades it out (Comparison.astro). */
+    .hero {
+        position: relative;
+        isolation: isolate;
     }
-
-    @keyframes pulse-dot {
-        0%,
-        100% {
-            box-shadow: 0 0 0 0 rgba(59, 82, 246, 0.4);
+    .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background: url("../assets/hero-grain.png") repeat;
+        background-size: 160px 160px;
+        -webkit-mask-image: linear-gradient(to bottom, transparent 8%, #000 50%);
+        mask-image: linear-gradient(to bottom, transparent 8%, #000 50%);
+    }
+    .hero-inner {
+        max-width: 1440px;
+        margin-inline: auto;
+        padding-inline: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    @media (min-width: 640px) {
+        .hero-inner {
+            padding-inline: 24px;
         }
-        50% {
-            box-shadow: 0 0 0 5px rgba(59, 82, 246, 0);
+    }
+    @media (min-width: 1024px) {
+        .hero-inner {
+            padding-inline: 48px;
         }
     }
 
-    /* Animations */
-    @keyframes fadeUp {
+    /* Headline. In Unbounded the capitals sit exactly in the middle of the
+       line box, so a line-height of 0.75 (the capital height) makes the box
+       the same height as the capitals, and the margins are the visible gaps. */
+    .hero-title {
+        --big: clamp(2.25rem, 11.4vw, 10.26rem);
+        --small: clamp(0.875rem, 1.852vw, 1.667rem);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: "Unbounded", sans-serif;
+        text-transform: uppercase;
+        color: #151515;
+    }
+    .title-small {
+        font-size: var(--small);
+        font-weight: 700;
+        line-height: 1.35;
+        text-wrap: balance;
+    }
+    /* Letter-spacing also adds space after the last letter; the matching
+       padding on the left keeps the words centred. */
+    .title-lead {
+        letter-spacing: 0.28em;
+        padding-inline-start: 0.28em;
+    }
+    .title-tail {
+        letter-spacing: 0.117em;
+        padding-inline-start: 0.117em;
+    }
+    .title-big {
+        font-size: var(--big);
+        font-weight: 900;
+        line-height: 0.75;
+        letter-spacing: -0.02em;
+        /* 0.262 of the big size between the capitals of each line, less the
+           small lines' extra line height (0.3em above and below). */
+        margin-block: calc(var(--big) * 0.262 - var(--small) * 0.3);
+    }
+
+    .hero-lede {
+        margin: clamp(20px, 2.5vw, 36px) 0 0;
+        max-width: 50rem;
+        font-family: "Inter", sans-serif;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #444;
+        text-wrap: balance;
+    }
+
+    .hero-actions {
+        margin-top: 1.2rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px 22px;
+    }
+    /* "Work with me" uses the shared .btn-cta style (global.css). */
+    .btn-link {
+        padding-block: 15px;
+        font: 500 1rem/1.5 "Inter", sans-serif;
+        color: #151515;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+        transition: color 0.2s ease;
+    }
+    .btn-link:hover {
+        color: var(--color-accent);
+    }
+    .btn-link:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 3px;
+    }
+
+    /* Result cards: one column on phones, three across from 640px. */
+    .hero-results {
+        width: 100%;
+        margin: clamp(24px, 2vw, 29px) 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 12px;
+        text-align: left;
+    }
+    @media (min-width: 640px) {
+        .hero-results {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+    }
+    @media (min-width: 1024px) {
+        .hero-results {
+            gap: 20px;
+        }
+    }
+
+    /* Each card is a link to its case study. */
+    .hero-card {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 2 / 1;
+        border-radius: 12px;
+        background: #2b2723;
+        container-type: inline-size;
+    }
+    /* Phones: wide and short (about 130px tall on a typical phone), so the
+       three stacked cards take less of the screen. The narrowest phones keep
+       2:1: there the number and label stack and need the height. */
+    @media (min-width: 360px) and (max-width: 639px) {
+        .hero-card {
+            aspect-ratio: 8 / 3;
+        }
+    }
+    @media (min-width: 640px) {
+        .hero-card {
+            aspect-ratio: 4 / 5;
+        }
+    }
+    @media (min-width: 1024px) {
+        .hero-card {
+            aspect-ratio: 3 / 2;
+        }
+    }
+
+    .hero-card :global(.card-photo) {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-card:hover :global(.card-photo) {
+        transform: scale(1.04);
+    }
+    .hero-card:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .hero-card :global(.card-photo) {
+            transition: none;
+        }
+    }
+    /* Dims the whole photo, then darkens the lower half behind the numbers. */
+    .card-shade {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to bottom, rgb(0 0 0 / 0) 48%, rgb(0 0 0 / 0.76)),
+            rgb(0 0 0 / 0.32);
+    }
+    .hero-card :global(.card-logo) {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+        height: auto;
+        filter: brightness(0) invert(1);
+    }
+    .hero-card :global(.logo-feals) {
+        width: clamp(52px, 16.3cqi, 76px);
+    }
+    /* The deer head, the same height as the frog. */
+    .hero-card :global(.logo-highland) {
+        width: clamp(36px, 10.3cqi, 50px);
+    }
+    /* The frog image has empty space around the frog, so it is set wider. */
+    .hero-card :global(.logo-frog) {
+        width: clamp(80px, 24.6cqi, 115px);
+    }
+
+    .card-stat {
+        position: absolute;
+        inset-inline: 0;
+        bottom: 0;
+        margin: 0;
+        padding: clamp(16px, 5.5cqi, 24px);
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px 12px;
+        color: #fff;
+    }
+    .card-number {
+        font-family: "Unbounded", sans-serif;
+        font-weight: 900;
+        font-size: clamp(22px, 7.6cqi, 33px);
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+    .card-label {
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 1;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgb(255 255 255 / 0.92);
+    }
+    /* Narrow cards: the label goes under the number. */
+    @container (max-width: 299px) {
+        .card-stat {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    /* Even-width digits (where the font has them) while the numbers count. */
+    .card-number {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* ---- Entrance --------------------------------------------------------
+       One sequence on load, everything rising into place on the same easing
+       as the "Work with me" fill:
+         0ms     "Build the" lifts out of a blur
+         80ms+   RETENTION's letters rise from the baseline, one by one
+         450ms   the second line, then the paragraph (600) and buttons (700)
+         750ms+  the cards wipe up one after another, photos settling
+         1050ms+ each card's logo and number; the number counts up
+         1100ms  "profitable growth." turns blue in an angled sweep
+       Every animation fills "backwards": it holds its starting state during
+       its delay and leaves no trace once done, so hover effects work as
+       before. While html.hero-wait is set (until the fonts are in) they are
+       held at the start. */
+    .hero {
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    :global(html.hero-wait) .hero :global(*) {
+        animation-play-state: paused !important;
+    }
+
+    .hero-rise {
+        animation: hero-rise 0.9s var(--ease) var(--d, 0ms) backwards;
+    }
+    @keyframes hero-rise {
         from {
             opacity: 0;
-            transform: translateY(16px);
+            transform: translateY(0.6em);
+            filter: blur(8px);
         }
-        to {
-            opacity: 1;
+    }
+
+    /* RETENTION: each letter rises out of an edge at the baseline. The box
+       is exactly the capital height (line-height 0.75), so clipping it hides
+       a letter that is below the baseline or above the capitals. */
+    .big-letters {
+        display: inline-block;
+        clip-path: inset(-0.02em -0.2em -0.02em -0.2em);
+    }
+    .ch {
+        display: inline-block;
+        animation: letter-rise 1.05s var(--ease) calc(80ms + var(--i) * 55ms) backwards;
+    }
+    @keyframes letter-rise {
+        from {
+            transform: translateY(105%);
+        }
+    }
+    /* After the entrance, a hover rolls each letter up and out of the top,
+       then back in from below: an odometer turning over. */
+    .big-letters.is-settled .ch {
+        animation: none;
+    }
+    .big-letters.is-looping .ch {
+        animation: letter-loop 0.95s calc(var(--i) * 40ms) both;
+    }
+    @keyframes letter-loop {
+        0% {
+            transform: translateY(0);
+            animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.2);
+        }
+        42% {
+            transform: translateY(-105%);
+        }
+        42.01% {
+            transform: translateY(105%);
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        100% {
             transform: translateY(0);
         }
     }
 
-    @keyframes marquee {
-        0% {
-            transform: translate3d(0, 0, 0);
-        }
-        100% {
-            transform: translate3d(-16.6666%, 0, 0);
+    /* "profitable growth.": ink first, then the accent sweeps across from
+       the left with a slanted edge, like the button fill. The text is cut out
+       of a background that is half accent, half ink; moving it shows one or
+       the other. Its resting state is the accent. */
+    .sweep {
+        background: linear-gradient(105deg, var(--color-accent) 0 50%, #151515 50% 100%) 0 0 / 250% 100% no-repeat;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: accent-sweep 1.1s var(--ease) 1100ms backwards;
+    }
+    @keyframes accent-sweep {
+        from {
+            background-position: 100% 0;
         }
     }
 
-    .animate-fade-up {
-        animation: fadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* Cards: each wipes up from the bottom while its photo settles from a
+       slight zoom, then its logo and number come in. The clip sits 10px
+       outside the card at rest, leaving room for the focus outline. */
+    .hero-results li {
+        --at: calc(var(--cards-start) + var(--k) * var(--card-stagger));
+        clip-path: inset(-10px round 22px);
+        animation: card-wipe 1.1s var(--ease) var(--at) backwards;
     }
-    
-    .animate-marquee {
-        animation: marquee 15s linear infinite;
+    /* Phones: a card below the screen at load is held here until it scrolls
+       into view (the script sets and clears the class). */
+    .hero-results li.is-waiting,
+    .hero-results li.is-waiting :global(*) {
+        animation-play-state: paused !important;
+    }
+    @keyframes card-wipe {
+        from {
+            clip-path: inset(100% -10px -10px -10px round 22px);
+            transform: translateY(32px);
+        }
+    }
+    .hero-card :global(.card-photo) {
+        animation: photo-settle 1.8s var(--ease) var(--at) backwards;
+    }
+    @keyframes photo-settle {
+        from {
+            transform: scale(1.25);
+        }
+    }
+    .hero-card :global(.card-logo),
+    .card-stat {
+        animation: card-content 0.8s var(--ease) calc(var(--at) + 300ms) backwards;
+    }
+    @keyframes card-content {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .animate-fade-up {
-            animation: none;
-        }
-        .animate-marquee {
-            animation-play-state: paused;
-        }
-        .live-dot {
+        .hero-rise,
+        .ch,
+        .sweep,
+        .hero-results li,
+        .hero-card :global(.card-photo),
+        .hero-card :global(.card-logo),
+        .card-stat {
             animation: none;
         }
     }
