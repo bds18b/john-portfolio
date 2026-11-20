@@ -71,7 +71,7 @@ const arrows = [0, 1, 2, 3].map((k) => {
             </svg>
             <div class="cycle-center">
                 <h2 class="cycle-title">
-                    The full funnel approach <span class="text-accent">to retention</span>
+                    The full funnel approach <span class="text-accent cycle-accent">to retention</span>
                 </h2>
                 <p class="cycle-intro">
                     I don't chase vanity metrics. I find the levers that move
@@ -224,6 +224,12 @@ const arrows = [0, 1, 2, 3].map((k) => {
         text-transform: uppercase;
         text-wrap: balance;
         color: var(--ink);
+    }
+    /* "to retention" always on a line of its own, never split (on some
+       phones "to" otherwise wrapped up onto the line above). */
+    .cycle-accent {
+        display: block;
+        white-space: nowrap;
     }
     .cycle-intro {
         margin: 0;
