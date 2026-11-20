@@ -1,9 +1,20 @@
 ---
 import { Image } from "astro:assets";
 import portrait from "../assets/john-with-dog.jpg";
+// A square crop of John's face from the same photo (460, 120 to 840, 500
+// in the 1080px original), for the round avatar on phones and tablets.
+import avatar from "../assets/john-avatar.jpg";
 
 // Background and approach are taken from John's LinkedIn About section.
 // Name and LinkedIn: linkedin.com/in/john-narducci-b30540185
+//
+// Wide screens (900px+): the photo fills the left half, the words the
+// right. Phones and tablets: a white profile card instead, read top to
+// bottom as who he is (round photo, name, role), what he does for you (the
+// blue line), then his background under a thin rule, cut down to three
+// short points and the key insight (.about-short) instead of the two
+// paragraphs. Each layout hides the other's photo and text; a hidden photo
+// isn't downloaded (both load lazily).
 ---
 
 <section id="about" class="about">
@@ -11,30 +22,64 @@ import portrait from "../assets/john-with-dog.jpg";
         <Image
             src={portrait}
             alt="John Narducci in the snow, holding his dog"
-            widths={[400, 600, 800, 1080]}
-            sizes="(min-width: 1440px) 624px, (min-width: 900px) calc(50vw - 75px), min(calc(100vw - 40px), 480px)"
+            widths={[600, 800, 1080]}
+            sizes="(min-width: 1440px) 624px, calc(50vw - 75px)"
             quality={90}
             class="about-photo"
         />
         <div class="about-copy">
-            <h2 class="about-title">I'm John</h2>
+            <div class="about-id">
+                <Image
+                    src={avatar}
+                    alt="John Narducci"
+                    widths={[128, 192]}
+                    sizes="64px"
+                    quality={90}
+                    class="about-avatar"
+                />
+                <div>
+                    <h2 class="about-title">I'm John</h2>
+                    <p class="about-role">Fractional retention lead</p>
+                </div>
+            </div>
             <p class="about-lead">
                 I work with founders and CEOs of <span class="nowrap">8-figure</span> DTC CPG brands who
                 want to keep growing without giving up margin to do it.
             </p>
-            <p class="about-text">
-                Before going fractional, I spent 5–6 years brand-side in growth
-                and retention, including leading retention in-house at Feals.
-                I've also sat in the growth seat, so I know what CAC pressure
-                feels like from the inside.
-            </p>
-            <p class="about-text">
-                Most brands at this stage were built to acquire customers, not
-                keep them. That worked while CAC was low. At scale, the game
-                isn't a lower CAC. It's being able to afford a higher one, and a
-                lot of that room is already sitting in the customers you've paid
-                for.
-            </p>
+            <div class="about-story">
+                <p class="about-text">
+                    Before going fractional, I spent 5–6 years brand-side in
+                    growth and retention, including leading retention
+                    in-house at Feals. I've also sat in the growth seat, so I
+                    know what CAC pressure feels like from the inside.
+                </p>
+                <p class="about-text">
+                    Most brands at this stage were built to acquire customers,
+                    not keep them. That worked while CAC was low. At scale, the
+                    game isn't a lower CAC. It's being able to afford a higher
+                    one, and a lot of that room is already sitting in the
+                    customers you've paid for.
+                </p>
+            </div>
+            <!-- Phones and tablets: the same background, shorter and easier
+                 to scan (the two paragraphs above are hidden there). -->
+            <div class="about-short">
+                <ul class="about-points" role="list">
+                    <li>5–6 years brand-side in growth and retention</li>
+                    <li>Led retention in-house at Feals</li>
+                    <li>Also sat in the growth seat, so I know CAC pressure from the inside</li>
+                </ul>
+                <div class="about-insight">
+                    <p class="insight-main">
+                        At scale, the game isn't a lower CAC. It's being able to
+                        afford a higher one.
+                    </p>
+                    <p class="insight-sub">
+                        A lot of that room is already sitting in the customers
+                        you've paid for.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -43,30 +88,6 @@ import portrait from "../assets/john-with-dog.jpg";
     .about {
         padding: var(--section-space) 20px;
         background: #efefed;
-    }
-    /* Phones and tablets: the photo, then the words, left-aligned like the
-       other stacked sections (centred paragraphs are hard to read). */
-    .about-inner {
-        max-width: 1100px;
-        margin-inline: auto;
-        display: grid;
-        gap: 32px;
-        justify-items: start;
-        text-align: left;
-    }
-    /* Square, the photo's own shape, so nothing is cropped: full width on
-       phones (up to 480px), as wide as its column on wide screens. */
-    .about-inner :global(.about-photo) {
-        width: 100%;
-        max-width: 480px;
-        height: auto;
-        aspect-ratio: 1;
-        object-fit: cover;
-        object-position: 50% 50%;
-        border-radius: 20px;
-    }
-    .about-copy {
-        max-width: 36rem;
     }
     /* Keeps "8-figure" from breaking after the hyphen. */
     .nowrap {
@@ -83,17 +104,14 @@ import portrait from "../assets/john-with-dog.jpg";
         color: #151515;
     }
     .about-lead {
-        margin: 14px 0 0;
         font-family: "Unbounded", sans-serif;
         font-weight: 600;
-        font-size: clamp(1.05rem, 1.6vw, 1.35rem);
-        line-height: 1.3;
         letter-spacing: -0.01em;
         color: var(--color-accent);
         text-wrap: balance;
     }
     .about-text {
-        margin: 18px 0 0;
+        margin: 0;
         font-family: "Inter", sans-serif;
         font-size: 1rem;
         line-height: 1.65;
@@ -103,31 +121,150 @@ import portrait from "../assets/john-with-dog.jpg";
         margin-top: 12px;
     }
 
-    /* Wide screens: two equal halves across the full page width, like the
-       comparison: the photo fills the left half (square, the photo's own
-       shape, so nothing is cropped) and the words fill the right. The
-       testimonials below use the same halves and gap, so the words here start
-       on the same line as the quotes there. */
+    /* ---- Phones and tablets: a profile card ---------------------------- */
+    @media (max-width: 899px) {
+        .about-inner {
+            display: grid;
+            justify-items: center;
+        }
+        .about-inner :global(.about-photo) {
+            display: none;
+        }
+        /* White, no border, 20px corners, like the case study and approach
+           cards. */
+        .about-copy {
+            width: 100%;
+            max-width: 36rem;
+            padding: 24px 22px 26px;
+            border-radius: 20px;
+            background: #fff;
+        }
+        .about-id {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .about-id :global(.about-avatar) {
+            flex: none;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .about-role {
+            margin: 6px 0 0;
+            font-family: "Inter", sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.3;
+            color: #444;
+        }
+        .about-lead {
+            margin: 22px 0 0;
+            font-size: clamp(1.15rem, 4.6vw, 1.35rem);
+            line-height: 1.3;
+        }
+        .about-story {
+            display: none;
+        }
+        .about-short {
+            margin-top: 22px;
+            padding-top: 22px;
+            border-top: 1px solid rgb(21 21 21 / 0.1);
+        }
+        /* Three short points, each with a small blue square. */
+        .about-points {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+        .about-points li {
+            position: relative;
+            padding-left: 22px;
+            font-family: "Inter", sans-serif;
+            font-size: 1rem;
+            line-height: 1.45;
+            color: #2a2a2a;
+        }
+        .about-points li::before {
+            content: "";
+            position: absolute;
+            left: 2px;
+            top: 0.5em;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: var(--color-accent);
+        }
+        /* The key insight, set in the display face on a grey panel inside
+           the card, with its follow-up line smaller under it. */
+        .about-insight {
+            margin-top: 22px;
+            padding: 18px 20px 20px;
+            border-radius: 14px;
+            background: #efefed;
+        }
+        .insight-main {
+            margin: 0;
+            font-family: "Unbounded", sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+            color: #151515;
+            text-wrap: balance;
+        }
+        .insight-sub {
+            margin: 10px 0 0;
+            font-family: "Inter", sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #444;
+        }
+    }
+
+    /* ---- Wide screens: two equal halves across the full page width -----
+       Like the comparison: the photo fills the left half (square, the
+       photo's own shape, so nothing is cropped) and the words fill the
+       right. The testimonials below use the same halves and gap, so the
+       words here start on the same line as the quotes there. */
     @media (min-width: 900px) {
         .about {
             padding-inline: 48px;
         }
         .about-inner {
             max-width: 1344px;
+            margin-inline: auto;
+            display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: clamp(48px, 6vw, 96px);
             align-items: center;
-            justify-items: stretch;
-            text-align: left;
         }
         .about-inner :global(.about-photo) {
-            max-width: none;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 20px;
         }
         .about-copy {
             max-width: 40rem;
         }
+        .about-id :global(.about-avatar),
+        .about-role {
+            display: none;
+        }
         .about-lead {
+            margin: 14px 0 0;
             font-size: clamp(1.15rem, 1.75vw, 1.5rem);
+            line-height: 1.3;
+        }
+        .about-story {
+            margin-top: 18px;
+        }
+        .about-short {
+            display: none;
         }
     }
 </style>
