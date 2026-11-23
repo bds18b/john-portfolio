@@ -312,24 +312,12 @@ const STEP_COUNT = 4;
         });
         back.addEventListener("click", () => show(current - 1));
 
-        // A click or tap on a single-choice answer moves on by itself. Keyboard
-        // users move through radio buttons with the arrow keys, so for them it
-        // waits for Next.
-        let viaPointer = false;
-        form.addEventListener("pointerdown", () => (viaPointer = true));
-        form.addEventListener("keydown", () => (viaPointer = false));
+        // Picking an answer clears "Pick one to continue". Next moves on, on
+        // every step, so the pace stays the visitor's.
         form.addEventListener("change", (event) => {
             save();
             const input = event.target as HTMLInputElement;
-            if (input.type !== "checkbox" && input.type !== "radio") return;
-            setError("");
-            if (input.type === "radio" && viaPointer && current < total - 1) {
-                const step = current;
-                // Long enough to see the answer get selected before moving on.
-                setTimeout(() => {
-                    if (current === step) show(step + 1);
-                }, 500);
-            }
+            if (input.type === "checkbox" || input.type === "radio") setError("");
         });
         // Once a field has shown an error, re-check just that field as it is
         // fixed, without moving the cursor.
