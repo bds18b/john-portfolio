@@ -429,13 +429,13 @@ const STEP_COUNT = 4;
     }
     /* The fixed nav (Nav.astro's <header>, a direct child of <body>). */
     html.modal-open body > header {
-        width: calc(100% - var(--scrollbar-gap, 0px));
+        right: var(--scrollbar-gap, 0px);
     }
 </style>
 
 <style>
-    /* Set like the rest of the site: the page grey, Unbounded for the
-       questions and labels, white answer cards that turn the accent blue
+    /* Set like the rest of the site: the page grey, Inter Tight for the
+       questions and Inter for the labels, white answer cards that turn the accent blue
        when picked (like the comparison's blue block), and the site's pill
        button with the angled fill (.btn-cta in global.css). */
     .contact-modal {
@@ -449,7 +449,7 @@ const STEP_COUNT = 4;
 
         width: min(560px, calc(100vw - 32px));
         max-width: none;
-        max-height: min(780px, calc(100dvh - 32px));
+        max-height: min(780px, calc(100dvh / var(--page-zoom, 1) - 32px));
         /* Tailwind's reset zeroes every margin, which drops the browser's
            built-in centring for dialogs. */
         margin: auto;
@@ -528,8 +528,8 @@ const STEP_COUNT = 4;
     }
     .step-count {
         margin: 0;
-        font-family: "Unbounded", sans-serif;
-        font-size: 11px;
+        font-family: "Inter", sans-serif;
+        font-size: 12px;
         font-weight: 700;
         letter-spacing: 0.16em;
         text-transform: uppercase;
@@ -577,7 +577,8 @@ const STEP_COUNT = 4;
         content: "";
         position: absolute;
         inset: 0;
-        background: var(--accent);
+        background: var(--accent-fill);
+        image-rendering: pixelated;
         transform: scaleX(0);
         transform-origin: left;
         transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -630,12 +631,11 @@ const STEP_COUNT = 4;
         display: block;
         padding: 0;
         margin: 0;
-        font-family: "Unbounded", sans-serif;
-        font-weight: 800;
-        font-size: clamp(1.3rem, 4.4vw, 1.65rem);
-        line-height: 1.12;
-        letter-spacing: -0.015em;
-        text-transform: uppercase;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-weight: 600;
+        font-size: clamp(1.5rem, 4.8vw, 1.85rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
         text-wrap: balance;
         color: var(--ink);
     }
@@ -665,9 +665,9 @@ const STEP_COUNT = 4;
         border: 1px solid transparent;
         border-radius: 14px;
         background: #fff;
-        font-family: "Unbounded", sans-serif;
-        font-weight: 600;
-        font-size: 0.875rem;
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 0.9375rem;
         line-height: 1.35;
         color: var(--ink);
         cursor: pointer;
@@ -686,7 +686,8 @@ const STEP_COUNT = 4;
     }
     .option:has(input:checked) {
         border-color: var(--accent);
-        background: var(--accent);
+        background: var(--accent-fill);
+        image-rendering: pixelated;
         color: #fff;
     }
     .option:has(input:focus-visible) {
@@ -726,7 +727,8 @@ const STEP_COUNT = 4;
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: var(--accent);
+        background: var(--accent-fill);
+        image-rendering: pixelated;
     }
     .option:has(input:checked) .mark {
         border-color: #fff;
@@ -845,7 +847,8 @@ const STEP_COUNT = 4;
         height: 52px;
         margin-bottom: 22px;
         border-radius: 50%;
-        background: var(--accent);
+        background: var(--accent-fill);
+        image-rendering: pixelated;
         color: #fff;
     }
 
@@ -964,5 +967,46 @@ const STEP_COUNT = 4;
         .success.is-entering {
             animation: none;
         }
+    }
+
+    /* ---- Dark ------------------------------------------------------------
+       The panel #19191c, the answer cards and fields a shade up, lines and
+       rings in white at low opacity. Picked answers stay blue. */
+    :global(:root[data-site-theme="dark"]) .contact-modal {
+        --ink: #f5f5f2;
+        --muted: rgb(245 245 242 / 0.68);
+        --soft: #a1a1aa;
+        --line: rgb(255 255 255 / 0.1);
+        background: #19191c;
+        box-shadow: 0 30px 90px rgb(0 0 0 / 0.6);
+    }
+    :global(:root[data-site-theme="dark"]) .close {
+        border-color: rgb(255 255 255 / 0.18);
+    }
+    :global(:root[data-site-theme="dark"]) .progress-seg {
+        background: rgb(255 255 255 / 0.1);
+    }
+    :global(:root[data-site-theme="dark"]) .option,
+    :global(:root[data-site-theme="dark"]) .field input,
+    :global(:root[data-site-theme="dark"]) .field textarea {
+        background: #232327;
+    }
+    /* (The rule above would otherwise take the picked answer too.) */
+    :global(:root[data-site-theme="dark"]) .option:has(input:checked) {
+        background: var(--accent-fill);
+    }
+    :global(:root[data-site-theme="dark"]) .option:hover {
+        border-color: rgb(255 255 255 / 0.35);
+    }
+    :global(:root[data-site-theme="dark"]) .mark {
+        border-color: rgb(255 255 255 / 0.25);
+    }
+    :global(:root[data-site-theme="dark"]) .field input:hover,
+    :global(:root[data-site-theme="dark"]) .field textarea:hover {
+        border-color: rgb(255 255 255 / 0.2);
+    }
+    :global(:root[data-site-theme="dark"]) .field input::placeholder,
+    :global(:root[data-site-theme="dark"]) .field textarea::placeholder {
+        color: #71717a;
     }
 </style>

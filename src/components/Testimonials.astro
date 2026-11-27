@@ -41,17 +41,17 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
 ---
 
 <section id="testimonials" class="testimonials">
-  <div class="t-inner" data-testimonials>
+  <div class="t-inner" data-testimonials data-reveal>
     <div class="t-head">
-      <h2 class="t-title">
-        Built for <span class="t-highlight"><span class="nowrap">8-figure</span> scale</span>
+      <h2 class="t-title" data-reveal="lines">
+        Built for <span class="t-highlight keyword"><span class="nowrap">8-figure</span> scale</span>
       </h2>
-      <p class="t-intro">
+      <p class="t-intro" data-reveal>
         From founders and operators I've worked with.
       </p>
     </div>
 
-    <div class="t-stage" data-stage aria-live="polite">
+    <div class="t-stage" data-stage aria-live="polite" data-reveal>
       {visibleTestimonials.map((item) => (
         <figure class="t-quote" data-quote>
           <span class="t-mark" aria-hidden="true">“</span>
@@ -156,7 +156,7 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
   .testimonials {
     /* No space below: the dark closing block joins straight on (Footer.astro). */
     padding: var(--section-space) 20px 0;
-    background: #efefed;
+    background: var(--page-bg);
   }
   /* A blue block, the same width as the case study cards above and the dark
      closing block below (1440px including the page padding), echoing the
@@ -170,7 +170,8 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
     margin-inline: auto;
     padding: clamp(40px, 6vw, 88px) clamp(24px, 5vw, 80px);
     border-radius: 20px 20px 0 0;
-    background: var(--color-accent);
+    background: var(--accent-fill-soft);
+    image-rendering: pixelated;
     color: #fff;
     display: grid;
     gap: 40px;
@@ -182,12 +183,11 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
   /* Heading, intro and the buttons */
   .t-title {
     margin: 0;
-    font-family: "Unbounded", sans-serif;
-    font-weight: 800;
-    font-size: clamp(1.5rem, 3.6vw, 2.75rem);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
+    font-family: "Inter Tight", "Inter", sans-serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 3.9vw, 3rem);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
     text-wrap: balance;
     color: #fff;
   }
@@ -243,9 +243,9 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
     width: 6em;
     text-align: center;
     font-variant-numeric: tabular-nums;
-    font-family: "Unbounded", sans-serif;
-    font-size: 12px;
-    font-weight: 700;
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
     letter-spacing: 0.08em;
     color: rgb(255 255 255 / 0.85);
   }
@@ -300,11 +300,11 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
   }
   .t-text p {
     margin: 0;
-    font-family: "Unbounded", sans-serif;
+    font-family: "Inter Tight", "Inter", sans-serif;
     font-weight: 600;
-    font-size: var(--q);
-    line-height: 1.4;
-    letter-spacing: -0.015em;
+    font-size: calc(var(--q) * 1.12);
+    line-height: 1.28;
+    letter-spacing: -0.025em;
     color: #fff;
     text-wrap: pretty;
   }
@@ -315,10 +315,10 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
     gap: 4px;
   }
   .t-name {
-    font-family: "Unbounded", sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 700;
     font-size: 13px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #fff;
   }

@@ -7,23 +7,25 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
     <div class="footer-block">
         <div class="footer-cta">
-            <!-- One sentence on wide screens; on phones the spans become four
-                 lines shaped like the hero's headline (see the styles). -->
-            <h2 class="footer-title">
-                <span class="ft-line">Let's build the</span>
-                <span class="ft-line ft-big">retention</span>
-                <span class="ft-line">program behind</span>
-                <span class="ft-line footer-accent">your growth.</span>
+            <!-- Set like the hero's headline: Inter Tight, with the last
+                 words in Unbounded and the accent texture. -->
+            <h2 class="footer-title" data-reveal="lines">
+                Let's turn retention into
+                <span class="footer-accent keyword accent-texture">profitable growth.</span>
             </h2>
-            <p class="footer-sub">
+            <p class="footer-sub" data-reveal>
                 If your plan for next year is “spend more and hope CAC holds,”
                 let's talk.
             </p>
-            <a href="#contact" class="btn-cta footer-btn">Work with me</a>
+            <a href="#contact" class="btn-cta footer-btn" data-reveal>Work with me</a>
         </div>
 
-        <div class="footer-bottom">
-            <p class="footer-name">John Narducci</p>
+        <div class="footer-bottom" data-reveal>
+            <a href="#top" class="footer-name" aria-label="Retention First, back to top"
+                ><span class="mark-first" aria-hidden="true">Retention</span><span class="mark-last" aria-hidden="true"
+                    >First</span
+                ></a
+            >
             <nav class="footer-nav" aria-label="Footer">
                 <a href="#comparison" class="footer-link">Why me</a>
                 <a href="#about" class="footer-link">About</a>
@@ -37,7 +39,14 @@ const year = new Date().getFullYear();
                     class="footer-link">LinkedIn</a
                 >
             </nav>
-            <p class="footer-copy">© {year}</p>
+            <p class="footer-copy">
+                © {year}<span class="footer-dot" aria-hidden="true">·</span><a
+                    href="https://bradenseidl.com"
+                    target="_blank"
+                    rel="noopener"
+                    class="footer-credit">Built by Braden</a
+                >
+            </p>
         </div>
     </div>
 </footer>
@@ -47,7 +56,7 @@ const year = new Date().getFullYear();
        900px), so the blue block and this one are exactly the same width. */
     .site-footer {
         padding: 0 20px clamp(20px, 3.3vw, 48px);
-        background: #efefed;
+        background: var(--page-bg);
     }
     /* Joined straight onto the bottom of the blue testimonials block: square
        where they meet, rounded only at the bottom, so the two make one block
@@ -79,41 +88,17 @@ const year = new Date().getFullYear();
     }
     .footer-title {
         margin: 0;
-        max-width: 15em;
-        font-family: "Unbounded", sans-serif;
-        font-weight: 900;
-        font-size: clamp(1.9rem, 5.4vw, 4.9rem);
-        line-height: 1.02;
-        letter-spacing: -0.02em;
-        text-transform: uppercase;
+        max-width: 13em;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-weight: 600;
+        font-size: clamp(2.25rem, 5.2vw, 4.5rem);
+        line-height: 1.06;
+        letter-spacing: -0.035em;
         text-wrap: balance;
     }
+    /* "profitable growth." wears the accent texture. */
     .footer-accent {
         color: var(--color-accent);
-    }
-    /* Phones: left to wrap, the sentence broke into six short, ragged lines.
-       Instead it is set in four, like the hero: RETENTION big across the
-       full width, the other lines smaller, with "program behind" (the
-       longest) also spanning it. The sizes are fractions of the block's
-       inner width (cqi), from the measured widths of the lines in Unbounded
-       Black: RETENTION is 7.34em wide, PROGRAM BEHIND 11.74em. Capped so a
-       large phone held sideways doesn't get giant type. */
-    @media (max-width: 639px) {
-        .footer-cta {
-            container-type: inline-size;
-        }
-        .footer-title {
-            max-width: none;
-        }
-        .ft-line {
-            display: block;
-            font-size: min(8.4cqi, 2.25rem);
-            line-height: 1.12;
-        }
-        .ft-big {
-            font-size: min(13.4cqi, 3.6rem);
-            line-height: 1;
-        }
     }
     .footer-sub {
         margin: clamp(18px, 2vw, 28px) 0 0;
@@ -124,10 +109,8 @@ const year = new Date().getFullYear();
         color: rgb(255 255 255 / 0.72);
         text-wrap: balance;
     }
-    /* On the dark block the button fills white, with dark text. */
+    /* The hero's button, hover and all. */
     .footer-btn {
-        --btn-fill: #fff;
-        --btn-text-hover: #151515;
         margin-top: clamp(24px, 2.6vw, 36px);
     }
 
@@ -141,13 +124,31 @@ const year = new Date().getFullYear();
         align-items: center;
         gap: 20px 40px;
     }
+    /* The nav's wordmark: RETENTIONFIRST in capitals, run together, the
+       first word heavy and the second light. */
     .footer-name {
-        margin: 0;
-        font-family: "Unbounded", sans-serif;
-        font-weight: 700;
-        font-size: 12px;
-        letter-spacing: 0.04em;
+        display: inline-flex;
+        align-items: baseline;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-size: 18px;
+        line-height: 1;
+        letter-spacing: -0.01em;
         text-transform: uppercase;
+        white-space: nowrap;
+        color: #fff;
+        text-decoration: none;
+    }
+    .mark-first {
+        font-weight: 800;
+    }
+    .mark-last {
+        margin-left: 0.08em;
+        font-weight: 300;
+    }
+    .footer-name:focus-visible {
+        outline: 2px solid #7b84ff;
+        outline-offset: 4px;
+        border-radius: 2px;
     }
     .footer-nav {
         display: flex;
@@ -160,16 +161,31 @@ const year = new Date().getFullYear();
         font-size: 0.85rem;
         color: rgb(255 255 255 / 0.5);
     }
+    .footer-dot {
+        margin-inline: 0.5em;
+    }
+    /* The site credit: as quiet as the year beside it, brighter on hover. */
+    .footer-credit {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+    .footer-credit:hover {
+        color: #fff;
+    }
+    .footer-credit:focus-visible {
+        outline: 2px solid #7b84ff;
+        outline-offset: 3px;
+        border-radius: 2px;
+    }
     /* The padding (cancelled out by the negative margin) makes each link a
        comfortable size to tap without changing the spacing you see. */
     .footer-link {
         padding-block: 10px;
         margin-block: -10px;
-        font-family: "Unbounded", sans-serif;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
         color: rgb(255 255 255 / 0.72);
         text-decoration: none;
         transition: color 0.2s ease;
@@ -194,5 +210,11 @@ const year = new Date().getFullYear();
         .footer-copy {
             margin: 0;
         }
+    }
+
+    /* ---- Dark ------------------------------------------------------------
+       The page itself is near-black, so the block steps up a shade. */
+    :global(:root[data-site-theme="dark"]) .footer-block {
+        background: #19191c;
     }
 </style>

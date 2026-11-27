@@ -1,230 +1,815 @@
 ---
-// Nav.astro
+// The nav, set like bradenseidl.com's: a full-width bar fixed to the top
+// of the page (64px tall on phones, 80px from 768px), in the page colour
+// with a hairline under it. Inside, the page's content column: the
+// RETENTIONFIRST wordmark on the left; the links, the light / dark button and
+// "Contact me" on the right. Phones keep only the light / dark button and
+// swap the rest for a menu button, which opens a full-screen menu:
+//   open:  the backdrop grows out of the top-right corner (300ms), then the
+//          links wipe in left to right while coming into focus (400ms,
+//          100ms apart), then the footer rises in (250ms).
+//   close: the footer drops out (150ms), the links wipe out to the right
+//          (300ms, 60ms apart), the backdrop fades (200ms).
+// The menu button is locked for 600ms after each press.
+// On load the bar's items drop in one after another (the --d delays).
+
+const links = [
+    { href: "#services", label: "Services" },
+    { href: "#case-studies", label: "Case studies" },
+    { href: "#testimonials", label: "Testimonials" },
+];
 ---
 
-<header
-    class="site-nav fixed top-0 left-0 w-full z-50 pointer-events-none md:pointer-events-auto pt-4 px-3 md:pt-0 md:px-0"
->
-    <div
-        id="nav-pill"
-        class="w-full mx-auto border border-[#151515]/10 bg-[#efefed]/85 backdrop-blur-sm pointer-events-auto overflow-hidden
-               rounded-xl max-w-[1160px]
-               md:rounded-none md:max-w-none md:border-t-0 md:border-x-0 md:border-b md:bg-[#efefed]/90"
-    >
-        <div
-            class="flex justify-between items-center w-full px-2 py-2 md:px-12 md:py-0 md:h-20 max-w-[1440px] mx-auto"
-        >
-            <div class="flex items-center">
-                <button
-                    id="menu-toggle"
-                    class="flex md:hidden border-none bg-transparent cursor-pointer group p-3 relative z-50"
-                    aria-label="Toggle Menu"
-                    aria-expanded="false"
-                >
-                    <div
-                        class="flex flex-col gap-[5px] w-[18px] items-start justify-center h-4"
-                    >
-                        <span
-                            class="w-full h-[2px] bg-[#1a1a18] rounded-full transition-all duration-300 origin-center burger-line-1"
-                        ></span>
-                        <span
-                            class="w-[70%] h-[2px] bg-[#1a1a18] rounded-full transition-all duration-300 origin-center burger-line-2 group-hover:w-full"
-                        ></span>
-                    </div>
-                </button>
+<header class="site-header">
+    <nav aria-label="Primary" class="nav-row">
+        <a href="#top" class="nav-mark nav-enter" style="--d: 60ms" aria-label="Retention First, back to top">
+            <span class="mark-first" aria-hidden="true">Retention</span><span class="mark-last" aria-hidden="true">First</span>
+        </a>
 
-                <nav class="hidden md:flex items-center gap-[34px]">
-                    <a href="#services" class="nav-link">Services</a>
-                    <a href="#case-studies" class="nav-link">Case Studies</a>
-                    <a href="#testimonials" class="nav-link">Testimonials</a>
-                </nav>
-            </div>
+        <ul class="nav-links">
+            {
+                links.map((link, i) => (
+                    <li>
+                        <a href={link.href} class="nav-link nav-enter" style={`--d: ${160 + i * 60}ms`} data-text={link.label}>
+                            {link.label}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
 
-            <div class="flex items-center pr-1 md:pr-0">
-                <a href="#contact" class="nav-action-btn"> Contact Me </a>
-            </div>
+        <div class="nav-actions">
+            <!-- Light / dark. A moon while light, a sun while dark; the
+                 choice is saved (Layout.astro applies it before the first
+                 paint). -->
+            <button
+                type="button"
+                class="theme-toggle nav-enter"
+                style="--d: 340ms"
+                aria-label="Dark mode"
+                aria-pressed="false"
+                data-theme-toggle
+            >
+                <svg class="theme-moon" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">
+                    <path
+                        d="M13.25 9.6A5.75 5.75 0 0 1 6.4 2.75a5.75 5.75 0 1 0 6.85 6.85Z"
+                        stroke="currentColor"
+                        stroke-width="1.4"
+                        stroke-linejoin="round"></path>
+                </svg>
+                <svg class="theme-sun" viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true">
+                    <circle cx="8" cy="8" r="2.75" stroke="currentColor" stroke-width="1.4"></circle>
+                    <path
+                        d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.6 3.6l1.06 1.06M11.34 11.34l1.06 1.06M3.6 12.4l1.06-1.06M11.34 4.66l1.06-1.06"
+                        stroke="currentColor"
+                        stroke-width="1.4"
+                        stroke-linecap="round"></path>
+                </svg>
+            </button>
+            <a href="#contact" class="btn-cta nav-cta nav-enter" style="--d: 400ms">Contact me</a>
+            <button
+                type="button"
+                class="menu-toggle nav-enter"
+                style="--d: 460ms"
+                aria-label="Open menu"
+                aria-expanded="false"
+                aria-controls="mobile-menu"
+            >
+                <span class="bar bar-top"></span>
+                <span class="bar bar-mid"></span>
+                <span class="bar bar-bottom"></span>
+            </button>
         </div>
-
-        <div id="mobile-menu" class="md:hidden">
-            <div id="mobile-menu-inner">
-                <div class="mobile-divider"></div>
-                <nav class="mobile-nav">
-                    <a href="#services" class="mobile-link" data-index="0"
-                        >Services</a
-                    >
-                    <a href="#case-studies" class="mobile-link" data-index="1"
-                        >Case Studies</a
-                    >
-                    <a href="#testimonials" class="mobile-link" data-index="2"
-                        >Testimonials</a
-                    >
-                </nav>
-            </div>
-        </div>
-    </div>
+    </nav>
 </header>
 
+<!-- Full-screen phone menu. Sits just under the bar (z 40 vs 50) so the bar
+     and its menu button stay on top. `inert` keeps the hidden links out of
+     the tab order and away from screen readers while closed. -->
+<div id="mobile-menu" class="mobile-menu" inert>
+    <div class="menu-bg"></div>
+    <div class="menu-body">
+        <ul class="menu-list">
+            {
+                links.map((link) => (
+                    <li>
+                        <a href={link.href} class="menu-link">
+                            {link.label}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+    <div class="menu-footer">
+        <p class="menu-copy">© {new Date().getFullYear()} John Narducci</p>
+        <a
+            href="https://www.linkedin.com/in/john-narducci-b30540185"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="menu-foot-link">LinkedIn</a
+        >
+    </div>
+</div>
+
 <style>
-    /* On desktop the bar has no visible edge over the hero; a hairline
-       appears once the page has scrolled and content passes underneath. */
+    /* ---------------- The bar ---------------- */
+    .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        height: 64px;
+        background: var(--page-bg);
+        border-bottom: 1px solid rgb(21 21 21 / 0.1);
+    }
     @media (min-width: 768px) {
-        #nav-pill {
-            border-bottom-color: transparent;
-            transition: border-color 0.2s ease;
+        .site-header {
+            height: 80px;
         }
-        .site-nav[data-scrolled] #nav-pill {
-            border-bottom-color: rgb(21 21 21 / 0.08);
+    }
+    /* The hero's content column: 16px sides on phones, 24px from 640px,
+       48px from 1024px, 1440px at most. */
+    .nav-row {
+        height: 100%;
+        max-width: 1440px;
+        margin-inline: auto;
+        padding-inline: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    @media (min-width: 640px) {
+        .nav-row {
+            padding-inline: 24px;
+        }
+    }
+    @media (min-width: 768px) {
+        .nav-row {
+            gap: 28px;
+        }
+    }
+    @media (min-width: 1024px) {
+        .nav-row {
+            padding-inline: 48px;
         }
     }
 
-    .nav-link {
-        font-family: "Unbounded", sans-serif;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
+    /* ---------------- The wordmark ---------------- */
+    /* RETENTIONFIRST in capitals, run together: the first word heavy, the
+       second light, the weights telling the two apart (with a hair of
+       space between). */
+    .nav-mark {
+        flex: none;
+        margin-right: auto;
+        display: inline-flex;
+        align-items: baseline;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-size: 16px;
+        line-height: 1;
+        letter-spacing: -0.01em;
         text-transform: uppercase;
+        white-space: nowrap;
         color: #151515;
         text-decoration: none;
-        transition: color 0.2s ease-in-out;
+    }
+    .mark-first {
+        font-weight: 800;
+    }
+    .mark-last {
+        margin-left: 0.08em;
+        font-weight: 300;
+    }
+    .nav-mark:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 4px;
+        border-radius: 2px;
+    }
+    @media (min-width: 768px) {
+        .nav-mark {
+            font-size: 18px;
+        }
+    }
+
+    /* ---------------- Links ---------------- */
+    /* 15px, a touch over regular; on hover the weight goes up a little. The
+       hidden copy in ::after holds the bolder width, so nothing shifts. */
+    .nav-links {
+        display: none;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        align-items: center;
+        gap: 28px;
+    }
+    @media (min-width: 768px) {
+        .nav-links {
+            display: flex;
+        }
+    }
+    .nav-link {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: "Inter", sans-serif;
+        font-size: 15px;
+        font-weight: 410;
+        line-height: 150%;
+        letter-spacing: 0.15px;
+        color: rgb(38 35 35 / 0.8);
+        text-decoration: none;
         white-space: nowrap;
-        padding: 8px 0;
+        transition:
+            color 0.2s ease,
+            font-weight 200ms ease;
+    }
+    .nav-link::after {
+        content: attr(data-text);
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
+        font-weight: 460;
+        pointer-events: none;
+        user-select: none;
     }
     .nav-link:hover {
-        color: var(--color-accent, #4651f9);
+        font-weight: 460;
+        color: #151515;
+    }
+    .nav-link:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 4px;
+        border-radius: 2px;
     }
 
-    .nav-action-btn {
-        display: inline-flex;
+    .nav-actions {
+        display: flex;
         align-items: center;
-        height: 38px;
-        padding: 0 22px;
-        border-radius: 999px;
-        font-family: "Unbounded", sans-serif;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
+        gap: 8px;
+    }
+    @media (min-width: 768px) {
+        .nav-actions {
+            gap: 28px;
+        }
+    }
+
+    /* "Contact me" is the hero's button (.btn-cta in global.css), sized
+       down for the bar. Not on phones for now. */
+    .nav-cta {
+        height: 40px;
+        padding: 0 20px;
+        font-size: 0.875rem;
         white-space: nowrap;
-        color: #ffffff;
-        background-color: #151515;
-        text-decoration: none;
-        transition: background-color 0.2s ease-in-out;
     }
-    .nav-action-btn:hover {
-        background-color: var(--color-accent, #4651f9);
-    }
-    .nav-link:focus-visible,
-    .nav-action-btn:focus-visible {
-        outline: 2px solid var(--color-accent, #4651f9);
-        outline-offset: 3px;
+    @media (max-width: 767px) {
+        .nav-cta {
+            display: none;
+        }
     }
 
-    /* Minimalist Close X Animation Transforms */
-    [aria-expanded="true"] .burger-line-1 {
-        transform: translateY(3.5px) rotate(-45deg);
-    }
-    [aria-expanded="true"] .burger-line-2 {
-        width: 100% !important;
-        transform: translateY(-3.5px) rotate(45deg);
-    }
-
-    /* Mobile menu wrapper structural dynamic sheet engine */
-    #mobile-menu {
+    /* ---------------- Light / dark button ---------------- */
+    /* Set like the menu button beside it: a 36px square, no fill, a faint
+       outline, the icon in the menu lines' grey; a 16px moon or sun. Both
+       icons share one cell; the theme picks which shows. */
+    .theme-toggle {
         display: grid;
-        grid-template-rows: 0fr;
-        transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        place-items: center;
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border: 1px solid rgb(0 0 0 / 0.08);
+        border-radius: 8px;
+        background: transparent;
+        color: #404040;
+        cursor: pointer;
+        user-select: none;
+        transition: scale 200ms cubic-bezier(0.23, 1, 0.32, 1);
     }
-    #mobile-menu.is-open {
-        grid-template-rows: 1fr;
+    .theme-toggle:active {
+        scale: 0.97;
     }
-    #mobile-menu-inner {
-        overflow: hidden;
+    .theme-toggle svg {
+        grid-area: 1 / 1;
+        width: 16px;
+        height: 16px;
+    }
+    .theme-sun {
+        visibility: hidden;
+    }
+    :global(:root[data-site-theme="dark"]) .theme-sun {
+        visibility: visible;
+    }
+    :global(:root[data-site-theme="dark"]) .theme-moon {
+        visibility: hidden;
+    }
+    .theme-toggle:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
     }
 
-    .mobile-divider {
-        margin: 0 16px;
-        height: 1px;
-        background: rgba(26, 26, 24, 0.08);
-    }
-
-    .mobile-nav {
+    /* ---------------- Menu button (lines → X) ---------------- */
+    .menu-toggle {
+        position: relative;
         display: flex;
         flex-direction: column;
-        padding: 6px 4px;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: 8px;
+        border: 1px solid rgb(0 0 0 / 0.08);
+        background: transparent;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
     }
-
-    .mobile-link {
-        font-family: "Unbounded", sans-serif;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        color: #151515;
-        text-decoration: none;
-        padding: 12px 16px;
+    @media (min-width: 768px) {
+        .menu-toggle {
+            display: none;
+        }
+    }
+    .menu-toggle:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+    /* Locked for 600ms after each press. */
+    .menu-toggle[aria-disabled="true"] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .bar {
         display: block;
-        opacity: 0;
-        transform: translateY(-4px);
-        transition:
-            opacity 0.25s ease,
-            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-            color 0.2s ease;
+        width: 14px;
+        height: 1.5px;
+        border-radius: 9999px;
+        background-color: #404040;
+        transform-origin: center;
+        transition-property: translate, rotate, scale, opacity, margin;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 220ms;
     }
-    .mobile-link:hover {
-        color: var(--color-accent, #6b6b65);
+    .bar-mid {
+        margin-top: 3.5px;
+        transition-duration: 160ms;
+    }
+    .bar-bottom {
+        margin-top: 3.5px;
+    }
+    /* X: the outer lines meet in the middle and cross; the middle one
+       shrinks out. */
+    .menu-toggle[aria-expanded="true"] .bar-top {
+        translate: 0 5px;
+        rotate: 45deg;
+    }
+    .menu-toggle[aria-expanded="true"] .bar-mid {
+        opacity: 0;
+        scale: 0;
+    }
+    .menu-toggle[aria-expanded="true"] .bar-bottom {
+        translate: 0 -5px;
+        rotate: -45deg;
     }
 
-    #mobile-menu.is-open .mobile-link {
-        opacity: 1;
-        transform: translateY(0);
+    /* ---------------- Full-screen menu ---------------- */
+    .mobile-menu {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 40;
+        height: 100dvh;
+        pointer-events: none;
     }
-    #mobile-menu.is-open .mobile-link[data-index="0"] {
-        transition-delay: 0.05s;
+    .mobile-menu.is-open {
+        pointer-events: auto;
     }
-    #mobile-menu.is-open .mobile-link[data-index="1"] {
-        transition-delay: 0.1s;
+    @media (min-width: 768px) {
+        .mobile-menu {
+            display: none;
+        }
     }
-    #mobile-menu.is-open .mobile-link[data-index="2"] {
-        transition-delay: 0.15s;
+    /* Closed: a zero-size, heavily rounded patch in the top-right corner.
+       Opening grows it to fill the screen. */
+    .menu-bg {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 100%;
+        left: 100%;
+        opacity: 0;
+        border-bottom-left-radius: 500%;
+        background-color: var(--page-bg);
+    }
+    .menu-body {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-inline: 32px;
+    }
+    .menu-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .menu-link {
+        display: block;
+        padding-block: 2px;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-size: 2.75rem;
+        font-weight: 600;
+        line-height: 1.05;
+        letter-spacing: -0.035em;
+        color: #52525b;
+        text-decoration: none;
+        opacity: 0;
+        filter: blur(10px);
+        clip-path: inset(0 100% 0 0);
+        transition: color 0.2s ease;
+    }
+    .menu-link:hover {
+        color: #151515;
+    }
+    .menu-link:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 4px;
+        border-radius: 4px;
+    }
+    .menu-footer {
+        position: absolute;
+        inset: auto 0 32px;
+        z-index: 2;
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 22px;
+        padding-inline: 16px;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    .menu-copy {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #52525b;
+    }
+    .menu-foot-link {
+        font-family: "Inter", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        color: #151515;
+        text-decoration: underline;
+        text-decoration-color: rgb(21 21 21 / 0.25);
+        text-underline-offset: 4px;
+        transition: text-decoration-color 0.2s ease;
+    }
+    .menu-foot-link:hover {
+        text-decoration-color: #151515;
+    }
+
+    /* ---------------- Load-in ---------------- */
+    /* The bar's items drop in from 8px above, one after another. */
+    .nav-enter {
+        animation: nav-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) backwards;
+    }
+    @keyframes nav-enter {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+    }
+
+    /* ---------------- Dark ---------------- */
+    :global(:root[data-site-theme="dark"]) .site-header {
+        border-bottom-color: rgb(255 255 255 / 0.08);
+    }
+    :global(:root[data-site-theme="dark"]) .nav-mark {
+        color: #f5f5f2;
+    }
+    :global(:root[data-site-theme="dark"]) .nav-link {
+        color: rgb(245 245 242 / 0.8);
+    }
+    :global(:root[data-site-theme="dark"]) .nav-link:hover {
+        color: #f5f5f2;
+    }
+    :global(:root[data-site-theme="dark"]) .theme-toggle {
+        border-color: rgb(255 255 255 / 0.1);
+        color: #e4e4e7;
+    }
+    :global(:root[data-site-theme="dark"]) .menu-toggle {
+        border-color: rgb(255 255 255 / 0.1);
+    }
+    :global(:root[data-site-theme="dark"]) .bar {
+        background-color: #e4e4e7;
+    }
+    :global(:root[data-site-theme="dark"]) .menu-link {
+        color: rgb(245 245 242 / 0.62);
+    }
+    :global(:root[data-site-theme="dark"]) .menu-link:hover {
+        color: #f5f5f2;
+    }
+    :global(:root[data-site-theme="dark"]) .menu-copy {
+        color: #a1a1aa;
+    }
+    :global(:root[data-site-theme="dark"]) .menu-foot-link {
+        color: #f5f5f2;
+        text-decoration-color: rgb(245 245 242 / 0.25);
+    }
+    :global(:root[data-site-theme="dark"]) .menu-foot-link:hover {
+        text-decoration-color: #f5f5f2;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .nav-enter {
+            animation: none;
+        }
+        .bar,
+        .theme-toggle {
+            transition: none;
+        }
     }
 </style>
 
 <script>
-    const initMenu = () => {
-        const menuToggle = document.getElementById("menu-toggle");
-        const mobileMenu = document.getElementById("mobile-menu");
-        const mobileLinks = document.querySelectorAll(".mobile-link");
+    // ---------------- Light / dark ----------------
+    // Layout.astro already set data-site-theme before the first paint; this
+    // keeps the button in step, switches on click and saves the choice. The
+    // switch cross-fades the whole page where the browser can (and motion is
+    // allowed); either way, no colour eases on its own while it flips
+    // (.theme-switching, global.css). Other open tabs follow along.
+    const themeToggle = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+    if (themeToggle) {
+        const root = document.documentElement;
+        const isDark = () => root.dataset.siteTheme === "dark";
+        const sync = () => themeToggle.setAttribute("aria-pressed", String(isDark()));
+        const apply = (dark: boolean) => {
+            root.classList.add("theme-switching");
+            if (dark) root.dataset.siteTheme = "dark";
+            else delete root.dataset.siteTheme;
+            sync();
+            requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("theme-switching")));
+        };
+        sync();
+        themeToggle.addEventListener("click", () => {
+            const dark = !isDark();
+            try {
+                localStorage.setItem("site-theme", dark ? "dark" : "light");
+            } catch {
+                /* private mode: it just isn't remembered */
+            }
+            const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            if (!calm && "startViewTransition" in document) {
+                document.startViewTransition(() => apply(dark));
+            } else {
+                apply(dark);
+            }
+        });
+        window.addEventListener("storage", (event) => {
+            if (event.key === "site-theme") apply(event.newValue === "dark");
+        });
+    }
 
-        if (!menuToggle || !mobileMenu) return;
+    // ---------------- Phone menu ----------------
+    const header = document.querySelector<HTMLElement>(".site-header");
+    const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+    const bg = menu?.querySelector<HTMLElement>(".menu-bg");
+    const menuLinks = menu ? Array.from(menu.querySelectorAll<HTMLElement>(".menu-link")) : [];
+    const footer = menu?.querySelector<HTMLElement>(".menu-footer");
 
-        function toggleMenu() {
-            const isOpen = mobileMenu.classList.contains("is-open");
-            mobileMenu.classList.toggle("is-open", !isOpen);
-            menuToggle.setAttribute("aria-expanded", String(!isOpen));
+    if (header && toggle && menu && bg && footer) {
+        // GSAP's power2 curves (cubic) as CSS beziers.
+        const EASE_OUT = "cubic-bezier(0.33, 1, 0.68, 1)";
+        const EASE_IN = "cubic-bezier(0.32, 0, 0.67, 0)";
+        const LOCK_MS = 600;
+
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        let isOpen = false;
+        let locked = false;
+        let seq = 0; // bumps on every open/close so a stale sequence stops chaining
+        let running: Animation[] = [];
+
+        const BG_CLOSED: Keyframe = {
+            top: "0px",
+            right: "0px",
+            bottom: "100%",
+            left: "100%",
+            opacity: 0,
+            borderBottomLeftRadius: "500%",
+        };
+
+        function stopAll() {
+            for (const anim of running) {
+                try {
+                    anim.commitStyles();
+                } catch {
+                    /* element not rendered; nothing to keep */
+                }
+                anim.cancel();
+            }
+            running = [];
         }
 
-        function closeMenu() {
-            mobileMenu.classList.remove("is-open");
-            menuToggle.setAttribute("aria-expanded", "false");
+        /** Runs one animation; resolves true if it finished and `token` is current. */
+        async function tween(
+            el: HTMLElement,
+            keyframes: Keyframe[],
+            duration: number,
+            easing: string,
+            token: number,
+            delay = 0,
+        ): Promise<boolean> {
+            const instant = reduceMotion.matches;
+            const anim = el.animate(keyframes, {
+                duration: instant ? 0 : duration,
+                delay: instant ? 0 : delay,
+                easing,
+                // Explicit from-keyframes apply during the stagger delay too;
+                // to-only tweens start from wherever the element is.
+                fill: keyframes.length > 1 ? "both" : "forwards",
+            });
+            running.push(anim);
+            try {
+                await anim.finished;
+            } catch {
+                return false; // cancelled by a newer open/close
+            }
+            try {
+                anim.commitStyles();
+            } catch {
+                /* ignore */
+            }
+            anim.cancel();
+            running = running.filter((a) => a !== anim);
+            return token === seq;
         }
 
-        menuToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            toggleMenu();
+        /** Same keyframes on several elements, offset by `stagger` ms. */
+        async function staggered(
+            els: HTMLElement[],
+            keyframes: Keyframe[],
+            duration: number,
+            easing: string,
+            stagger: number,
+            token: number,
+        ): Promise<boolean> {
+            const results = await Promise.all(
+                els.map((el, i) => tween(el, keyframes, duration, easing, token, i * stagger)),
+            );
+            return results.every(Boolean);
+        }
+
+        async function playOpen(token: number) {
+            if (
+                !(await tween(
+                    bg!,
+                    [
+                        BG_CLOSED,
+                        {
+                            top: "0px",
+                            right: "0px",
+                            bottom: "0px",
+                            left: "0px",
+                            opacity: 1,
+                            borderBottomLeftRadius: "0%",
+                        },
+                    ],
+                    300,
+                    EASE_OUT,
+                    token,
+                ))
+            )
+                return;
+            if (
+                !(await staggered(
+                    menuLinks,
+                    [
+                        { opacity: 0, filter: "blur(10px)", clipPath: "inset(0 100% 0 0)" },
+                        { opacity: 1, filter: "blur(0px)", clipPath: "inset(0 0% 0 0)" },
+                    ],
+                    400,
+                    EASE_OUT,
+                    100,
+                    token,
+                ))
+            )
+                return;
+            await tween(
+                footer!,
+                [
+                    { opacity: 0, transform: "translateY(20px)" },
+                    { opacity: 1, transform: "translateY(0px)" },
+                ],
+                250,
+                EASE_OUT,
+                token,
+            );
+        }
+
+        async function playClose(token: number) {
+            if (!(await tween(footer!, [{ opacity: 0, transform: "translateY(20px)" }], 150, EASE_IN, token)))
+                return;
+            if (
+                !(await staggered(
+                    menuLinks,
+                    [{ opacity: 0, filter: "blur(10px)", clipPath: "inset(0 0% 0 100%)" }],
+                    300,
+                    EASE_IN,
+                    60,
+                    token,
+                ))
+            )
+                return;
+            if (!(await tween(bg!, [{ opacity: 0 }], 200, EASE_IN, token))) return;
+            // Park the backdrop back in the corner for the next open.
+            Object.assign(bg!.style, {
+                top: "0px",
+                right: "0px",
+                bottom: "100%",
+                left: "100%",
+                borderBottomLeftRadius: "500%",
+            });
+        }
+
+        // The menu covers the page, so the page under it is out of reach
+        // too: Tab and screen-reader swipes stay in the bar and the menu.
+        const pageParts = () =>
+            Array.from(document.body.children).filter(
+                (el): el is HTMLElement =>
+                    el instanceof HTMLElement && el !== header && el !== menu && el.tagName !== "SCRIPT",
+            );
+
+        function setOpen(next: boolean) {
+            isOpen = next;
+            toggle!.setAttribute("aria-expanded", String(next));
+            toggle!.setAttribute("aria-label", next ? "Close menu" : "Open menu");
+            menu!.classList.toggle("is-open", next);
+            menu!.inert = !next;
+            pageParts().forEach((el) => (el.inert = next));
+
+            seq += 1;
+            stopAll();
+            if (next) playOpen(seq);
+            else playClose(seq);
+        }
+
+        function lock() {
+            locked = true;
+            toggle!.setAttribute("aria-disabled", "true");
+            window.setTimeout(() => {
+                locked = false;
+                toggle!.removeAttribute("aria-disabled");
+            }, LOCK_MS);
+        }
+
+        toggle.addEventListener("click", () => {
+            if (locked) return;
+            lock();
+            setOpen(!isOpen);
         });
 
-        mobileLinks.forEach((link) =>
-            link.addEventListener("click", closeMenu),
-        );
-    };
+        // Any link in the menu or the bar closes the menu, then navigates.
+        const closingLinks = [
+            ...Array.from(menu.querySelectorAll<HTMLElement>("a")),
+            ...Array.from(header.querySelectorAll<HTMLElement>("a")),
+        ];
+        for (const link of closingLinks) {
+            link.addEventListener("click", () => {
+                if (!isOpen) return;
+                lock();
+                setOpen(false);
+            });
+        }
 
-    initMenu();
-    document.addEventListener("astro:page-load", initMenu);
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && isOpen) {
+                lock();
+                setOpen(false);
+                toggle.focus();
+            }
+        });
 
-    // Marks the header once the page has scrolled (shows the desktop hairline).
-    const siteNav = document.querySelector<HTMLElement>(".site-nav");
-    const markScrolled = () =>
-        siteNav?.toggleAttribute("data-scrolled", window.scrollY > 8);
-    markScrolled();
-    window.addEventListener("scroll", markScrolled, { passive: true });
+        // Widening past the breakpoint hides the menu; reset it at once.
+        window.matchMedia("(min-width: 768px)").addEventListener("change", (event) => {
+            if (!event.matches || !isOpen) return;
+            seq += 1;
+            stopAll();
+            isOpen = false;
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.setAttribute("aria-label", "Open menu");
+            menu.classList.remove("is-open");
+            menu.inert = true;
+            pageParts().forEach((el) => (el.inert = false));
+            for (const el of [bg, footer, ...menuLinks]) el.removeAttribute("style");
+        });
+    }
 </script>

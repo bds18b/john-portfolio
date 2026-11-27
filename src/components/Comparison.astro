@@ -5,9 +5,9 @@
 // topic sits level with its counterpart even when one side wraps longer.
 //
 // Phones and tablets (under 900px) get a separate, shorter version
-// (.pairs): the heading, then one blue block where each topic pairs the
-// agency answer (faded, struck through) with John's (bold) right under it.
-// Only one of the two versions is ever displayed. The older stacked phone
+// (.pairs): the heading and a line on agencies, then one blue block with
+// John's side only, as a short list with an icon per topic (the `short`
+// copy below). Only one of the two versions is ever displayed. The older stacked phone
 // layout's styles are still below (.panel rules outside the media query);
 // to go back to it, delete .pairs and the display rules that swap them.
 const topics = [
@@ -15,126 +15,118 @@ const topics = [
         label: "Strategy",
         them: "A cookie-cutter playbook.",
         me: "A strategy built for your brand.",
+        short: "A strategy built for your brand",
+        icon: "target",
     },
     {
         label: "Financial literacy",
         them: "No grasp of unit economics.",
         me: "Fluent in financial and unit economics.",
+        short: "Fluent in unit economics",
+        icon: "chart",
     },
     {
         label: "Team",
         them: "A junior account manager.",
         me: "You work directly with me.",
+        short: "You work directly with me",
+        icon: "person",
     },
 ];
+
+// Line icons for the phone list, drawn on a 24px grid (stroke styles in
+// .perk-icon svg).
+const icons: Record<string, string> = {
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    chart: '<path d="M4 4v16h16"/><path d="m8 15 4-4 3 3 5-6"/>',
+    person: '<circle cx="12" cy="8" r="4"/><path d="M5 20.5c0-3.6 3.1-6 7-6s7 2.4 7 6"/>',
+};
 ---
 
 <section id="comparison" class="compare-section">
   <div class="compare">
     <div class="panel panel-them">
-        <h2 class="panel-head head-them">
-            I am not an <span class="text-accent">email & SMS agency</span>
+        <h2 class="panel-head head-them" data-reveal="lines">
+            I am not an email & SMS agency
         </h2>
-        <h3 class="panel-label">Email & SMS agencies</h3>
+        <h3 class="panel-label" data-reveal>Email & SMS agencies</h3>
         <dl class="rows">
             {
                 topics.map((t) => (
-                    <div class="row">
+                    <div class="row" data-reveal>
                         <dt>{t.label}</dt>
                         <dd>{t.them}</dd>
                     </div>
                 ))
             }
         </dl>
-        <p class="panel-foot">
+        <p class="panel-foot" data-reveal>
             Most agencies run on volume: templated flows and vanity metrics to
             justify a retainer.
         </p>
     </div>
 
-    <div class="panel panel-me">
-        <p class="panel-head head-me">
+    <div class="panel panel-me" data-reveal>
+        <p class="panel-head head-me" data-reveal="lines">
             I embed inside your operations and tie retention directly to
-            profitable growth.
+            <span class="keyword">profitable growth.</span>
         </p>
-        <h3 class="panel-label">Working with me</h3>
+        <h3 class="panel-label" data-reveal>Working with me</h3>
         <dl class="rows">
             {
                 topics.map((t) => (
-                    <div class="row">
+                    <div class="row" data-reveal>
                         <dt>{t.label}</dt>
                         <dd>{t.me}</dd>
                     </div>
                 ))
             }
         </dl>
-        <p class="panel-foot">
+        <p class="panel-foot" data-reveal>
             You aren't buying outsourced labor. You're getting an advisor who
             owns the strategy, the execution and the financial outcomes.
         </p>
     </div>
   </div>
 
-  <!-- Phones and tablets: each agency answer paired with John's. -->
+  <!-- Phones and tablets: the heading, then John's side as a short list. -->
   <div class="pairs">
-    <h2 class="pairs-head">
-      I am not an <span class="text-accent">email & SMS agency</span>
+    <h2 class="pairs-head" data-reveal="lines">
+      I am not an email & SMS agency
     </h2>
-    <p class="pairs-intro">
-      Most agencies run on volume: templated flows and vanity metrics to
-      justify a retainer.
+    <p class="pairs-intro" data-reveal>
+      Most agencies run on volume: templated flows and vanity metrics.
     </p>
-    <div class="pairs-block">
-      <p class="pairs-lead">
-        I embed inside your operations and tie retention directly to
-        profitable growth.
+    <div class="pairs-block" data-reveal>
+      <p class="pairs-lead" data-reveal="lines">
+        I embed in your operations and tie retention to
+        <span class="keyword">profitable growth.</span>
       </p>
-      <dl class="pairs-rows">
+      <ul class="perks">
         {
           topics.map((t) => (
-            <div class="pair">
-              <dt>{t.label}</dt>
-              <dd class="pair-them">
-                <span class="sr-only">Email and SMS agencies: </span>
-                {t.them}
-              </dd>
-              <dd class="pair-me">
-                <span class="sr-only">Working with me: </span>
-                {t.me}
-              </dd>
-            </div>
+            <li class="perk" data-reveal>
+              <span class="perk-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><Fragment set:html={icons[t.icon]} /></svg>
+              </span>
+              {t.short}
+            </li>
           ))
         }
-      </dl>
-      <p class="pairs-foot">
-        You aren't buying outsourced labor. You're getting an advisor who owns
-        the strategy, the execution and the financial outcomes.
+      </ul>
+      <p class="pairs-foot" data-reveal>
+        One advisor who owns the strategy, the work and the results.
       </p>
     </div>
   </div>
 </section>
 
 <style>
-    /* This section comes straight after the hero, so it carries on the
-       hero's film grain: full strength at the top, where the hero leaves off,
-       then fading evenly to nothing at the middle of the section. (The blue
-       block covers it on the right.) */
     .compare-section {
         position: relative;
         isolation: isolate;
         padding-block: var(--section-space);
-        background: #efefed;
-    }
-    .compare-section::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        pointer-events: none;
-        background: url("../assets/hero-grain.png") repeat;
-        background-size: 160px 160px;
-        -webkit-mask-image: linear-gradient(to bottom, #000, rgb(0 0 0 / 0.8) 12%, rgb(0 0 0 / 0.55) 25%, rgb(0 0 0 / 0.3) 37%, rgb(0 0 0 / 0.1) 45%, transparent 50%);
-        mask-image: linear-gradient(to bottom, #000, rgb(0 0 0 / 0.8) 12%, rgb(0 0 0 / 0.55) 25%, rgb(0 0 0 / 0.3) 37%, rgb(0 0 0 / 0.1) 45%, transparent 50%);
+        background: var(--page-bg);
     }
 
     /* Same page width and side padding as the hero and nav; the blue half is
@@ -150,85 +142,83 @@ const topics = [
     }
     .pairs-head {
         margin: 0;
-        font-family: "Unbounded", sans-serif;
-        font-weight: 800;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-weight: 600;
         font-size: clamp(1.75rem, 6.4vw, 2.4rem);
-        line-height: 1.05;
-        letter-spacing: -0.015em;
-        text-transform: uppercase;
+        line-height: 1.06;
+        letter-spacing: -0.035em;
         text-wrap: balance;
         color: #151515;
     }
     .pairs-intro {
-        margin: 14px 0 28px;
+        margin: 12px 0 24px;
         max-width: 34rem;
         font-family: "Inter", sans-serif;
         font-size: 0.97rem;
         line-height: 1.6;
         color: #444;
     }
+    /* The same blue block as John's half on desktop (.panel-me). */
     .pairs-block {
-        padding: 36px 24px 32px;
+        padding: 30px 22px 24px;
         border-radius: 20px;
-        background: #151515;
+        background: var(--accent-fill-soft);
+        image-rendering: pixelated;
         color: #fff;
     }
     .pairs-lead {
-        margin: 0 0 10px;
-        font-family: "Unbounded", sans-serif;
-        font-weight: 800;
-        font-size: clamp(1.2rem, 5vw, 1.6rem);
-        line-height: 1.15;
-        letter-spacing: -0.015em;
+        margin: 0;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-weight: 600;
+        font-size: clamp(1.5rem, 6.2vw, 1.85rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
         text-wrap: balance;
     }
-    .pairs-rows {
-        margin: 0;
+    /* One line per topic, each led by an icon on a faint white tile. */
+    .perks {
+        display: grid;
+        gap: 14px;
+        margin: 26px 0 0;
+        padding: 0;
+        list-style: none;
     }
-    .pair {
-        padding: 22px 0;
-        border-bottom: 1px solid rgb(255 255 255 / 0.18);
-    }
-    .pair:first-child {
-        border-top: 1px solid rgb(255 255 255 / 0.18);
-        margin-top: 18px;
-    }
-    .pair dt {
-        margin-bottom: 10px;
-        font-family: "Inter", sans-serif;
+    .perk {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "Inter Tight", "Inter", sans-serif;
         font-weight: 600;
-        font-size: 11px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: rgb(255 255 255 / 0.8);
+        font-size: 1.0625rem;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
     }
-    /* The agency answer: small, faded and struck through. */
-    .pair-them {
-        margin: 0 0 6px;
-        font-family: "Inter", sans-serif;
-        font-size: 0.95rem;
-        line-height: 1.45;
-        color: rgb(255 255 255 / 0.62);
-        text-decoration: line-through;
-        text-decoration-color: rgb(255 255 255 / 0.5);
+    .perk-icon {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgb(255 255 255 / 0.14);
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16);
     }
-    /* John's answer: bold and blue, set like the desktop rows. At least
-       1.17rem (18.7px) so the blue on black counts as large text for
-       contrast (3.3:1, where large bold text needs 3:1). */
-    .pair-me {
-        margin: 0;
-        font-family: "Unbounded", sans-serif;
-        font-weight: 700;
-        font-size: clamp(1.17rem, 4.4vw, 1.25rem);
-        color: var(--color-accent);
-        line-height: 1.25;
-        letter-spacing: -0.015em;
+    .perk-icon svg {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
     }
     .pairs-foot {
-        margin: 22px 0 0;
+        margin: 26px 0 0;
+        padding-top: 20px;
+        border-top: 1px solid rgb(255 255 255 / 0.32);
         font-family: "Inter", sans-serif;
         font-size: 0.95rem;
-        line-height: 1.6;
+        line-height: 1.55;
         color: rgb(255 255 255 / 0.92);
     }
 
@@ -245,26 +235,26 @@ const topics = [
         --line: rgb(255 255 255 / 0.32);
         padding: 44px 24px;
         border-radius: 20px;
-        background: var(--color-accent);
+        background: var(--accent-fill-soft);
+        image-rendering: pixelated;
         color: #fff;
     }
 
     /* Headlines */
     .panel-head {
         margin: 0 0 clamp(36px, 8vw, 140px);
-        font-family: "Unbounded", sans-serif;
-        font-weight: 800;
-        letter-spacing: -0.015em;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-weight: 600;
+        letter-spacing: -0.035em;
         text-wrap: balance;
     }
     .head-them {
-        font-size: clamp(1.75rem, 3.1vw, 2.9rem);
-        line-height: 1.05;
-        text-transform: uppercase;
+        font-size: clamp(1.9rem, 3.4vw, 3.1rem);
+        line-height: 1.06;
     }
     .head-me {
-        font-size: clamp(1.35rem, 2.3vw, 2.15rem);
-        line-height: 1.15;
+        font-size: clamp(1.45rem, 2.5vw, 2.3rem);
+        line-height: 1.12;
     }
 
     /* Column label, with the first rule under it */
@@ -272,10 +262,10 @@ const topics = [
         margin: 0;
         padding-bottom: 22px;
         border-bottom: 1px solid var(--line);
-        font-family: "Unbounded", sans-serif;
-        font-weight: 700;
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
         font-size: 13px;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
     }
 
@@ -299,11 +289,11 @@ const topics = [
     }
     .row dd {
         margin: 0;
-        font-family: "Unbounded", sans-serif;
-        font-weight: 700;
-        font-size: clamp(1.05rem, 1.55vw, 1.4rem);
-        line-height: 1.25;
-        letter-spacing: -0.015em;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-weight: 600;
+        font-size: clamp(1.15rem, 1.7vw, 1.55rem);
+        line-height: 1.22;
+        letter-spacing: -0.025em;
     }
     .panel-them dt {
         color: #444;
@@ -356,5 +346,24 @@ const topics = [
             padding-inline: 48px;
             border-radius: 24px;
         }
+    }
+
+    /* ---- Dark ------------------------------------------------------------
+       The agency half's type and rules go off-white; John's blue half
+       stays as it is. */
+    :global(:root[data-site-theme="dark"]) .pairs-head,
+    :global(:root[data-site-theme="dark"]) .panel-them {
+        color: #f5f5f2;
+    }
+    :global(:root[data-site-theme="dark"]) .pairs-intro,
+    :global(:root[data-site-theme="dark"]) .panel-them dt,
+    :global(:root[data-site-theme="dark"]) .panel-them .panel-foot {
+        color: rgb(245 245 242 / 0.68);
+    }
+    :global(:root[data-site-theme="dark"]) .panel-them dd {
+        color: rgb(245 245 242 / 0.6);
+    }
+    :global(:root[data-site-theme="dark"]) .panel-them {
+        --line: rgb(255 255 255 / 0.12);
     }
 </style>

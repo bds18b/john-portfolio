@@ -5,54 +5,62 @@ import fealsLogo from "../assets/Feals-logo.svg";
 import highlandLogo from "../assets/Highland-logo.svg";
 import survivalFrogLogo from "../assets/SurvivalFrog-logo.webp";
 import fealsPhoto from "../assets/Feals-lifestyle-photo.jpg";
-import highlandPhoto from "../assets/Highland-lifestyle-photo.jpg";
 import frogPhoto from "../assets/survival-frog-lifestyle-image.webp";
+import avatar from "../assets/john-avatar.jpg";
 
-// One headline result per client; each card links to (and opens) that
-// client's case study further down. Highland's photo is tall with the
-// bottles low in the frame, so it is cropped from lower down.
-const results = [
-    {
-        id: "feals",
-        brand: "Feals",
-        value: "+222%",
-        label: "MRR growth",
-        photo: fealsPhoto,
-        logo: fealsLogo,
-        logoClass: "logo-feals",
-    },
-    {
-        id: "highland",
-        brand: "Highland",
-        value: "+58%",
-        label: "Repeat orders",
-        photo: highlandPhoto,
-        photoPosition: "50% 75%",
-        logo: highlandLogo,
-        logoClass: "logo-highland",
-    },
-    {
-        id: "survival-frog",
-        brand: "Survival Frog",
-        value: "+42%",
-        label: "LTV growth",
-        photo: frogPhoto,
-        logo: survivalFrogLogo,
-        logoClass: "logo-frog",
-    },
-];
+// The headline, word by word: each word rises into place in turn. The last
+// two are in the accent colour.
+const headline = "Turn retention into profitable growth.".split(" ");
+const ACCENT_FROM = headline.indexOf("profitable");
 
-// The big word, split into letters for the entrance (screen readers get the
-// whole word from the hidden copy).
-const bigWord = "Retention";
+// Phones and tablets: the client logos drift left under the buttons in an
+// endless loop. The list holds the three brands four times over (enough to
+// cover a tablet-wide screen) and moves left by one set at a time; only the
+// first set is read out.
+const LOGO_SETS = 4;
 
-// Entrance timing (ms): when the cards start, one after another. The script
-// starts each card's count-up to match.
-const CARDS_START = 750;
-const CARD_STAGGER = 120;
+// The collage next to (or under) the copy: the tools of a retention
+// program floating on a dot grid, carrying John's three headline results.
+// Feals and Survival Frog are photo cards; Highland's result is the badge
+// on the repeat-purchase chart. Each result links to (and opens) its case
+// study. Everything else (the flow, the channel tiles, the chart's lines)
+// is illustration and hidden from screen readers.
+
+// Entrance timing (ms): the pieces come in one after another from
+// VISUAL_START, `n` being each piece's place in that order. The script
+// starts each result's count-up to match.
+const VISUAL_START = 750;
+const PIECE_STAGGER = 110;
+const countDelay = (n: number) => VISUAL_START + n * PIECE_STAGGER + 400;
+const BADGE_DELAY = VISUAL_START + 1100; // after the chart's lines are drawn
+
+// The chart's two lines, Jan to Dec, in a 300 x 110 box (y measured down).
+// An illustrative shape, not real data: the blue line climbs faster than
+// the pale one it is compared with.
+const programLine = [100, 94, 97, 86, 89, 74, 78, 62, 66, 48, 52, 34, 26];
+const compareLine = [104, 101, 103, 97, 99, 92, 94, 87, 89, 82, 84, 77, 73];
+const toPoints = (ys: number[]) => ys.map((y, i) => `${i * 25},${y}`).join(" ");
 ---
 
-<section class="hero" data-hero>
+<section id="top" class="hero" data-hero>
+    <!-- The CTA button's inner highlight, for the letters of "profitable
+         growth.": the top edge of each letter (where it is, but a copy
+         shifted 1.5px down isn't), softened a touch, kept inside the letter,
+         filled with white at 30% (the button's own) and laid over it. -->
+    <svg class="hero-filters" width="0" height="0" aria-hidden="true" focusable="false">
+        <filter id="hero-bevel" x="-2%" y="-10%" width="104%" height="120%" color-interpolation-filters="sRGB">
+            <feOffset in="SourceAlpha" dy="1.5" result="shifted" />
+            <feComposite in="SourceAlpha" in2="shifted" operator="out" result="edge" />
+            <feGaussianBlur in="edge" stdDeviation="0.4" result="soft" />
+            <feComposite in="soft" in2="SourceAlpha" operator="in" result="inside" />
+            <feFlood flood-color="#fff" flood-opacity="0.3" />
+            <feComposite in2="inside" operator="in" result="highlight" />
+            <feMerge>
+                <feMergeNode in="SourceGraphic" />
+                <feMergeNode in="highlight" />
+            </feMerge>
+        </filter>
+    </svg>
     <!-- Hold the entrance until the fonts are in (or 0.8s at most, see the
          script below), so the letters don't rise in a fallback font and then
          change. Runs before the hero is drawn. The timeout releases it
@@ -62,75 +70,174 @@ const CARD_STAGGER = 120;
         setTimeout(function () { document.documentElement.classList.remove("hero-wait"); }, 1500);
     </script>
     <div class="hero-inner">
-        <h1 class="hero-title">
-            <span class="title-small title-lead hero-rise" style="--d: 0ms">Build the</span>
-            <span class="title-big"><span class="sr-only">{bigWord}</span><span class="big-letters" aria-hidden="true" data-big-word>{[...bigWord].map((ch, i) => <span class="ch" style={`--i: ${i}`}>{ch}</span>)}</span></span>
-            <span class="title-small title-tail hero-rise" style="--d: 450ms"
-                >Program behind <span class="text-accent sweep">profitable growth.</span></span
-            >
-        </h1>
+        <div class="hero-copy">
+            <p class="hero-intro hero-rise" style="--d: 0ms">
+                <Image src={avatar} alt="" width={64} loading="eager" class="intro-avatar" />
+                <span><b>John Narducci</b> · Fractional retention lead</span>
+            </p>
 
-        <p class="hero-lede hero-rise" style="--d: 600ms">
-            Not just email and SMS. The entire customer journey, from the first
-            ad to the post-purchase experience.
-        </p>
+            <h1 class="hero-title">
+                {
+                    headline.map((word, i) => (
+                        <Fragment>
+                            <span class="w">
+                                <span class:list={["w-in", { "w-accent accent-texture": i >= ACCENT_FROM }]} style={`--i: ${i}`}>
+                                    {word}
+                                </span>
+                            </span>{" "}
+                        </Fragment>
+                    ))
+                }
+            </h1>
 
-        <div class="hero-actions hero-rise" style="--d: 700ms">
-            <a href="#contact" class="btn-cta">Work with me</a>
-            <a href="#case-studies" class="btn-link">Case studies</a>
+            <p class="hero-lede hero-rise" style="--d: 450ms">
+                Not just email and SMS. The entire customer journey, from the first
+                ad to the post-purchase experience.
+            </p>
+
+            <div class="hero-actions hero-rise" style="--d: 550ms">
+                <a href="#contact" class="btn-cta">Work with me</a>
+                <a href="#case-studies" class="btn-link">
+                    Case studies
+                    <svg class="btn-link-arrow" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M8 3v10M3.5 8.5 8 13l4.5-4.5" />
+                    </svg>
+                </a>
+            </div>
+
+            <div class="hero-logos hero-rise" style="--d: 650ms">
+                <div class="logos-window">
+                    <ul class="logos-track" role="list" aria-label="Clients">
+                        {
+                            Array.from({ length: LOGO_SETS }, (_, set) => (
+                                <Fragment>
+                                    <li class="logo-item" aria-hidden={set > 0 ? "true" : undefined}>
+                                        <Image src={fealsLogo} alt={set === 0 ? "Feals" : ""} width={140} class="logo-img logo-feals" />
+                                    </li>
+                                    <li class="logo-item" aria-hidden={set > 0 ? "true" : undefined}>
+                                        <Image src={highlandLogo} alt="" width={60} class="logo-img logo-highland" />
+                                        <span>Highland</span>
+                                    </li>
+                                    <li class="logo-item" aria-hidden={set > 0 ? "true" : undefined}>
+                                        <Image src={survivalFrogLogo} alt="" width={120} class="logo-img logo-frog" />
+                                        <span>Survival Frog</span>
+                                    </li>
+                                </Fragment>
+                            ))
+                        }
+                    </ul>
+                </div>
+                <p class="logos-caption"><span>Trusted by</span> businesses like these</p>
+            </div>
         </div>
 
-        <ul
-            class="hero-results"
-            role="list"
-            style={`--cards-start: ${CARDS_START}ms; --card-stagger: ${CARD_STAGGER}ms`}
-        >
-            {
-                results.map((r, i) => (
-                    <li style={`--k: ${i}`}>
-                      <a class="hero-card" href={`#case-${r.id}`}>
+        <div class="hero-visual">
+            <div class="collage" style={`--start: ${VISUAL_START}ms; --stagger: ${PIECE_STAGGER}ms`}>
+                <!-- Feals: photo card. -->
+                <a class="piece photo photo-feals" href="#case-feals" style="--n: 1">
+                    <span class="photo-frame">
                         <Image
-                            src={r.photo}
+                            src={fealsPhoto}
                             alt=""
-                            widths={[440, 660, 880, 1100]}
-                            sizes="(min-width: 1440px) 435px, (min-width: 640px) 31vw, 100vw"
+                            widths={[240, 360, 480, 640]}
+                            sizes="(min-width: 1024px) 240px, 40vw"
                             loading="eager"
-                            class="card-photo"
-                            style={r.photoPosition ? `object-position: ${r.photoPosition}` : undefined}
+                            class="photo-img"
                         />
-                        <div class="card-shade" aria-hidden="true" />
-                        {r.logo && (
-                            <Image
-                                src={r.logo}
-                                alt=""
-                                width={240}
-                                loading="eager"
-                                class:list={["card-logo", r.logoClass]}
-                            />
-                        )}
-                        <p class="card-stat">
-                            <span class="sr-only">{r.brand} case study: {r.value} {r.label}</span>
-                            <span
-                                class="card-number"
-                                aria-hidden="true"
-                                data-count
-                                data-delay={CARDS_START + i * CARD_STAGGER + 300}
-                            >{r.value}</span>
-                            <span class="card-label" aria-hidden="true">{r.label}</span>
-                        </p>
-                      </a>
-                    </li>
-                ))
-            }
-        </ul>
+                        <span class="photo-shade" aria-hidden="true"></span>
+                        <Image src={fealsLogo} alt="" width={160} loading="eager" class="photo-logo logo-feals" />
+                        <span class="photo-stat">
+                            <span class="sr-only">Feals case study: +222% MRR growth</span>
+                            <span class="stat-number" aria-hidden="true" data-count data-delay={countDelay(1)}>+222%</span>
+                            <span class="stat-label" aria-hidden="true">MRR growth</span>
+                        </span>
+                    </span>
+                </a>
+
+                <!-- Highland: the repeat-purchase chart and its badge. -->
+                <a class="piece chart" href="#case-highland" style="--n: 0">
+                    <span class="sr-only">Highland case study: +58% repeat orders</span>
+                    <span class="chart-head" aria-hidden="true"
+                        ><Image src={highlandLogo} alt="" width={48} loading="eager" class="chart-logo" /><b>Highland</b> · Repeat purchase rate</span
+                    >
+                    <svg class="chart-svg" viewBox="0 0 300 110" aria-hidden="true">
+                        <line class="chart-grid" x1="0" x2="300" y1="20" y2="20" />
+                        <line class="chart-grid" x1="0" x2="300" y1="55" y2="55" />
+                        <line class="chart-grid" x1="0" x2="300" y1="90" y2="90" />
+                        <polyline class="chart-line chart-line-compare" pathLength="1" points={toPoints(compareLine)} />
+                        <polyline class="chart-line chart-line-program" pathLength="1" points={toPoints(programLine)} />
+                    </svg>
+                    <span class="chart-axis" aria-hidden="true">
+                        <span>Jan</span><span>Apr</span><span>Jul</span><span>Oct</span>
+                    </span>
+                    <span class="chart-badge" aria-hidden="true"
+                        ><span class="badge-number" data-count data-delay={BADGE_DELAY + 100}>+58%</span> repeat orders</span
+                    >
+                </a>
+
+                <!-- Channel tiles: email, SMS, the order. -->
+                <span class="piece tile tile-mail" style="--n: 2" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
+                </span>
+
+                <!-- A post-purchase flow: first order, a check-in email, then
+                     either a reorder or an SMS nudge. -->
+                <div class="piece flow" style="--n: 3" aria-hidden="true">
+                    <span class="flow-bar"><i></i><i></i><i></i></span>
+                    <ol class="flow-steps">
+                        <li class="node node-trigger" style="--s: 0"><b>Trigger</b> Placed first order</li>
+                        <li class="node node-wait" style="--s: 1">Wait 14 days</li>
+                        <li class="node" style="--s: 2"><b>Email</b> How's it going?</li>
+                        <li class="flow-split" style="--s: 3">
+                            <span class="node node-done"
+                                ><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>Reordered</span
+                            >
+                            <span class="node"><b>SMS</b> nudge</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <span class="piece tile tile-chat" style="--n: 4" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"
+                        ><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 9h8M8 13h5" /></svg
+                    >
+                </span>
+
+                <!-- Survival Frog: photo card. -->
+                <a class="piece photo photo-frog" href="#case-survival-frog" style="--n: 5">
+                    <span class="photo-frame">
+                        <Image
+                            src={frogPhoto}
+                            alt=""
+                            widths={[240, 360, 480, 640]}
+                            sizes="(min-width: 1024px) 210px, 36vw"
+                            loading="eager"
+                            class="photo-img"
+                        />
+                        <span class="photo-shade" aria-hidden="true"></span>
+                        <Image src={survivalFrogLogo} alt="" width={160} loading="eager" class="photo-logo logo-frog" />
+                        <span class="photo-stat">
+                            <span class="sr-only">Survival Frog case study: +42% LTV growth</span>
+                            <span class="stat-number" aria-hidden="true" data-count data-delay={countDelay(5)}>+42%</span>
+                            <span class="stat-label" aria-hidden="true">LTV growth</span>
+                        </span>
+                    </span>
+                </a>
+
+                <span class="piece tile tile-bag" style="--n: 6" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"
+                        ><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg
+                    >
+                </span>
+            </div>
+        </div>
     </div>
 </section>
 
 <script>
-    // Starts the entrance once the fonts are in (0.8s at most), counts the
-    // result numbers up in step with their cards, and after the entrance
-    // lets "RETENTION" roll over on hover. With reduced motion none of this
-    // runs and everything simply shows.
+    // Starts the entrance once the fonts are in (0.8s at most) and counts the
+    // result numbers up in step with their pieces of the collage. With
+    // reduced motion the numbers simply show.
     const root = document.documentElement;
     const hero = document.querySelector<HTMLElement>("[data-hero]");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -153,79 +260,45 @@ const CARD_STAGGER = 120;
         requestAnimationFrame(tick);
     };
 
-    // Phones (cards stacked): a card still below the screen when the hero
-    // starts waits (.is-waiting holds its animations at the start), then
-    // plays its entrance and count-up as it scrolls into view. Cards on
-    // screen play with the rest of the hero, on the load timing.
-    const ENTER_DELAY = 80; // ms after a waiting card comes into view
-    const startCards = () => {
-        const cards = [...(hero?.querySelectorAll<HTMLElement>(".hero-results > li") ?? [])];
-        const stacked = window.matchMedia("(max-width: 639px)").matches;
-        const observer =
-            stacked && "IntersectionObserver" in window
-                ? new IntersectionObserver(
-                      (entries, obs) => {
-                          entries.forEach((entry) => {
-                              if (!entry.isIntersecting) return;
-                              const card = entry.target as HTMLElement;
-                              obs.unobserve(card);
-                              card.classList.remove("is-waiting");
-                              const number = card.querySelector<HTMLElement>("[data-count]");
-                              if (number) countUp(number, ENTER_DELAY + 300);
-                          });
-                      },
-                      { threshold: 0.3 },
-                  )
-                : null;
-        cards.forEach((card) => {
-            const number = card.querySelector<HTMLElement>("[data-count]");
-            if (observer && card.getBoundingClientRect().top > window.innerHeight) {
-                card.style.setProperty("--at", `${ENTER_DELAY}ms`);
-                card.classList.add("is-waiting");
-                observer.observe(card);
-            } else if (number) {
-                countUp(number, Number(number.dataset.delay ?? 0));
-            }
+    // Numbers the headline's lines (--l on each word), so each line's
+    // words rise together, 80ms after the line above.
+    const markLines = () => {
+        const tops: number[] = [];
+        hero?.querySelectorAll<HTMLElement>(".hero-title .w").forEach((word) => {
+            const top = word.getBoundingClientRect().top;
+            let line = tops.findIndex((t) => Math.abs(t - top) < 6);
+            if (line < 0) line = tops.push(top) - 1;
+            (word.firstElementChild as HTMLElement | null)?.style.setProperty("--l", String(line));
         });
     };
 
     const begin = () => {
         if (!root.classList.contains("hero-wait")) return;
-        if (!reduce) startCards();
+        markLines();
+        if (!reduce) {
+            hero?.querySelectorAll<HTMLElement>("[data-count]").forEach((number) => {
+                countUp(number, Number(number.dataset.delay ?? 0));
+            });
+        }
         root.classList.remove("hero-wait");
     };
     Promise.race([
         document.fonts ? document.fonts.ready : Promise.resolve(),
         new Promise((resolve) => setTimeout(resolve, 800)),
     ]).then(begin);
-
-    // Hover roll on the big word, once the entrance has finished. A roll
-    // always plays to the end, even if the pointer leaves part way.
-    const word = hero?.querySelector<HTMLElement>("[data-big-word]");
-    const lastLetter = word?.lastElementChild;
-    if (word && lastLetter && !reduce) {
-        lastLetter.addEventListener("animationend", (event) => {
-            const name = (event as AnimationEvent).animationName;
-            if (name.startsWith("letter-rise")) word.classList.add("is-settled");
-            if (name.startsWith("letter-loop")) word.classList.remove("is-looping");
-        });
-        word.addEventListener("mouseenter", () => {
-            if (word.classList.contains("is-settled")) word.classList.add("is-looping");
-        });
-    }
 </script>
 
 <style>
     /* Sizes and gaps are taken from the 1440px-wide design and scale down
        with the screen; small text stops shrinking at a readable size. */
     /* At least one screen tall, with the content centred, so on big monitors
-       the next section doesn't peek in under the cards. (100vh first for
+       the next section doesn't peek in under the content. (100vh first for
        browsers without svh, the height with the mobile toolbars showing.) */
     .hero {
-        background: #efefed;
+        background: var(--page-bg);
         padding-block: clamp(104px, 8.6vw, 124px) clamp(40px, 4.2vw, 60px);
-        min-height: 100vh;
-        min-height: 100svh;
+        min-height: calc(100vh / var(--page-zoom, 1));
+        min-height: calc(100svh / var(--page-zoom, 1));
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -234,25 +307,11 @@ const CARD_STAGGER = 120;
         width: 100%;
     }
 
-    /* Film grain behind the content: a tile of tiny dark specks (0-20%
-       opacity, one pixel each). It fades in from the top, like the reference,
-       and is still at full strength at the bottom: the next section carries
-       it on and fades it out (Comparison.astro). */
-    .hero {
-        position: relative;
-        isolation: isolate;
-    }
-    .hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        pointer-events: none;
-        background: url("../assets/hero-grain.png") repeat;
-        background-size: 160px 160px;
-        -webkit-mask-image: linear-gradient(to bottom, transparent 8%, #000 50%);
-        mask-image: linear-gradient(to bottom, transparent 8%, #000 50%);
-    }
+    /* ---- Layout ----------------------------------------------------------
+       Phones and tablets: the copy, then the collage under it; on tablets
+       both are a centred column. From 1024px: side by side, the copy on the
+       left and the collage on the right. The copy is left-aligned
+       throughout. */
     .hero-inner {
         max-width: 1440px;
         margin-inline: auto;
@@ -260,7 +319,19 @@ const CARD_STAGGER = 120;
         display: flex;
         flex-direction: column;
         align-items: center;
-        text-align: center;
+    }
+    .hero-copy {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .hero-visual {
+        width: 100%;
+        max-width: 560px;
+        margin-top: 48px;
     }
     @media (min-width: 640px) {
         .hero-inner {
@@ -270,66 +341,131 @@ const CARD_STAGGER = 120;
     @media (min-width: 1024px) {
         .hero-inner {
             padding-inline: 48px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            align-items: center;
+            column-gap: clamp(32px, 4vw, 72px);
+        }
+        .hero-copy {
+            max-width: none;
+        }
+        .hero-visual {
+            justify-self: end;
+            max-width: 600px;
+            margin-top: 0;
         }
     }
 
-    /* Headline. In Unbounded the capitals sit exactly in the middle of the
-       line box, so a line-height of 0.75 (the capital height) makes the box
-       the same height as the capitals, and the margins are the visible gaps. */
-    .hero-title {
-        --big: clamp(2.25rem, 11.4vw, 10.26rem);
-        --small: clamp(0.875rem, 1.852vw, 1.667rem);
+    /* Who: John's photo, name and role in a small pill. */
+    .hero-intro {
         margin: 0;
-        display: flex;
-        flex-direction: column;
+        display: inline-flex;
         align-items: center;
-        font-family: "Unbounded", sans-serif;
-        text-transform: uppercase;
+        gap: 10px;
+        padding: 4px 14px 4px 4px;
+        background: #fff;
+        border: 1px solid rgb(21 21 21 / 0.08);
+        border-radius: 999px;
+        box-shadow: 0 1px 2px rgb(21 21 21 / 0.05);
+        font: 400 0.875rem/1.3 "Inter", sans-serif;
+        color: #555;
+    }
+    .hero-intro b {
+        font-weight: 600;
         color: #151515;
     }
-    .title-small {
-        font-size: var(--small);
-        font-weight: 700;
-        line-height: 1.35;
+    .hero-intro :global(.intro-avatar) {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* Headline: Inter Tight SemiBold, set tight. Each word sits in a box
+       that clips it, so it can rise into place from below its own line; the
+       box reaches a little past the word on the right (the tight spacing
+       pulls the last letter over the edge) and below it (descenders). */
+    .hero-title {
+        margin: 22px 0 0;
+        max-width: 13em;
+        font-family: "Inter Tight", "Inter", sans-serif;
+        font-size: clamp(2.25rem, 10.4vw, 3.25rem);
+        font-weight: 600;
+        line-height: 1.06;
+        letter-spacing: -0.035em;
+        color: #151515;
         text-wrap: balance;
     }
-    /* Letter-spacing also adds space after the last letter; the matching
-       padding on the left keeps the words centred. */
-    .title-lead {
-        letter-spacing: 0.28em;
-        padding-inline-start: 0.28em;
+    @media (min-width: 1024px) {
+        .hero-title {
+            margin-top: 28px;
+            font-size: clamp(3.25rem, 4.6vw, 4.5rem);
+        }
     }
-    .title-tail {
-        letter-spacing: 0.117em;
-        padding-inline-start: 0.117em;
+    .w {
+        display: inline-block;
+        overflow: clip;
+        vertical-align: top;
+        padding: 0 0.06em 0.14em 0;
+        margin: 0 -0.06em -0.14em 0;
     }
-    .title-big {
-        font-size: var(--big);
-        font-weight: 900;
-        line-height: 0.75;
+    .w-in {
+        display: inline-block;
+    }
+    /* "profitable growth." in Unbounded Bold, the site's display face; it
+       runs wide, so it is tracked less tightly than the rest. Like the CTA
+       button, a faint light edge runs along the top of each letter (the
+       #hero-bevel filter at the top of the section). */
+    .w-accent {
+        color: var(--color-accent);
+        font-family: "Unbounded", sans-serif;
+        font-weight: 700;
         letter-spacing: -0.02em;
-        /* 0.262 of the big size between the capitals of each line, less the
-           small lines' extra line height (0.3em above and below). */
-        margin-block: calc(var(--big) * 0.262 - var(--small) * 0.3);
+        filter: url(#hero-bevel);
+    }
+    /* Holds the filter only: out of the flow and taking no space (not
+       display: none, which stops some browsers from using the filter). */
+    .hero-filters {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
     }
 
     .hero-lede {
-        margin: clamp(20px, 2.5vw, 36px) 0 0;
-        max-width: 50rem;
-        font-family: "Inter", sans-serif;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: #444;
-        text-wrap: balance;
+        margin: 20px 0 0;
+        max-width: 30rem;
+        font: 400 1.0625rem/1.55 "Inter", sans-serif;
+        color: #555;
+        text-wrap: pretty;
+    }
+    @media (min-width: 1024px) {
+        .hero-lede {
+            margin-top: 24px;
+            font-size: 1.125rem;
+        }
+    }
+    /* Phones: a little more room between the pieces of the copy and above
+       the collage. (The gaps above the buttons and the logo strip are with
+       their own phone styles below.) */
+    @media (max-width: 639px) {
+        .hero-title {
+            margin-top: 28px;
+        }
+        .hero-lede {
+            margin-top: 24px;
+        }
+        .hero-visual {
+            margin-top: 56px;
+        }
     }
 
     .hero-actions {
-        margin-top: 1.2rem;
+        margin-top: 32px;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: center;
-        gap: 12px 22px;
+        gap: 12px 26px;
     }
     /* "Work with me" uses the shared .btn-cta style (global.css). */
     .btn-link {
@@ -348,161 +484,567 @@ const CARD_STAGGER = 120;
         outline: 2px solid var(--color-accent);
         outline-offset: 3px;
     }
-
-    /* Result cards: one column on phones, three across from 640px. */
-    .hero-results {
-        width: 100%;
-        margin: clamp(24px, 2vw, 29px) 0 0;
-        padding: 0;
-        list-style: none;
-        display: grid;
-        gap: 12px;
-        text-align: left;
+    /* The arrow shows on phones only (where the link is a button). */
+    .btn-link-arrow {
+        display: none;
     }
-    @media (min-width: 640px) {
-        .hero-results {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
+
+    /* Phones: two compact buttons sharing the row in equal halves, so it
+       starts and ends flush with the text above: "Work with me" in the
+       blue, "Case studies" a soft grey pill with a down arrow that nudges
+       down on hover. The collage runs to the screen edges. */
+    @media (max-width: 639px) {
+        .hero-actions {
+            margin-top: 34px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
+        .hero-actions .btn-cta {
+            justify-content: center;
+            height: 46px;
+            padding-inline: 16px;
+            font-size: 0.9375rem;
+        }
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 46px;
+            padding: 0 16px;
+            border-radius: 999px;
+            background: #f2f2f0;
+            box-shadow:
+                inset 0 1px 0 #fff,
+                0 0 0 1px rgb(21 21 21 / 0.1),
+                0 1px 2px rgb(0 0 0 / 0.06);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            line-height: 1;
+            text-decoration: none;
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease;
+        }
+        .btn-link:hover {
+            background: #e9e9e6;
+            color: #151515;
+        }
+        .btn-link-arrow {
+            display: block;
+            width: 15px;
+            height: 15px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .btn-link:hover .btn-link-arrow {
+            transform: translateY(2px);
+        }
+        .hero-visual {
+            width: calc(100% + 32px);
+            max-width: none;
+            margin: 36px -16px 0;
+        }
+    }
+
+    /* ---- Client logos ----------------------------------------------------
+       Under the buttons: the logos drift left in an endless loop, fading
+       out at both edges, with the caption under them. Every logo is solid
+       ink, and the whole row is softened to a grey together. The list moves
+       left by a quarter of its width (one set of three, each followed by
+       the same margin), which puts the second set exactly where the first
+       started, so the loop has no seam. On phones the row runs to the
+       screen edges. From 1024px (in the left column, under the copy) it is
+       one row: the caption on the left as a small two-line label, a thin
+       rule, then the drifting logos, so the column's left edge stays
+       straight and only the strip itself fades. */
+    .hero-logos {
+        width: 100%;
+        margin-top: 36px;
     }
     @media (min-width: 1024px) {
-        .hero-results {
-            gap: 20px;
+        .hero-logos {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            max-width: 36rem;
+            margin-top: 44px;
+        }
+        .logos-window {
+            flex: 1;
+            min-width: 0;
+        }
+        .hero-logos .logos-caption {
+            order: -1;
+            flex: none;
+            margin: 0;
+            padding-right: 28px;
+            border-right: 1px solid rgb(21 21 21 / 0.12);
+            text-align: left;
+            font-size: 0.8125rem;
+            line-height: 1.35;
+        }
+        .hero-logos .logos-caption span {
+            display: block;
+        }
+    }
+    @media (max-width: 639px) {
+        .hero-logos {
+            margin-top: 44px;
+            width: calc(100% + 32px);
+            margin-inline: -16px;
+        }
+    }
+    .logos-window {
+        overflow: hidden;
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+        mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+    }
+    .logos-track {
+        display: flex;
+        width: max-content;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        animation: logos-drift 24s linear infinite;
+    }
+    @keyframes logos-drift {
+        to {
+            transform: translateX(-25%);
+        }
+    }
+    .logo-item {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 32px;
+        margin-right: 68px;
+        color: #151515;
+        opacity: 0.55;
+        font: 600 1.0625rem/1 "Inter Tight", "Inter", sans-serif;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+    }
+    .logo-item :global(.logo-img) {
+        display: block;
+        width: auto;
+        filter: brightness(0);
+    }
+    .logo-item :global(.logo-feals) {
+        height: 22px;
+    }
+    .logo-item :global(.logo-highland) {
+        height: 26px;
+    }
+    /* The frog sits in the middle of a wide image, with empty space taking
+       up 27.5% of the width on each side; the negative margins take that
+       space back, so the name sits as close to the frog as Highland's to
+       its deer. At this height the frog matches the deer. */
+    .logo-item :global(.logo-frog) {
+        height: 27px;
+        margin-inline: -14px;
+    }
+    .logos-caption {
+        margin: 22px 0 0;
+        text-align: center;
+        font: 400 0.875rem/1.4 "Inter", sans-serif;
+        color: #6b6f76;
+    }
+    .logos-caption span {
+        color: #9ca3af;
+    }
+    /* Reduced motion: one still set, centred, wrapping if it must. */
+    @media (prefers-reduced-motion: reduce) {
+        .logos-window {
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
+        .logos-track {
+            width: auto;
+            flex-wrap: wrap;
+            justify-content: center;
+            row-gap: 12px;
+            animation: none;
+        }
+        .logo-item {
+            margin-inline: 34px;
+        }
+        .logo-item[aria-hidden="true"] {
+            display: none;
         }
     }
 
-    /* Each card is a link to its case study. */
-    .hero-card {
+    /* ---- Collage ---------------------------------------------------------
+       A square canvas. Every piece is placed and sized in cqi (1% of the
+       canvas width), so the whole picture scales as one at any width.
+       Pieces are white cards; --x, --y and --w place them, --r tilts them
+       and --z stacks them. */
+    .collage {
+        position: relative;
+        aspect-ratio: 1;
+        container-type: inline-size;
+        isolation: isolate;
+        color: #151515;
+        font-family: "Inter", sans-serif;
+        text-align: left;
+    }
+    /* Dot grid, fading out towards the edges. */
+    .collage::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background: radial-gradient(circle, rgb(21 21 21 / 0.2) 1px, transparent 1.5px) 0 0 / 18px 18px;
+        -webkit-mask-image: radial-gradient(ellipse at center, #000 45%, transparent 72%);
+        mask-image: radial-gradient(ellipse at center, #000 45%, transparent 72%);
+    }
+
+    .piece {
+        position: absolute;
+        left: var(--x);
+        top: var(--y);
+        width: var(--w);
+        z-index: var(--z, 1);
+        rotate: var(--r, 0deg);
+        background: #fff;
+        border: 1px solid rgb(21 21 21 / 0.08);
+        border-radius: 2.2cqi;
+        box-shadow:
+            0 1px 2px rgb(21 21 21 / 0.04),
+            0 1.2cqi 3cqi -1.4cqi rgb(21 21 21 / 0.1);
+    }
+    /* The results are links to their case studies. */
+    a.piece {
         display: block;
         color: inherit;
         text-decoration: none;
-        position: relative;
-        overflow: hidden;
-        aspect-ratio: 2 / 1;
-        border-radius: 12px;
-        background: #2b2723;
-        container-type: inline-size;
+        transition:
+            scale 0.4s var(--ease),
+            box-shadow 0.4s var(--ease);
     }
-    /* Phones: wide and short (about 130px tall on a typical phone), so the
-       three stacked cards take less of the screen. The narrowest phones keep
-       2:1: there the number and label stack and need the height. */
-    @media (min-width: 360px) and (max-width: 639px) {
-        .hero-card {
-            aspect-ratio: 8 / 3;
-        }
+    a.piece:hover {
+        scale: 1.03;
+        box-shadow:
+            0 1px 2px rgb(21 21 21 / 0.04),
+            0 2cqi 4.4cqi -1.6cqi rgb(21 21 21 / 0.14);
     }
-    @media (min-width: 640px) {
-        .hero-card {
-            aspect-ratio: 4 / 5;
-        }
-    }
-    @media (min-width: 1024px) {
-        .hero-card {
-            aspect-ratio: 3 / 2;
-        }
+    a.piece:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 3px;
     }
 
-    .hero-card :global(.card-photo) {
+    /* Chart (Highland). */
+    .chart {
+        --x: 3cqi;
+        --y: 10cqi;
+        --w: 57cqi;
+        padding: 2.8cqi 3cqi 2.4cqi;
+    }
+    .chart-head {
+        display: block;
+        font-size: 2.4cqi;
+        line-height: 1.3;
+        color: #6b6b6b;
+        white-space: nowrap;
+    }
+    .chart-head b {
+        font-weight: 600;
+        color: #151515;
+    }
+    /* Highland's deer, in its own slate, just before the name. */
+    .chart-head :global(.chart-logo) {
+        display: inline-block;
+        width: auto;
+        height: 1.45em;
+        margin-right: 0.4em;
+        vertical-align: middle;
+        position: relative;
+        top: -0.08em;
+    }
+    .chart-svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: 2.2cqi;
+        overflow: visible;
+    }
+    .chart-grid {
+        stroke: rgb(21 21 21 / 0.08);
+        stroke-width: 1;
+    }
+    .chart-line {
+        fill: none;
+        stroke-width: 2.4;
+        stroke-linejoin: round;
+    }
+    .chart-line-program {
+        stroke: var(--color-accent);
+    }
+    .chart-line-compare {
+        stroke: #c3c7fd;
+        stroke-width: 2;
+    }
+    .chart-axis {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.4cqi;
+        font-size: 2.2cqi;
+        line-height: 1.3;
+        color: #8a8a8a;
+    }
+    .chart-badge {
+        position: absolute;
+        left: 30%;
+        top: 46%;
+        padding: 0.9cqi 1.6cqi;
+        border-radius: 1.2cqi;
+        background: #151515;
+        color: #fff;
+        font-size: 2.4cqi;
+        font-weight: 600;
+        line-height: 1.3;
+        white-space: nowrap;
+        box-shadow: 0 0.8cqi 1.6cqi -0.8cqi rgb(21 21 21 / 0.18);
+    }
+    .badge-number {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Photo cards (Feals, Survival Frog): the photo in a white frame, the
+       brand's logo in the top corner and the result at the bottom. */
+    .photo {
+        padding: 1.2cqi;
+    }
+    .photo-feals {
+        --x: 59cqi;
+        --y: 3cqi;
+        --w: 38cqi;
+        --r: 3deg;
+        --z: 2;
+    }
+    .photo-frog {
+        --x: 3cqi;
+        --y: 68cqi;
+        --w: 34cqi;
+        --r: -3deg;
+        --z: 2;
+    }
+    .photo-frame {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        aspect-ratio: 16 / 10;
+        border-radius: 1.4cqi;
+        background: #2b2723;
+    }
+    .photo :global(.photo-img) {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .hero-card:hover :global(.card-photo) {
-        transform: scale(1.04);
-    }
-    .hero-card:focus-visible {
-        outline: 2px solid var(--color-accent);
-        outline-offset: 3px;
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .hero-card :global(.card-photo) {
-            transition: none;
-        }
-    }
-    /* Dims the whole photo, then darkens the lower half behind the numbers. */
-    .card-shade {
+    .photo-shade {
         position: absolute;
         inset: 0;
-        background:
-            linear-gradient(to bottom, rgb(0 0 0 / 0) 48%, rgb(0 0 0 / 0.76)),
-            rgb(0 0 0 / 0.32);
+        background: linear-gradient(to bottom, rgb(0 0 0 / 0.25), rgb(0 0 0 / 0.1) 35%, rgb(0 0 0 / 0.72));
     }
-    .hero-card :global(.card-logo) {
+    .photo :global(.photo-logo) {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        translate: -50% -50%;
+        top: 2cqi;
+        left: 2.2cqi;
         height: auto;
         filter: brightness(0) invert(1);
     }
-    .hero-card :global(.logo-feals) {
-        width: clamp(52px, 16.3cqi, 76px);
+    .photo :global(.logo-feals) {
+        width: 26%;
     }
-    /* The deer head, the same height as the frog. */
-    .hero-card :global(.logo-highland) {
-        width: clamp(36px, 10.3cqi, 50px);
+    /* The frog image has empty space around the frog, so it is set wider
+       and pulled up and left by that space. */
+    .photo :global(.logo-frog) {
+        width: 24%;
+        top: 0.8cqi;
+        left: 1cqi;
     }
-    /* The frog image has empty space around the frog, so it is set wider. */
-    .hero-card :global(.logo-frog) {
-        width: clamp(80px, 24.6cqi, 115px);
-    }
-
-    .card-stat {
+    .photo-stat {
         position: absolute;
         inset-inline: 0;
         bottom: 0;
-        margin: 0;
-        padding: clamp(16px, 5.5cqi, 24px);
+        padding: 1.8cqi 2.2cqi;
         display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 8px 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8cqi;
         color: #fff;
     }
-    .card-number {
+    .stat-number {
         font-family: "Unbounded", sans-serif;
         font-weight: 900;
-        font-size: clamp(22px, 7.6cqi, 33px);
+        font-size: 4.2cqi;
         line-height: 1;
         letter-spacing: -0.02em;
-    }
-    .card-label {
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
-        font-size: 12px;
-        line-height: 1;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: rgb(255 255 255 / 0.92);
-    }
-    /* Narrow cards: the label goes under the number. */
-    @container (max-width: 299px) {
-        .card-stat {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-    }
-    /* Even-width digits (where the font has them) while the numbers count. */
-    .card-number {
         font-variant-numeric: tabular-nums;
+    }
+    .stat-label {
+        font-weight: 700;
+        font-size: max(8px, 1.7cqi);
+        line-height: 1;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgb(255 255 255 / 0.9);
+    }
+
+    /* Flow: a builder window with a post-purchase flow. A line runs down
+       behind the steps, showing between them. */
+    .flow {
+        --x: 25cqi;
+        --y: 47cqi;
+        --w: 51cqi;
+        --z: 3;
+        padding: 0 2.6cqi 2.6cqi;
+    }
+    .flow-bar {
+        display: flex;
+        gap: 0.9cqi;
+        padding: 2cqi 0;
+        margin-bottom: 2.4cqi;
+        border-bottom: 1px solid rgb(21 21 21 / 0.08);
+    }
+    .flow-bar i {
+        width: 1.5cqi;
+        height: 1.5cqi;
+        border: 1px solid rgb(21 21 21 / 0.22);
+        border-radius: 50%;
+    }
+    .flow-steps {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 2cqi;
+        font-size: 2.6cqi;
+        line-height: 1.3;
+    }
+    .flow-steps::before {
+        content: "";
+        position: absolute;
+        left: 3.4cqi;
+        top: 1cqi;
+        bottom: 1cqi;
+        width: 1px;
+        background: rgb(21 21 21 / 0.18);
+    }
+    .node {
+        position: relative;
+        display: block;
+        padding: 1.5cqi 2cqi;
+        background: #fff;
+        border: 1px solid rgb(21 21 21 / 0.14);
+        border-radius: 1.3cqi;
+        white-space: nowrap;
+    }
+    .node b {
+        font-weight: 700;
+        margin-right: 0.3em;
+    }
+    .node-trigger {
+        padding-left: 4.4cqi;
+    }
+    .node-trigger::before {
+        content: "";
+        position: absolute;
+        left: 1.9cqi;
+        top: 50%;
+        width: 1.4cqi;
+        height: 1.4cqi;
+        margin-top: -0.7cqi;
+        border-radius: 50%;
+        background: var(--accent-fill);
+        image-rendering: pixelated;
+    }
+    .node-wait {
+        border-style: dashed;
+        background: #fafafa;
+        color: #6b6b6b;
+    }
+    .flow-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.6cqi;
+    }
+    .node-done {
+        display: flex;
+        align-items: center;
+        gap: 0.8cqi;
+        color: #157a45;
+    }
+    .node-done svg {
+        width: 2.6cqi;
+        height: 2.6cqi;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Channel tiles. */
+    .tile {
+        --w: 11cqi;
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        border-radius: 2.6cqi;
+    }
+    .tile svg {
+        width: 46%;
+        height: 46%;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .tile-mail {
+        --x: 7cqi;
+        --y: 53cqi;
+        color: var(--color-accent);
+    }
+    .tile-chat {
+        --x: 83cqi;
+        --y: 50cqi;
+        color: #151515;
+    }
+    .tile-bag {
+        --x: 81cqi;
+        --y: 79cqi;
+        color: var(--color-accent);
     }
 
     /* ---- Entrance --------------------------------------------------------
        One sequence on load, everything rising into place on the same easing
        as the "Work with me" fill:
-         0ms     "Build the" lifts out of a blur
-         80ms+   RETENTION's letters rise from the baseline, one by one
-         450ms   the second line, then the paragraph (600) and buttons (700)
-         750ms+  the cards wipe up one after another, photos settling
-         1050ms+ each card's logo and number; the number counts up
-         1100ms  "profitable growth." turns blue in an angled sweep
-       Every animation fills "backwards": it holds its starting state during
-       its delay and leaves no trace once done, so hover effects work as
-       before. While html.hero-wait is set (until the fonts are in) they are
-       held at the start. */
+         0ms     John's pill lifts out of a blur
+         100ms+  the headline's words rise from below, one by one
+         450ms   the paragraph, then the buttons (550)
+         750ms+  the collage's pieces rise in one after another; the chart's
+                 lines draw, its badge pops in (1850), the flow's steps come
+                 in one by one, and each result counts up
+       After that the pieces bob gently, each on its own beat. Every entrance
+       animation fills "backwards": it holds its starting state during its
+       delay and leaves no trace once done, so hover effects work as before.
+       While html.hero-wait is set (until the fonts are in) they are held at
+       the start. */
     .hero {
         --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -516,117 +1058,201 @@ const CARD_STAGGER = 120;
     @keyframes hero-rise {
         from {
             opacity: 0;
-            transform: translateY(0.6em);
-            filter: blur(8px);
+            transform: translateY(24px);
         }
     }
 
-    /* RETENTION: each letter rises out of an edge at the baseline. The box
-       is exactly the capital height (line-height 0.75), so clipping it hides
-       a letter that is below the baseline or above the capitals. */
-    .big-letters {
-        display: inline-block;
-        clip-path: inset(-0.02em -0.2em -0.02em -0.2em);
+    /* Headline: the words rise out of their boxes a line at a time, 80ms
+       apart (--l, the word's line, is set by the script; without it every
+       line rises at once). */
+    .w-in {
+        animation: word-rise 0.9s var(--ease) calc(100ms + var(--l, 0) * 80ms) backwards;
     }
-    .ch {
-        display: inline-block;
-        animation: letter-rise 1.05s var(--ease) calc(80ms + var(--i) * 55ms) backwards;
-    }
-    @keyframes letter-rise {
+    @keyframes word-rise {
         from {
-            transform: translateY(105%);
-        }
-    }
-    /* After the entrance, a hover rolls each letter up and out of the top,
-       then back in from below: an odometer turning over. */
-    .big-letters.is-settled .ch {
-        animation: none;
-    }
-    .big-letters.is-looping .ch {
-        animation: letter-loop 0.95s calc(var(--i) * 40ms) both;
-    }
-    @keyframes letter-loop {
-        0% {
-            transform: translateY(0);
-            animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.2);
-        }
-        42% {
-            transform: translateY(-105%);
-        }
-        42.01% {
-            transform: translateY(105%);
-            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        100% {
-            transform: translateY(0);
+            transform: translateY(110%);
         }
     }
 
-    /* "profitable growth.": ink first, then the accent sweeps across from
-       the left with a slanted edge, like the button fill. The text is cut out
-       of a background that is half accent, half ink; moving it shows one or
-       the other. Its resting state is the accent. */
-    .sweep {
-        background: linear-gradient(105deg, var(--color-accent) 0 50%, #151515 50% 100%) 0 0 / 250% 100% no-repeat;
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        animation: accent-sweep 1.1s var(--ease) 1100ms backwards;
+    /* Collage pieces rise in, then bob. The bob moves `translate` and the
+       entrance `transform`, so the two never fight; each piece's bob starts
+       part way through (negative delay) so they move out of step. */
+    .piece {
+        animation:
+            piece-in 0.9s var(--ease) calc(var(--start) + var(--n) * var(--stagger)) backwards,
+            piece-bob 7s ease-in-out calc(var(--n) * -1.7s) infinite alternate;
     }
-    @keyframes accent-sweep {
-        from {
-            background-position: 100% 0;
-        }
-    }
-
-    /* Cards: each wipes up from the bottom while its photo settles from a
-       slight zoom, then its logo and number come in. The clip sits 10px
-       outside the card at rest, leaving room for the focus outline. */
-    .hero-results li {
-        --at: calc(var(--cards-start) + var(--k) * var(--card-stagger));
-        clip-path: inset(-10px round 22px);
-        animation: card-wipe 1.1s var(--ease) var(--at) backwards;
-    }
-    /* Phones: a card below the screen at load is held here until it scrolls
-       into view (the script sets and clears the class). */
-    .hero-results li.is-waiting,
-    .hero-results li.is-waiting :global(*) {
-        animation-play-state: paused !important;
-    }
-    @keyframes card-wipe {
-        from {
-            clip-path: inset(100% -10px -10px -10px round 22px);
-            transform: translateY(32px);
-        }
-    }
-    .hero-card :global(.card-photo) {
-        animation: photo-settle 1.8s var(--ease) var(--at) backwards;
-    }
-    @keyframes photo-settle {
-        from {
-            transform: scale(1.25);
-        }
-    }
-    .hero-card :global(.card-logo),
-    .card-stat {
-        animation: card-content 0.8s var(--ease) calc(var(--at) + 300ms) backwards;
-    }
-    @keyframes card-content {
+    @keyframes piece-in {
         from {
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(6cqi) scale(0.94);
+        }
+    }
+    @keyframes piece-bob {
+        from {
+            translate: 0 0.6cqi;
+        }
+        to {
+            translate: 0 -0.6cqi;
+        }
+    }
+    /* The chart's lines draw from left to right (pathLength="1", so a dash
+       of 1 is the whole line). */
+    .chart-line {
+        stroke-dasharray: 1;
+        animation: line-draw 1.6s var(--ease) calc(var(--start) + 250ms) backwards;
+    }
+    .chart-line-compare {
+        animation-delay: calc(var(--start) + 150ms);
+    }
+    @keyframes line-draw {
+        from {
+            stroke-dashoffset: 1;
+        }
+    }
+    .chart-badge {
+        animation: badge-pop 0.6s var(--ease) calc(var(--start) + 1100ms) backwards;
+    }
+    @keyframes badge-pop {
+        from {
+            opacity: 0;
+            transform: translateY(1.5cqi) scale(0.9);
+        }
+    }
+    .flow-steps > li {
+        animation: step-in 0.6s var(--ease) calc(var(--start) + 3 * var(--stagger) + 300ms + var(--s) * 160ms) backwards;
+    }
+    @keyframes step-in {
+        from {
+            opacity: 0;
+            transform: translateY(1.2cqi);
         }
     }
 
     @media (prefers-reduced-motion: reduce) {
         .hero-rise,
-        .ch,
-        .sweep,
-        .hero-results li,
-        .hero-card :global(.card-photo),
-        .hero-card :global(.card-logo),
-        .card-stat {
+        .w-in,
+        .piece,
+        .chart-line,
+        .chart-badge,
+        .flow-steps > li {
             animation: none;
         }
+        a.piece {
+            transition: none;
+        }
+    }
+
+    /* ---- Dark ------------------------------------------------------------
+       Off-white type, the cards #19191c with no edge and deeper shadows,
+       the dot grid and the chart's lines in white at low opacity.
+       The logos turn white; the blue stays as it is. */
+    :global(:root[data-site-theme="dark"]) .hero-intro {
+        background: #19191c;
+        color: rgb(245 245 242 / 0.6);
+        border-color: transparent;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+    }
+    :global(:root[data-site-theme="dark"]) .hero-intro b,
+    :global(:root[data-site-theme="dark"]) .hero-title,
+    :global(:root[data-site-theme="dark"]) .btn-link {
+        color: #f5f5f2;
+    }
+    :global(:root[data-site-theme="dark"]) .hero-lede {
+        color: rgb(245 245 242 / 0.68);
+    }
+    @media (max-width: 639px) {
+        :global(:root[data-site-theme="dark"]) .btn-link {
+            background: #232327;
+            box-shadow:
+                inset 0 1px 0 rgb(255 255 255 / 0.06),
+                0 0 0 1px rgb(255 255 255 / 0.08),
+                0 1px 2px rgb(0 0 0 / 0.4);
+        }
+        :global(:root[data-site-theme="dark"]) .btn-link:hover {
+            background: #2a2a2f;
+            color: #f5f5f2;
+        }
+    }
+    @media (min-width: 1024px) {
+        :global(:root[data-site-theme="dark"]) .hero-logos .logos-caption {
+            border-right-color: rgb(255 255 255 / 0.12);
+        }
+    }
+    :global(:root[data-site-theme="dark"]) .logo-item {
+        color: #f5f5f2;
+    }
+    :global(:root[data-site-theme="dark"]) .logo-item :global(.logo-img) {
+        filter: brightness(0) invert(1);
+    }
+    :global(:root[data-site-theme="dark"]) .logos-caption {
+        color: #a1a1aa;
+    }
+    :global(:root[data-site-theme="dark"]) .logos-caption span {
+        color: #71717a;
+    }
+    :global(:root[data-site-theme="dark"]) .collage {
+        color: #f5f5f2;
+    }
+    :global(:root[data-site-theme="dark"]) .collage::before {
+        background-image: radial-gradient(circle, rgb(255 255 255 / 0.14) 1px, transparent 1.5px);
+    }
+    :global(:root[data-site-theme="dark"]) .piece {
+        background: #19191c;
+        border-color: transparent;
+        box-shadow:
+            0 1px 2px rgb(0 0 0 / 0.4),
+            0 2.4cqi 5cqi -1.6cqi rgb(0 0 0 / 0.6);
+    }
+    :global(:root[data-site-theme="dark"]) a.piece:hover {
+        box-shadow:
+            0 1px 2px rgb(0 0 0 / 0.4),
+            0 3.4cqi 7cqi -1.6cqi rgb(0 0 0 / 0.7);
+    }
+    :global(:root[data-site-theme="dark"]) .chart-head {
+        color: #a1a1aa;
+    }
+    :global(:root[data-site-theme="dark"]) .chart-head b {
+        color: #f5f5f2;
+    }
+    :global(:root[data-site-theme="dark"]) .chart-head :global(.chart-logo) {
+        filter: brightness(0) invert(0.9);
+    }
+    :global(:root[data-site-theme="dark"]) .chart-grid {
+        stroke: rgb(255 255 255 / 0.08);
+    }
+    :global(:root[data-site-theme="dark"]) .chart-line-compare {
+        stroke: rgb(195 199 253 / 0.35);
+    }
+    :global(:root[data-site-theme="dark"]) .chart-axis {
+        color: #71717a;
+    }
+    :global(:root[data-site-theme="dark"]) .chart-badge {
+        background: #f5f5f2;
+        color: #151515;
+        box-shadow: 0 1.2cqi 2.4cqi -1cqi rgb(0 0 0 / 0.6);
+    }
+    :global(:root[data-site-theme="dark"]) .flow-bar {
+        border-bottom-color: rgb(255 255 255 / 0.08);
+    }
+    :global(:root[data-site-theme="dark"]) .flow-bar i {
+        border-color: rgb(255 255 255 / 0.22);
+    }
+    :global(:root[data-site-theme="dark"]) .flow-steps::before {
+        background: rgb(255 255 255 / 0.18);
+    }
+    :global(:root[data-site-theme="dark"]) .node {
+        background: #222226;
+        border-color: rgb(255 255 255 / 0.12);
+    }
+    :global(:root[data-site-theme="dark"]) .node-wait {
+        background: #1c1c1f;
+        color: #a1a1aa;
+    }
+    :global(:root[data-site-theme="dark"]) .node-done {
+        color: #4ade80;
+    }
+    :global(:root[data-site-theme="dark"]) .tile-chat {
+        color: #f5f5f2;
     }
 </style>

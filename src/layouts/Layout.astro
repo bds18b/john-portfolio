@@ -12,11 +12,34 @@ const isPreview = !Astro.site?.hostname.endsWith(LIVE_HOST);
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Unbounded:wght@600..900&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Inter+Tight:wght@300..800&family=Unbounded:wght@600..900&display=swap"
 			rel="stylesheet"
 		/>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+		<!-- Dark mode, set before the first paint so the page never flashes
+		     light. Light unless the visitor picked dark with the nav's button
+		     (saved in localStorage as "site-theme"). -->
+		<script is:inline>
+			try {
+				if (localStorage.getItem("site-theme") === "dark") {
+					document.documentElement.dataset.siteTheme = "dark";
+				}
+			} catch {}
+		</script>
+		<!-- Switches the scroll reveals on (src/scripts/reveal.ts) before
+		     anything is drawn, unless reduced motion is set. If the reveal
+		     script hasn't started after 4s, everything just shows. -->
+		<script is:inline>
+			(function () {
+				if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+				var root = document.documentElement;
+				root.classList.add("reveal-on");
+				setTimeout(function () {
+					if (!window.__revealReady) root.classList.remove("reveal-on");
+				}, 4000);
+			})();
+		</script>
 		<!-- Favicon: a white J on the accent blue. The .ico (16/32/48) is for
 		     older browsers; the SVG, listed after it, wins everywhere else. -->
 		<link rel="icon" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.ico`} sizes="32x32" />
@@ -34,6 +57,10 @@ const isPreview = !Astro.site?.hostname.endsWith(LIVE_HOST);
 		<slot />
 
 		<script>
+			import { initReveal } from "../scripts/reveal";
+			initReveal();
+		</script>
+		<script>
 			document.addEventListener("astro:after-swap", () => {
 				document.documentElement.style.scrollBehavior = "smooth";
 			});
@@ -43,7 +70,7 @@ const isPreview = !Astro.site?.hostname.endsWith(LIVE_HOST);
 
 <style is:global>
 	html {
-		background-color: #efefed;
+		background-color: var(--page-bg);
 		margin: 0;
 		width: 100%;
 		height: 100%;
@@ -51,14 +78,21 @@ const isPreview = !Astro.site?.hostname.endsWith(LIVE_HOST);
 	}
 
 	body {
-		background-color: #efefed;
+		background-color: var(--page-bg);
 		margin: 0;
 		width: 100%;
 		height: 100%;
 	}
 
+	/* Clear of the fixed nav (64px on phones, 80px from 768px), with a
+	   little room. */
 	[id] {
-		scroll-margin-top: 80px;
+		scroll-margin-top: 72px;
+	}
+	@media (min-width: 768px) {
+		[id] {
+			scroll-margin-top: 88px;
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

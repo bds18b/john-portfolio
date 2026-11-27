@@ -1,28 +1,107 @@
 @import "tailwindcss";
 
+/* Dark mode: the nav's sun/moon button sets data-site-theme="dark" on
+   <html> (Layout.astro sets it before the first paint from the saved
+   choice). `dark:` utilities and the `:root[data-site-theme="dark"]`
+   rules in each component follow it. `dark:` utilities also apply inside
+   anything with the class .dark-area, whatever the page's theme (on trial:
+   the case study cards, dark on the light page too). */
+@custom-variant dark (&:where(:root[data-site-theme="dark"], :root[data-site-theme="dark"] *, .dark-area, .dark-area *));
+
 @theme {
     --color-accent: #4651f9;
     --color-old: #3942c7;
     /* The hero's two typefaces. font-sans is also the page default. */
     --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
     --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+    /* Headings: Inter Tight, as in the hero's headline. */
+    --font-heading: "Inter Tight", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Vertical space at the top and bottom of every section, so the gaps
-   between sections are the same all the way down the page. */
+/* Big screens: the page is designed at 1440px wide, and on a very wide
+   screen it can feel small in the middle, so from 2000px wide the whole
+   page is scaled up, just like the browser's own zoom: 105%, then 110%
+   from 2400px (a 2560px screen) and 125% from 3200px (4K). Inside a
+   zoomed page, screen-relative sizes (vh, dvh, svh) are zoomed too, so a
+   full-height box would come out taller than the screen; the few that
+   need to fit the screen divide by --page-zoom. */
 :root {
-    --section-space: clamp(52px, 7vw, 112px);
+    --page-zoom: 1;
+}
+@media (min-width: 2000px) {
+    :root {
+        --page-zoom: 1.05;
+    }
+}
+@media (min-width: 2400px) {
+    :root {
+        --page-zoom: 1.1;
+    }
+}
+@media (min-width: 3200px) {
+    :root {
+        --page-zoom: 1.25;
+    }
+}
+html {
+    zoom: var(--page-zoom);
 }
 
-/* The main call-to-action button: a pill that fills with a slanted panel
-   on hover. The panel sweeps in from the left and, when the pointer leaves,
-   carries on out to the right: it scales from its left edge on the way in
-   and towards its right edge on the way out. The panel is wider than the
-   button so its slanted ends sit outside the rounded edges once it covers
-   the button. Colours can be changed per use with the variables. */
+:root {
+    /* The page colour, behind every section (white on trial; it was the
+       grey #efefed, which the contact pop-up and a few panels inside white
+       cards still use). */
+    --page-bg: #fff;
+    /* Vertical space at the top and bottom of every section, so the gaps
+       between sections are the same all the way down the page. */
+    --section-space: clamp(52px, 7vw, 112px);
+    /* The accent blue in its texture (see .accent-texture below), for
+       anything filled with the accent: `background: var(--accent-fill)`,
+       with `image-rendering: pixelated` on the same element so the
+       texture's pixels stay crisp. */
+    --accent-fill: var(--color-accent) url("../assets/accent-texture.png") 0 0 / 128px 128px;
+    /* The same for large areas (whole panels, the Services ring): a softer
+       tile, its bands under half as strong and twice as wide, so a big
+       block doesn't read as stripes. Same blues, same average colour. */
+    --accent-fill-soft: var(--color-accent) url("../assets/accent-texture-soft.png") 0 0 / 256px 256px;
+}
+
+/* Dark: near-black page (the dark of bradenseidl.com), off-white text.
+   The page colour flips here; each component has its own dark rules for
+   the rest. Its cards are flat near-black (#19191c), text is #f5f5f2 for
+   headings and 68% of it for body copy. */
+:root[data-site-theme="dark"] {
+    color-scheme: dark;
+    --page-bg: #111113;
+}
+:root[data-site-theme="dark"] body {
+    color: #f5f5f2;
+}
+
+/* While the theme switches, nothing eases between the two: every colour
+   flips at once. The switch itself cross-fades the whole page where the
+   browser can (Nav.astro). */
+:root.theme-switching *,
+:root.theme-switching *::before,
+:root.theme-switching *::after {
+    transition: none !important;
+}
+
+/* The main call-to-action button: a pill in the accent texture (see
+   .accent-texture below) with a bevel: a light line along the top, a dark
+   one along the bottom, a deep blue ring and a small drop shadow. On hover
+   (or keyboard focus) the texture glides 96px to the right, sliding its
+   bands of sheen across the button, and glides back when the pointer
+   leaves.
+   A button can also fill with a slanted panel on hover by setting
+   --btn-fill (none do at the moment): the panel sweeps in from
+   the left and, when the pointer leaves, carries on out to the right. It
+   scales from its left edge on the way in and towards its right edge on
+   the way out, and is wider than the button so its slanted ends sit
+   outside the rounded edges once it covers the button. */
 .btn-cta {
     --btn-bg: var(--color-accent);
-    --btn-fill: #151515;
+    --btn-fill: none;
     --btn-text: #fff;
     --btn-text-hover: #fff;
     position: relative;
@@ -33,11 +112,20 @@
     height: 54px;
     padding: 0 30px;
     border-radius: 999px;
-    background: var(--btn-bg);
+    background: var(--btn-bg) url("../assets/accent-texture.png") 0 0 / 128px 128px;
+    image-rendering: pixelated;
+    box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.3),
+        inset 0 -1px 0 rgb(0 0 0 / 0.2),
+        0 0 0 1px #2c33a8,
+        0 1px 3px rgb(0 0 0 / 0.25);
     color: var(--btn-text);
+    text-shadow: 0 1px 1px rgb(12 16 80 / 0.45);
     font: 600 1rem/1 "Inter", sans-serif;
     text-decoration: none;
-    transition: color 0.45s ease;
+    transition:
+        color 0.45s ease,
+        background-position 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .btn-cta::before {
     content: "";
@@ -52,6 +140,7 @@
 .btn-cta:hover,
 .btn-cta:focus-visible {
     color: var(--btn-text-hover);
+    background-position: 96px 0;
 }
 .btn-cta:hover::before,
 .btn-cta:focus-visible::before {
@@ -67,4 +156,86 @@
     .btn-cta::before {
         transition-duration: 0.01s;
     }
+}
+
+/* The accent texture: a 64px pixel-art tile drawn at 2px per pixel, four
+   shades of the accent blue (#2c33a8 to #5560ff) ordered-dithered into
+   soft diagonal bands of sheen; seamless, so it covers any size. The CTA
+   buttons wear it as their fill; highlighted words in headings show it
+   through their letters. The plain accent colour stays as the fallback
+   where text can't be clipped.
+   A background only paints inside the element's box, and with a tight
+   line height the box can stop short of the letters (the tail of a "g",
+   a letter pulled past the end by negative tracking), leaving those parts
+   unfilled. So the box reaches past the text on every side, and negative
+   margins of the same size keep the layout as it was. */
+.accent-texture {
+    color: var(--color-accent);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .accent-texture {
+        padding: 0.15em 0.08em 0.3em;
+        margin: -0.15em -0.08em -0.3em;
+        background: url("../assets/accent-texture.png") 0 0 / 128px 128px;
+        image-rendering: pixelated;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+/* Type: text is Inter, headings Inter Tight SemiBold set tight in sentence
+   case, and Unbounded is kept for the keywords alone: the highlighted
+   words in a heading (Bold, lowercase, a little tight), as in the hero.
+   Pair with .accent-texture for the blue; on the blue panels a keyword is
+   ink instead. */
+.keyword {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-transform: none;
+}
+
+/* Scroll reveals (src/scripts/reveal.ts has the how and when). Everything
+   here only applies while html.reveal-on is set, and each element lets go
+   of it once its reveal is done (.is-done). */
+:root {
+    --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Each word in its mask. The mask clips only along the bottom, where the
+   word waits, and reaches a little below the text for descenders. */
+.reveal-mask {
+    display: inline-block;
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+    clip-path: inset(-0.5em -0.3em 0 -0.3em);
+}
+.reveal-word {
+    display: inline-block;
+}
+/* Text: hidden until split into words, then the words wait below their
+   masks and rise a line at a time. */
+html.reveal-on [data-reveal="lines"]:not(.is-split) {
+    opacity: 0;
+}
+html.reveal-on [data-reveal="lines"]:not(.is-done) .reveal-word {
+    transform: translateY(110%);
+}
+html.reveal-on [data-reveal="lines"].is-in:not(.is-done) .reveal-word {
+    transform: none;
+    transition: transform 0.9s var(--reveal-ease)
+        calc(var(--reveal-delay, 0ms) + var(--line, 0) * 80ms);
+}
+/* Anything else: fades in, rising 24px. ("pieces", a group whose parts
+   animate themselves, only gets .is-in; its own styles do the rest.) */
+html.reveal-on [data-reveal]:not([data-reveal="lines"], [data-reveal="pieces"]):not(.is-done) {
+    opacity: 0;
+    transform: translateY(24px);
+}
+html.reveal-on [data-reveal]:not([data-reveal="lines"], [data-reveal="pieces"]).is-in:not(.is-done) {
+    opacity: 1;
+    transform: none;
+    transition:
+        opacity 0.9s var(--reveal-ease) var(--reveal-delay, 0ms),
+        transform 0.9s var(--reveal-ease) var(--reveal-delay, 0ms);
 }

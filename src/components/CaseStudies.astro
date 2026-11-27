@@ -53,12 +53,12 @@ const caseStudies = [
 ];
 ---
 
-<section id="case-studies" class="bg-[#efefed] py-(--section-space) overflow-hidden">
+<section id="case-studies" class="bg-(--page-bg) py-(--section-space) overflow-hidden">
   <!-- Same page width and side padding as the hero, comparison and approach. -->
   <div class="max-w-[1440px] mx-auto relative px-5 md:px-6 lg:px-12">
 
-    <h2 class="mb-8 md:mb-12 text-center font-display text-[clamp(1.5rem,3.6vw,2.75rem)] font-extrabold uppercase leading-[1.1] tracking-[-0.01em] text-[#151515] text-balance">
-      Brands I’ve <span class="text-accent">Elevated</span>
+    <h2 data-reveal="lines" class="mb-8 md:mb-12 text-center font-heading text-[clamp(2rem,3.9vw,3rem)] font-semibold leading-[1.06] tracking-[-0.035em] text-[#151515] dark:text-[#f5f5f2] text-balance">
+      Brands I’ve <span class="text-accent keyword accent-texture">elevated</span>
     </h2>
 
     <!-- Pure CSS Layout Container -->
@@ -69,9 +69,10 @@ const caseStudies = [
       {caseStudies.map((study) => (
         <div 
           class:list={[
-            "study-card group snap-center flex-shrink-0 w-full bg-white md:bg-[#e3e3e1]/50 border border-transparent rounded-[20px] overflow-hidden transition-all duration-500 flex flex-col md:h-[600px] md:col-span-2"
+            "study-card dark-area group snap-center flex-shrink-0 w-full bg-white md:bg-[#e3e3e1]/50 dark:bg-[#19191c] md:dark:bg-[#19191c] border border-transparent dark:border-0 rounded-[20px] overflow-hidden transition-all duration-500 flex flex-col md:h-[600px] md:col-span-2"
           ]}
           data-id={study.id}
+          data-reveal
           id={`case-${study.id}`}
         >
           <!-- Image Area -->
@@ -105,28 +106,28 @@ const caseStudies = [
 
           <!-- Content Drawer -->
           <div class:list={[
-            "card-drawer bg-white overflow-hidden transition-all duration-500 ease-in-out motion-reduce:transition-none flex-grow opacity-100 max-h-none md:max-h-0 md:opacity-0 md:group-[.active]:max-h-[270px] md:group-[.active]:opacity-100"
+            "card-drawer bg-white dark:bg-[#19191c] overflow-hidden transition-all duration-500 ease-in-out motion-reduce:transition-none flex-grow opacity-100 max-h-none md:max-h-0 md:opacity-0 md:group-[.active]:max-h-[270px] md:group-[.active]:opacity-100"
           ]}>
             <!-- Narrower screens: the story, then the numbers under a rule. Wide
                  screens: the story on the left (kept to a readable line length)
                  and the numbers on the right, behind a vertical rule. -->
-            <div class="p-6 md:p-8 lg:px-12 border-t border-[#e0dedd] h-full flex flex-col justify-between lg:flex-row lg:items-center lg:gap-16">
+            <div class="p-6 md:p-8 lg:px-12 border-t border-[#e0dedd] dark:border-white/10 h-full flex flex-col justify-between lg:flex-row lg:items-center lg:gap-16">
               <div class="lg:max-w-[40rem]">
-                <h3 class="font-display font-extrabold text-[1.05rem] md:text-[1.25rem] uppercase mb-2 text-[#151515] tracking-[0.01em]">{study.brand}</h3>
-                <p class="font-sans text-[0.88rem] md:text-[0.95rem] leading-relaxed text-[#444]">
+                <h3 class="font-heading font-semibold text-[1.3rem] md:text-[1.6rem] mb-2 text-[#151515] dark:text-[#f5f5f2] tracking-[-0.025em]">{study.brand}</h3>
+                <p class="font-sans text-[0.88rem] md:text-[0.95rem] leading-relaxed text-[#444] dark:text-[rgb(245_245_242/0.68)]">
                   {study.description}
                 </p>
               </div>
 
-              <div class="w-full border-t border-[#e0dedd] pt-4 mt-4 md:pt-6 md:mt-6 lg:w-auto lg:shrink-0 lg:border-t-0 lg:border-l lg:pt-0 lg:mt-0 lg:pl-16 lg:py-2">
+              <div class="w-full border-t border-[#e0dedd] dark:border-white/10 pt-4 mt-4 md:pt-6 md:mt-6 lg:w-auto lg:shrink-0 lg:border-t-0 lg:border-l lg:pt-0 lg:mt-0 lg:pl-16 lg:py-2">
                 <div class:list={[
                   "grid gap-2 lg:flex lg:max-w-none lg:gap-14",
                   study.metrics.length === 2 ? "grid-cols-2 max-w-[400px]" : "grid-cols-3"
                 ]}>
                   {study.metrics.map(metric => (
                     <div>
-                      <div class="font-display font-black text-[1.25rem] md:text-[1.9rem] tracking-[-0.02em] text-[#151515] leading-none mb-2">{metric.value}</div>
-                      <div class="font-sans font-bold text-[11px] md:text-[12px] uppercase tracking-[0.12em] text-[#6b6b65] leading-tight">
+                      <div class="font-heading font-bold text-[1.45rem] md:text-[2.1rem] tracking-[-0.035em] text-[#151515] dark:text-[#f5f5f2] leading-none mb-2">{metric.value}</div>
+                      <div class="font-sans font-bold text-[11px] md:text-[12px] uppercase tracking-[0.12em] text-[#6b6b65] dark:text-[#a1a1aa] leading-tight">
                         {metric.label}
                       </div>
                     </div>
