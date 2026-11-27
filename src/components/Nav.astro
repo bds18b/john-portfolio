@@ -419,9 +419,12 @@ const links = [
         padding: 0;
         list-style: none;
     }
+    /* The wipe clips each link to its own box (and the clip stays once it's
+       in), and the tight tracking pulls the last letter a little past the
+       text's edge; the side padding keeps it inside. */
     .menu-link {
         display: block;
-        padding-block: 2px;
+        padding: 2px 0.12em;
         font-family: "Inter Tight", "Inter", sans-serif;
         font-size: 2.75rem;
         font-weight: 600;
