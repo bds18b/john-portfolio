@@ -43,24 +43,6 @@ const toPoints = (ys: number[]) => ys.map((y, i) => `${i * 25},${y}`).join(" ");
 ---
 
 <section id="top" class="hero" data-hero>
-    <!-- The CTA button's inner highlight, for the letters of "profitable
-         growth.": the top edge of each letter (where it is, but a copy
-         shifted 1.5px down isn't), softened a touch, kept inside the letter,
-         filled with white at 30% (the button's own) and laid over it. -->
-    <svg class="hero-filters" width="0" height="0" aria-hidden="true" focusable="false">
-        <filter id="hero-bevel" x="-2%" y="-10%" width="104%" height="120%" color-interpolation-filters="sRGB">
-            <feOffset in="SourceAlpha" dy="1.5" result="shifted" />
-            <feComposite in="SourceAlpha" in2="shifted" operator="out" result="edge" />
-            <feGaussianBlur in="edge" stdDeviation="0.4" result="soft" />
-            <feComposite in="soft" in2="SourceAlpha" operator="in" result="inside" />
-            <feFlood flood-color="#fff" flood-opacity="0.3" />
-            <feComposite in2="inside" operator="in" result="highlight" />
-            <feMerge>
-                <feMergeNode in="SourceGraphic" />
-                <feMergeNode in="highlight" />
-            </feMerge>
-        </filter>
-    </svg>
     <!-- Hold the entrance until the fonts are in (or 0.8s at most, see the
          script below), so the letters don't rise in a fallback font and then
          change. Runs before the hero is drawn. The timeout releases it
@@ -413,25 +395,13 @@ const toPoints = (ys: number[]) => ys.map((y, i) => `${i * 25},${y}`).join(" ");
         display: inline-block;
     }
     /* "profitable growth." in Unbounded Bold, the site's display face; it
-       runs wide, so it is tracked less tightly than the rest. Like the CTA
-       button, a faint light edge runs along the top of each letter (the
-       #hero-bevel filter at the top of the section). */
+       runs wide, so it is tracked less tightly than the rest. */
     .w-accent {
         color: var(--color-accent);
         font-family: "Unbounded", sans-serif;
         font-weight: 700;
         letter-spacing: -0.02em;
-        filter: url(#hero-bevel);
     }
-    /* Holds the filter only: out of the flow and taking no space (not
-       display: none, which stops some browsers from using the filter). */
-    .hero-filters {
-        position: absolute;
-        width: 0;
-        height: 0;
-        overflow: hidden;
-    }
-
     .hero-lede {
         margin: 20px 0 0;
         max-width: 30rem;
