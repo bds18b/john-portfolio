@@ -44,7 +44,7 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
   <div class="t-inner" data-testimonials data-reveal>
     <div class="t-head">
       <h2 class="t-title" data-reveal="lines">
-        Built for <span class="t-highlight keyword"><span class="nowrap">8-figure</span> scale</span>
+        Built for <span class="t-highlight keyword nowrap">8-figure scale</span>
       </h2>
       <p class="t-intro" data-reveal>
         From founders and operators I've worked with.
@@ -255,7 +255,8 @@ const total = String(visibleTestimonials.length).padStart(2, "0");
     display: grid;
     gap: 48px;
   }
-  /* Keeps "8-figure" from breaking after the hyphen. */
+  /* Keeps "8-figure scale" on one line (and from breaking after the
+     hyphen), so on phones it sits under "Built for" as a whole. */
   .nowrap {
     white-space: nowrap;
   }

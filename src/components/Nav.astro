@@ -646,11 +646,14 @@ const links = [
             } catch {
                 return false; // cancelled by a newer open/close
             }
-            try {
-                anim.commitStyles();
-            } catch {
-                /* ignore */
-            }
+            // Keep where it ended by writing the last keyframe's values
+            // inline. Not commitStyles(): it can throw or skip a value, and
+            // the menu links are hidden in the stylesheet, so a link whose
+            // values didn't stick would vanish the moment the animation is
+            // let go (which showed as a link appearing, then disappearing).
+            const { offset: _offset, easing: _easing, composite: _composite, ...end } =
+                keyframes[keyframes.length - 1];
+            Object.assign(el.style, end);
             anim.cancel();
             running = running.filter((a) => a !== anim);
             return token === seq;

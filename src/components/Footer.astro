@@ -96,8 +96,11 @@ const year = new Date().getFullYear();
         letter-spacing: -0.035em;
         text-wrap: balance;
     }
-    /* "profitable growth." wears the accent texture. */
+    /* "profitable growth." wears the accent texture and starts its own
+       line, so "into" stays with "retention" and the two faces don't share
+       a line. On phones it runs to two lines, as in the hero. */
     .footer-accent {
+        display: block;
         color: var(--color-accent);
     }
     .footer-sub {
